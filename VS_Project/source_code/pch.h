@@ -4,7 +4,11 @@
 #include <vector>
 #include <string>
 #include <tuple>
-
+#include <chrono>
+#include <map>
+#include <stack>
+#include <queue>
+#include <conio.h>
 
 	#include <Windows.h>
 
