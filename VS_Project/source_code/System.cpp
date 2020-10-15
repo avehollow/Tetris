@@ -2,7 +2,6 @@
 #include "System.h"
 
 
-
 //! 1s = 1'000'000'000 ns
 //! 1s = 1'000'000 us
 //! 1s = 1'000 ms
@@ -28,12 +27,15 @@ System::System()
 	u_fps.setCharacterSize(30);
 	r_fps.setFillColor(sf::Color(255, 255, 255, 70));
 	u_fps.setFillColor(sf::Color(255, 255, 255, 70));
-	
-	fps_time.QuadPart = 0;
+
+	// AVE LOOK not necessary for <60 fps
+	timeBeginPeriod(1);
 }
 
 System::~System()
 {
+	// AVE LOOK not necessary for <60 fps
+	timeEndPeriod(1);
 	delete window;
 }
 
@@ -50,10 +52,9 @@ void System::UpdateEvents()
 	}
 }
 
-void System::Update(const long long& delta_time_ns)
+void System::Update(const long long& teta_time)
 {
-	float dt = delta_time_ns / 10'000.0f;
-
+	float dt = teta_time / 10'000.0f;
 }
 
 void System::Render()
@@ -69,16 +70,27 @@ void System::Render()
 
 void System::Run()
 {	
-	// Frame Time
-	LARGE_INTEGER FT;
+	const long long TIME_PER_FRAME = (_1s_ / FPS);
 
-	const long long TIME_PER_FRAME = (_1s_ / (long long)FPS);
 	// Time Since Last Update
 	long long TSLU = 0;
 
+	// Frame Time
+	LARGE_INTEGER FT		= {0};
+	LARGE_INTEGER beg_time	= {0};
+	LARGE_INTEGER end_time	= {0};
+	LARGE_INTEGER elapsed	= {0};
+	LARGE_INTEGER frequency = {0};
+	LARGE_INTEGER fps_time	= {0};
 
+	// AVE DELETE debug
+	LARGE_INTEGER t1	= {0};
+	LARGE_INTEGER t2	= {0};
+
+	
 	QueryPerformanceFrequency(&frequency);
 	QueryPerformanceCounter(&beg_time);
+	// // // //
 	while (window->isOpen())
 	{
 		QueryPerformanceCounter(&end_time);
@@ -118,8 +130,16 @@ void System::Run()
 
 		FT.QuadPart = (TIME_PER_FRAME - FT.QuadPart);
 		FT.QuadPart -= TSLU;
+		
 
 		if (FT.QuadPart > _0s_)
+		{
+			// AVE DELETE debug
+			//QueryPerformanceCounter(&t1);
 			std::this_thread::sleep_for(std::chrono::microseconds(FT.QuadPart));
-	}
+			//QueryPerformanceCounter(&t2);
+			//std::cout << FT.QuadPart - (((t2.QuadPart - t1.QuadPart) * _1s_) / frequency.QuadPart) << '\n';
+		}
+	
+	} // Game Loop
 }

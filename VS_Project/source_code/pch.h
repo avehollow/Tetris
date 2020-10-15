@@ -1,10 +1,8 @@
 #define NOMINMAX
 
 #include <iostream>
-#include <vector>
 #include <string>
 #include <tuple>
-#include <chrono>
 #include <map>
 #include <stack>
 #include <queue>
@@ -12,6 +10,10 @@
 #include <thread>
 
 	#include <Windows.h>
+#ifndef _XP
+	#include <timeapi.h>
+	#include <synchapi.h>
+#endif // !_XP
 
 
 
