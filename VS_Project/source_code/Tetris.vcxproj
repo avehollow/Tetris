@@ -206,7 +206,7 @@
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)SFML-2.5.1\x86\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -284,6 +284,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="assetmanager.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="DropDownList.cpp" />
+    <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="GUI.CPP" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
@@ -297,11 +302,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xp|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SliderList.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="assetmanager.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="DropDownList.h" />
+    <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SliderList.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="TextBox.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

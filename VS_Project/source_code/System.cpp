@@ -2,27 +2,32 @@
 #include "System.h"
 
 
+
 //! 1s = 1'000'000'000 ns
 //! 1s = 1'000'000 us
 //! 1s = 1'000 ms
 
-#define _1s_ 1'000'000
-#define _0s_ 0
+#define _1s_ 1'000'000ll
+#define _0s_ 0ll
 
+#define FS1
 
 System::System()
+#ifdef FS
+	: window_(sf::VideoMode::getDesktopMode(), "Tetris", sf::Style::Titlebar | sf::Style::Close | sf::Style::Fullscreen)
+	, GUI_(&window_)
+#else
+	: window_(sf::VideoMode(1280, 720, 32), "Tetris", sf::Style::Titlebar | sf::Style::Close)
+	, GUI_(&window_)
+#endif // FS
 {
-	window = new sf::RenderWindow(
-		sf::VideoMode(1280, 720, 32), " ", sf::Style::Titlebar | sf::Style::Close
-	);
 
 	FPS = 120;
 	
-	larabiefontRG.loadFromFile("data/fonts/larabiefontRG.ttf");
-	r_fps.setPosition(window->getSize().x * 0.85, window->getSize().y * 0);
-	u_fps.setPosition(window->getSize().x * 0.85, window->getSize().y * 0.05);
-	r_fps.setFont(larabiefontRG);
-	u_fps.setFont(larabiefontRG);
+	r_fps.setPosition(window_.getSize().x * 0.85, window_.getSize().y * 0);
+	u_fps.setPosition(window_.getSize().x * 0.85, window_.getSize().y * 0.05);
+	r_fps.setFont(AM_.font[AM::E_FONT::F_LARABIEFONTRG]);
+	u_fps.setFont(AM_.font[AM::E_FONT::F_LARABIEFONTRG]);
 	r_fps.setCharacterSize(30);
 	u_fps.setCharacterSize(30);
 	r_fps.setFillColor(sf::Color(255, 255, 255, 70));
@@ -36,34 +41,44 @@ System::~System()
 {
 	// AVE LOOK not necessary for <60 fps
 	timeEndPeriod(1);
-	delete window;
 }
 
 
 void System::UpdateEvents()
 {
-	while (window->pollEvent(event))
+	
+	while (window_.pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
-			window->close();
+		{
+			window_.close();
+			break;
+		}
 
 		if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
-			window->close();
+		{
+			window_.close();
+			break;
+		}
+
+		GUI_.handleEvent(event);
 	}
 }
 
 void System::Update(const long long& teta_time)
 {
-	float dt = teta_time / 10'000.0f;
+	float dt = teta_time / (float)_1s_;
 }
 
 void System::Render()
 {
-	window->draw(r_fps);
-	window->draw(u_fps);
+	GUI_.draw();
 
-	window->display();
-	window->clear();
+	window_.draw(r_fps);
+	window_.draw(u_fps);
+
+	window_.display();
+	window_.clear();
 }
 
 
@@ -79,7 +94,6 @@ void System::Run()
 	LARGE_INTEGER FT		= {0};
 	LARGE_INTEGER beg_time	= {0};
 	LARGE_INTEGER end_time	= {0};
-	LARGE_INTEGER elapsed	= {0};
 	LARGE_INTEGER frequency = {0};
 	LARGE_INTEGER fps_time	= {0};
 
@@ -91,7 +105,7 @@ void System::Run()
 	QueryPerformanceFrequency(&frequency);
 	QueryPerformanceCounter(&beg_time);
 	// // // //
-	while (window->isOpen())
+	while (window_.isOpen())
 	{
 		QueryPerformanceCounter(&end_time);
 		TSLU += (((end_time.QuadPart - beg_time.QuadPart) * _1s_) / frequency.QuadPart);
@@ -110,7 +124,6 @@ void System::Run()
 
 		u_fps.setString(sf::String("UFPS: " + std::to_string((int)uFps)));
 		r_fps.setString(sf::String("RFPS: " + std::to_string((int)rFps)));
-
 
 
 		this->UpdateEvents();

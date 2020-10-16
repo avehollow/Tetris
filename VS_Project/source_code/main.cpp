@@ -3,9 +3,10 @@
 
 #define ENTRY_POINT System g; \
 					g.Run();
+
 int main()
 {
-	ENTRY_POINT	
+	ENTRY_POINT
 
 	return 0;
 }

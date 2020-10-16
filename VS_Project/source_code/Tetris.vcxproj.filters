@@ -22,6 +22,15 @@
     <Filter Include="pch">
       <UniqueIdentifier>{e151b1ea-0af2-46e5-9d76-7aa9fd303136}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AM">
+      <UniqueIdentifier>{6fcfac7f-e1fb-42e1-8348-d4e7d9527d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{e534cde0-1f24-4a03-8891-260fc364dab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{34d79703-979b-4956-a6f0-519b0351ab49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="System.cpp">
@@ -33,6 +42,27 @@
     <ClCompile Include="pch.cpp">
       <Filter>pch</Filter>
     </ClCompile>
+    <ClCompile Include="assetmanager.cpp">
+      <Filter>AM</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DropDownList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.CPP">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -40,6 +70,27 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="assetmanager.h">
+      <Filter>AM</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DropDownList.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderList.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.h">
+      <Filter>Window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
