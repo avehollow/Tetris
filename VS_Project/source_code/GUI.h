@@ -15,12 +15,6 @@ namespace gui
 		A_CENTER
 	};
 
-	class Button;
-	class DropDownList;
-	class SliderList;
-	class TextBox;
-
-	class gui__;
 
 	class GUI
 	{
@@ -35,14 +29,14 @@ namespace gui
 
 		inline void draw() const;
 
-		Button* CreateButton(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ");
-		DropDownList* CreateDropDownList(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ", int max_show = 8);
-		SliderList* CreateSliderList(float pos_x, float pos_y, float size_x, int depth = 0, float radius = 15, float size_y = 3);
-		TextBox* CreateTextBox(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ");
+		class Button* CreateButton(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ");
+		class DropDownList* CreateDropDownList(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ", int max_show = 8);
+		class SliderList* CreateSliderList(float pos_x, float pos_y, float size_x, int depth = 0, float radius = 15, float size_y = 3);
+		class TextBox* CreateTextBox(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ");
 		
 
 	private:
-		std::vector<gui__*> gui;
+		std::vector<class gui__*> gui;
 
 		inline void sort();
 	};

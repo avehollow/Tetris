@@ -7,7 +7,7 @@ namespace gui
 	{
 
 	public:
-		Button(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ")noexcept;
+		Button(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = "")noexcept;
 		~Button();
 
 		// Inherited via gui__

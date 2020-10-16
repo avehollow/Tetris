@@ -14,5 +14,6 @@ GameWindow::~GameWindow()
 
 void GameWindow::onCreate()
 {
+	sf::RenderWindow::onCreate();
 	GUI_.onRecreateWindow();
 }

@@ -26,5 +26,13 @@ public:
 		S_CLICK_1 = 0,
 		S_CLICK_2 = 1,
 	};
+
+	enum E_TEXTURE
+	{
+		T_BAPPLAY = 0,
+		T_BEXIT = 1,
+		T_BSPHERE = 2,
+		T_BNEWGAME = 3,
+	};
 };
 

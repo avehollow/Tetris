@@ -1,6 +1,7 @@
 #define NOMINMAX
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <tuple>
 #include <map>

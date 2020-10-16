@@ -1,7 +1,8 @@
 #pragma once
 
 #include "assetmanager.h"
-#include "GUI.h"
+#include "GameWindow.h"
+#include "FSM.h"
 
 class System
 {
@@ -18,12 +19,12 @@ private:
 	void Render();
 
 private:
-	sf::RenderWindow  window_;
+	GameWindow  window_;
 	sf::Text r_fps;
 	sf::Text u_fps;
 	AM AM_;
-	sf::Event		  event;
-	gui::GUI GUI_;
+	sf::Event event_;
+	FSM menu_;
 
 	float uFrame = 0;
 	float uFps   = 0;

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "System.h"
 
-
+#include "MainMenu.h"
 
 //! 1s = 1'000'000'000 ns
 //! 1s = 1'000'000 us
@@ -10,18 +10,18 @@
 #define _1s_ 1'000'000ll
 #define _0s_ 0ll
 
-#define FS1
+#define FS
 
 System::System()
 #ifdef FS
 	: window_(sf::VideoMode::getDesktopMode(), "Tetris", sf::Style::Titlebar | sf::Style::Close | sf::Style::Fullscreen)
-	, GUI_(&window_)
+	, menu_(new MAINMENU(&window_, &AM_))
 #else
 	: window_(sf::VideoMode(1280, 720, 32), "Tetris", sf::Style::Titlebar | sf::Style::Close)
-	, GUI_(&window_)
+	, menu_(new MAINMENU(&window_, &AM_))
 #endif // FS
 {
-
+	
 	FPS = 120;
 	
 	r_fps.setPosition(window_.getSize().x * 0.85, window_.getSize().y * 0);
@@ -47,32 +47,38 @@ System::~System()
 void System::UpdateEvents()
 {
 	
-	while (window_.pollEvent(event))
+	while (window_.pollEvent(event_))
 	{
-		if (event.type == sf::Event::Closed)
+		if (event_.type == sf::Event::Closed)
 		{
 			window_.close();
 			break;
 		}
 
-		if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+		if (event_.type == sf::Event::KeyReleased && event_.key.code == sf::Keyboard::Escape)
 		{
 			window_.close();
 			break;
 		}
 
-		GUI_.handleEvent(event);
+		window_.GUI_.handleEvent(event_);
+		menu_.handleInput(event_);
 	}
 }
 
 void System::Update(const long long& teta_time)
 {
 	float dt = teta_time / (float)_1s_;
+	menu_.update(dt);
 }
 
 void System::Render()
 {
-	GUI_.draw();
+	menu_.render();
+
+
+
+	window_.GUI_.draw();
 
 	window_.draw(r_fps);
 	window_.draw(u_fps);

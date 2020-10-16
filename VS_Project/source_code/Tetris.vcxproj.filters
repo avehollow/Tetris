@@ -31,6 +31,12 @@
     <Filter Include="Window">
       <UniqueIdentifier>{34d79703-979b-4956-a6f0-519b0351ab49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{67c4749c-0b0f-4cb9-a54b-997def180c55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{b771401c-0891-4560-a18d-85d9ea36017e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="System.cpp">
@@ -63,6 +69,21 @@
     <ClCompile Include="GameWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="STATE.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="Options.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -91,6 +112,24 @@
     </ClInclude>
     <ClInclude Include="GameWindow.h">
       <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="STATE.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="SYMBOLS.H">
+      <Filter>Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="Options.h">
+      <Filter>State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

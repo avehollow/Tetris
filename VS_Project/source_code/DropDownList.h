@@ -13,7 +13,7 @@ namespace gui
 			float size_x,
 			float size_y,
 			int depth = 0,
-			const char* text = " ",
+			const char* text = "",
 			int max_show = 8
 		);
 		virtual ~DropDownList();

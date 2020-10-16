@@ -72,7 +72,7 @@ namespace gui
 			yy = window->getSize().y - y;
 			break;
 		case gui::A_BOTTOM_RIGHT:
-			xx = window->getSize().x - x;;
+			xx = window->getSize().x - x;
 			yy = window->getSize().y - y;
 			break;
 		case gui::A_CENTER_LEFT:

@@ -32,6 +32,21 @@ AM::AM()
 
 	sound.emplace_back(sf::Sound());
 	sound.back().setBuffer(sound_buffer[1]);
+
+	///
+	//! TEXTURE
+	///
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/bapply.png");
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/bexit.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/bsphere.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/bnewgame.png");
 }
 
 AM::~AM()
