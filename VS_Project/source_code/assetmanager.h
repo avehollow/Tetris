@@ -31,8 +31,10 @@ public:
 	{
 		T_BAPPLAY = 0,
 		T_BEXIT = 1,
-		T_BSPHERE = 2,
-		T_BNEWGAME = 3,
+		T_BSPHERE ,
+		T_BNEWGAME,
+		T_BOPTIONS,
+		T_BBACK,
 	};
 };
 

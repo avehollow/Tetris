@@ -5,28 +5,28 @@
 #include "GameWindow.h"
 #include "Button.h"
 
-MAINMENU::MAINMENU(sf::RenderWindow* w, AM* assetmanager)
-	: window(dynamic_cast<GameWindow*>(w))
+MAINMENU::MAINMENU(class GameWindow* w, AM* assetmanager)
+	: window(w)
 	, options(w, assetmanager)
 	, AM_(assetmanager)
 	, substate(SUBSTATE::NONE)
 {
 	//puts("CTOR MAINMENU");
-
-	b_Exit = window->GUI_.CreateButton(0, 0, 246, 87);
-	b_Exit->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 97);
+	window->GUI_.clear();
+	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, - b_Exit->getSize().x / 2, 126);
 	b_Exit->setTexture(AM_->texture[AM::E_TEXTURE::T_BEXIT]);
 	b_Exit->setHoveOverColor(sf::Color::White);
 	b_Exit->setFillColor(sf::Color(180, 180, 180));
 
-	b_Options = window->GUI_.CreateButton(0, 0, 246, 87);
-	b_Options->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 194);
-	b_Options->setTexture(AM_->texture[AM::E_TEXTURE::T_BAPPLAY]);
+	b_Options = window->GUI_.CreateButton(0, 0, 318, 86);
+	b_Options->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, -b_Options->getSize().x / 2, 234);
+	b_Options->setTexture(AM_->texture[AM::E_TEXTURE::T_BOPTIONS]);
 	b_Options->setHoveOverColor(sf::Color::White);
 	b_Options->setFillColor(sf::Color(180, 180, 180));
 
-	b_NewGame = window->GUI_.CreateButton(0, 0, 246, 87);
-	b_NewGame->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 291);
+	b_NewGame = window->GUI_.CreateButton(0, 0, 318, 86);
+	b_NewGame->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, -b_NewGame->getSize().x / 2, 340);
 	b_NewGame->setTexture(AM_->texture[AM::E_TEXTURE::T_BNEWGAME]);
 	b_NewGame->setHoveOverColor(sf::Color::White);
 	b_NewGame->setFillColor(sf::Color(180, 180, 180));
@@ -47,10 +47,10 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 		}
 		break;
 	case MAINMENU::NONE:
-		if(b_Exit->Pressed())
+		if (b_Exit->Pressed())
+		{
 			window->close();
-		
-
+		}
 		if (b_NewGame->Pressed())
 		{
 			AM_->sound[AM::E_SOUND::S_CLICK_1].play();

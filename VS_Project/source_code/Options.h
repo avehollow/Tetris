@@ -2,6 +2,12 @@
 
 #include "SYMBOLS.H"
 
+namespace gui
+{
+	class Button;
+	class DropDownList;
+}
+
 struct GraphicsSettings
 {
 
@@ -16,7 +22,7 @@ struct MovementSettings
 class OPTIONS
 {
 public:
-	OPTIONS(sf::RenderWindow*, class AM*);
+	OPTIONS(class GameWindow* w, class AM*);
 	RESULT manage_input(const sf::Event&);
 
 	void load();
@@ -26,25 +32,17 @@ public:
 
 	virtual ~OPTIONS();
 
-
 private:
 	sf::Text menu[5];
-	sf::RenderWindow* const window;
 	GraphicsSettings gs;
 	MovementSettings ms;
 
 	class AM* const AM_;
+	class GameWindow* const window;
 
-
-
-	enum MENUTX
-	{
-		M_BACK = 0,
-		M_RESOLUTION,
-		M_FULLSCREEN,
-		M_TEXTURES,
-
-	};
+	gui::Button* b_Applay;
+	gui::Button* b_Back;
+	gui::DropDownList* ddl_vm;
 
 	class VIDEO
 	{
@@ -58,6 +56,5 @@ private:
 		sf::RenderWindow* const window;
 	};
 	VIDEO video_modes;
-
 };
 

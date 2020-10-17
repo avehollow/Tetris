@@ -2,26 +2,28 @@
 #include "Game.h"
 #include "MainMenu.h"
 #include "assetmanager.h"
+#include "GameWindow.h"
+#include "Button.h"
 
-GAME::GAME(sf::RenderWindow* w, AM* assetmanager)
+GAME::GAME(GameWindow* w, AM* assetmanager)
 	: window(w)
 	, options(w, assetmanager)
 	, AM_(assetmanager)
 	, substate(SUBSTATE::NONE)
 {
-	const size_t SIZE = (sizeof(menu) / sizeof(sf::Text));
-	for (size_t i = 0; i < SIZE; i++)
-	{
-		menu[i].setFont(AM_->font[AM::E_FONT::F_NINEPIN]);
-		menu[i].setString("--");
-		menu[i].setFillColor(sf::Color::Magenta);
-		menu[i].setCharacterSize(25);
-		menu[i].setStyle(sf::Text::Style::Italic);
-		menu[i].setPosition(w->getSize().x * 0.85, w->getSize().y * (0.05 + (0.05 * i)));
-	}
-	menu[MENUTX::M_MAINMENU].setString("Main Menu");
-	menu[MENUTX::M_OPTIONS].setString("Options");
-	menu[MENUTX::M_EXIT].setString("EXIT");
+	window->GUI_.clear();
+	b_Options = window->GUI_.CreateButton(0, 0, 318, 86);
+	b_Options->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 330, 214);
+	b_Options->setTexture(AM_->texture[AM::E_TEXTURE::T_BOPTIONS]);
+	b_Options->setHoveOverColor(sf::Color::White);
+	b_Options->setFillColor(sf::Color(180, 180, 180));
+
+	b_Back = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Back->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 294, 106);
+	b_Back->setTexture(AM_->texture[AM::E_TEXTURE::T_BBACK]);
+	b_Back->setHoveOverColor(sf::Color::White);
+	b_Back->setFillColor(sf::Color(180, 180, 180));
+
 
 	//puts("CTOR Game");
 }
@@ -41,21 +43,13 @@ STATE* GAME::handleInput(const sf::Event& event)
 		break;
 
 	case GAME::NONE:
-		if (event.type == sf::Event::MouseButtonReleased && event.key.code == sf::Mouse::Left
-			&& menu[MENUTX::M_EXIT].getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y))
-		{
-			window->close();
-		}
-
-		if (event.type == sf::Event::MouseButtonReleased && event.key.code == sf::Mouse::Left
-			&& menu[MENUTX::M_MAINMENU].getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y))
+		if (b_Back->Pressed())
 		{
 			AM_->sound[AM::E_SOUND::S_CLICK_2].play();
 			s = new MAINMENU(window, AM_);
 		}
 
-		if (event.type == sf::Event::MouseButtonReleased && event.key.code == sf::Mouse::Left
-			&& menu[MENUTX::M_OPTIONS].getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y))
+		if (b_Options->Pressed())
 		{
 			options.load();
 			substate = SUBSTATE::OPTIONS;
@@ -66,8 +60,6 @@ STATE* GAME::handleInput(const sf::Event& event)
 		break;
 	}
 	
-
-
 	return s;
 }
 
@@ -80,13 +72,6 @@ void GAME::update(const float& d)
 		break;
 
 	case GAME::NONE:
-		for (auto& tx : menu)
-		{
-			if (tx.getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y))
-				tx.setFillColor(sf::Color::Blue);
-			else
-				tx.setFillColor(sf::Color::Magenta);
-		}
 		break;
 
 	default:
@@ -103,8 +88,6 @@ void GAME::render()const
 		break;
 
 	case GAME::NONE:
-		for (const auto& el : menu)
-			window->draw(el);
 		break;
 ;
 	default:

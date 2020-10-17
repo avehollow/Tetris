@@ -20,6 +20,28 @@ namespace gui
 		}
 	}
 
+	void GUI::erase(void* const elem_of_gui)
+	{
+		
+		gui__* ptr = reinterpret_cast<gui__*>(elem_of_gui);
+
+		for (int i = gui.size() - 1; i >= 0; i--)
+		{
+			if (gui[i] == ptr)
+			{
+				delete gui[i];
+				gui.erase(gui.begin() + i);
+				break;
+			}
+		}
+	}
+
+	void GUI::reserve(const size_t _Newcapacity)
+	{
+		gui.reserve(_Newcapacity);
+	}
+
+
 	Button* GUI::CreateButton(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text)
 	{
 		Button* bt = new Button(pos_x, pos_y, size_x, size_y, depth, text);

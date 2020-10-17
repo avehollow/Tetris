@@ -10,18 +10,19 @@
 #define _1s_ 1'000'000ll
 #define _0s_ 0ll
 
-#define FS
+#define FS1
 
 System::System()
 #ifdef FS
 	: window_(sf::VideoMode::getDesktopMode(), "Tetris", sf::Style::Titlebar | sf::Style::Close | sf::Style::Fullscreen)
-	, menu_(new MAINMENU(&window_, &AM_))
+	, menu_(new MAINMENU(dynamic_cast<GameWindow*>(&window_), &AM_))
 #else
 	: window_(sf::VideoMode(1280, 720, 32), "Tetris", sf::Style::Titlebar | sf::Style::Close)
-	, menu_(new MAINMENU(&window_, &AM_))
+	, menu_(new MAINMENU(dynamic_cast<GameWindow*>(&window_), &AM_))
 #endif // FS
 {
-	
+	window_.GUI_.reserve(50);
+
 	FPS = 120;
 	
 	r_fps.setPosition(window_.getSize().x * 0.85, window_.getSize().y * 0);
@@ -55,11 +56,11 @@ void System::UpdateEvents()
 			break;
 		}
 
-		if (event_.type == sf::Event::KeyReleased && event_.key.code == sf::Keyboard::Escape)
-		{
-			window_.close();
-			break;
-		}
+		//if (event_.type == sf::Event::KeyReleased && event_.key.code == sf::Keyboard::Escape)
+		//{
+		//	window_.close();
+		//	break;
+		//}
 
 		window_.GUI_.handleEvent(event_);
 		menu_.handleInput(event_);

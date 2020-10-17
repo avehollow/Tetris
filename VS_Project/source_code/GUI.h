@@ -27,7 +27,11 @@ namespace gui
 		inline void onRecreateWindow()const;
 		inline void handleEvent(const sf::Event& event)const;
 
+		void erase(void* const elem_of_gui);
+		void reserve(const size_t _Newcapacity);
+
 		inline void draw() const;
+		inline void clear();
 
 		class Button* CreateButton(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ");
 		class DropDownList* CreateDropDownList(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = " ", int max_show = 8);
@@ -94,11 +98,21 @@ inline void gui::gui__::getDeltaMouse(int* dtX, int* dtY)
 }
 
 
+inline void gui::GUI::clear()
+{
+	for (gui__* g : gui)
+	{
+		delete g;
+	}
+	gui.clear();
+}
+
 
 inline void gui::GUI::sort()
 {
 	std::sort(gui.begin(), gui.end(), [](const gui__* lhs, const gui__* rhs) { return lhs->getDepth() > rhs->getDepth(); });
 }
+
 
 inline void gui::GUI::draw() const
 {

@@ -11,7 +11,7 @@ namespace gui
 class MAINMENU: public STATE
 {
 public:
-    MAINMENU(sf::RenderWindow*, class AM*);
+    MAINMENU(class GameWindow*, class AM*);
     virtual STATE* handleInput(const sf::Event&) override;
     virtual void update(const float&) override;
     virtual void render() const override ;

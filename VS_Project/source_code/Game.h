@@ -2,10 +2,16 @@
 
 #include "FSM.h"
 #include "Options.h"
+
+namespace gui
+{
+    class Button;
+};
+
 class GAME: public STATE
 {
     public:
-        GAME(sf::RenderWindow*, class AM*);
+        GAME(class GameWindow* w, class AM*);
         virtual STATE* handleInput(const sf::Event&) override;
         virtual void update(const float&) override;
         virtual void render() const override;
@@ -13,25 +19,19 @@ class GAME: public STATE
         virtual ~GAME();
 
     private:
-        sf::RenderWindow* const window;
+        OPTIONS options;
         sf::Text menu[3];
 
-        OPTIONS options;
-
         class AM* const AM_;
+        class GameWindow* const window;
+
+        gui::Button* b_Options;
+        gui::Button* b_Back;
 
         enum SUBSTATE
         {
             NONE = 0,
             OPTIONS = 1
-        };
-        SUBSTATE substate;
-
-        enum MENUTX
-        {
-            M_MAINMENU = 0,
-            M_OPTIONS = 1,
-            M_EXIT = 2
-        };
+        }substate;
 };
 

@@ -2,42 +2,22 @@
 #include "pch.h"
 #include "Options.h"
 #include "assetmanager.h"
+#include "GameWindow.h"
+#include "DropDownList.h"
 
-OPTIONS::OPTIONS(sf::RenderWindow* w, AM* assetmanager)
+OPTIONS::OPTIONS(GameWindow* w, AM* assetmanager)
     : window(w)
 	, video_modes(w, assetmanager)
 	, AM_(assetmanager)
 {
 	//puts("CTOR OPTIONS");
-	///
-	// MENU
-	/// 
-	const size_t SIZE = sizeof(menu) / sizeof(sf::Text);
-	for (size_t i = 0; i < SIZE; i++)
-	{
-		menu[i].setFont(AM_->font[AM::E_FONT::F_LARABIEFONTRG]);
-		menu[i].setString("--");
-		menu[i].setFillColor(sf::Color::Magenta);
-		menu[i].setCharacterSize(25);
-		menu[i].setStyle(sf::Text::Style::Italic);
-		menu[i].setPosition(w->getSize().x * 0.05, w->getSize().y * (0.05 + (0.05 * i)));
-	}
-	menu[MENUTX::M_BACK].setString("BACK");
-	menu[MENUTX::M_BACK].setPosition(w->getSize().x * 0.85, w->getSize().y * (0.05));
-
-	menu[MENUTX::M_RESOLUTION].setString("Resolution");
-	menu[MENUTX::M_FULLSCREEN].setString("Fullscreen");
-	menu[MENUTX::M_TEXTURES].setString("Textures");
-
-
-
+	
 }
 
 RESULT OPTIONS::manage_input(const sf::Event& event)
 {
 	RESULT rs = RESULT::R_NONE;
-	if (event.type == sf::Event::MouseButtonReleased && event.key.code == sf::Mouse::Left
-		&& menu[MENUTX::M_BACK].getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y))
+	if (b_Back->Pressed())
 	{
 		rs = RESULT::R_EXIT;
 	}
@@ -47,23 +27,35 @@ RESULT OPTIONS::manage_input(const sf::Event& event)
 
 
 
+
+
 void OPTIONS::load()
 {
+
+	b_Back = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Back->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 106);
+	b_Back->setTexture(AM_->texture[AM::E_TEXTURE::T_BBACK]);
+	b_Back->setHoveOverColor(sf::Color::White);
+	b_Back->setFillColor(sf::Color(180, 180, 180));
+
+	
+
+	b_Applay = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Applay->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 510, 106);
+	b_Applay->setTexture(AM_->texture[AM::E_TEXTURE::T_BAPPLAY]);
+	b_Applay->setHoveOverColor(sf::Color::White);
+	b_Applay->setFillColor(sf::Color(180, 180, 180));
 }
 
 void OPTIONS::save()
 {
+	window->GUI_.erase((void*)b_Back);
+	window->GUI_.erase((void*)b_Applay);
 }
 
 void OPTIONS::advance(const float& d)
 {
-	for (auto& tx : menu)
-	{
-		if (tx.getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y))
-			tx.setFillColor(sf::Color::Green);
-		else
-			tx.setFillColor(sf::Color::Magenta);
-	}
+
 
 }
 
