@@ -1,7 +1,11 @@
 #pragma once
 
-enum class RESULT : char
+enum RESULT 
 {
-	R_NONE = -1,
-	R_EXIT = 0,
+	R_NONE = 0,
+	R_EXIT = 1,
+	B_EXIT,
+	B_BACK,
+	B_OPTIONS,
 };
+

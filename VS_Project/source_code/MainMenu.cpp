@@ -9,10 +9,9 @@ MAINMENU::MAINMENU(class GameWindow* w, AM* assetmanager)
 	: window(w)
 	, options(w, assetmanager)
 	, AM_(assetmanager)
-	, substate(SUBSTATE::NONE)
 {
 	//puts("CTOR MAINMENU");
-	//window->GUI_.clear();
+
 	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
 	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, - b_Exit->getSize().x / 2, 126);
 	b_Exit->setTexture(AM_->texture[AM::E_TEXTURE::T_BEXIT]);
@@ -37,17 +36,16 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 {
 	STATE* s = nullptr;
 
-	switch (substate)
+	int result = 0;
+
+	if (!substate.empty())
 	{
-	case MAINMENU::OPTIONS:
-		if (options.manage_input(event) == RESULT::R_EXIT)
-		{
-			options.save();
-			substate = SUBSTATE::NONE;
-			show_gui(true);
-		}
-		break;
-	case MAINMENU::NONE:
+		result = substate.top()->manageInput(event);
+	}
+
+	switch (result)
+	{
+	case RESULT::R_NONE:
 		if (b_Exit->Pressed())
 		{
 			window->close();
@@ -61,9 +59,15 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 		if (b_Options->Pressed())
 		{
 			show_gui(false);
-			options.load();
-			substate = SUBSTATE::OPTIONS;
+			substate.push(&options);
+			substate.top()->show();
 		}
+		break;
+	case RESULT::B_BACK:
+		substate.top()->hide();
+		substate.pop();
+		show_gui(true);
+
 		break;
 	default:
 		break;
@@ -76,29 +80,19 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 
 void MAINMENU::update(const float& d)
 {
-	switch (substate)
+	if (!substate.empty())
 	{
-	case MAINMENU::OPTIONS:
-		options.advance(d);
-
-		break;
-	default:
-		break;
+		substate.top()->update(d);
+		return;
 	}
 }
 
 void MAINMENU::render()const
 {
-	switch (substate)
+	if (!substate.empty())
 	{
-	case MAINMENU::OPTIONS:
-		options.display();
-
-		break;
-	default:
-		break;
+		substate.top()->render();
 	}
-	
 }
 
 MAINMENU::~MAINMENU()

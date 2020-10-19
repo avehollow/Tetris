@@ -6,7 +6,6 @@
 
 OPTIONS::OPTIONS(GameWindow* w, AM* assetmanager)
     : window(w)
-	, video_modes(w, assetmanager)
 	, AM_(assetmanager)
 {
 	//puts("CTOR OPTIONS");
@@ -28,45 +27,6 @@ OPTIONS::OPTIONS(GameWindow* w, AM* assetmanager)
 
 }
 
-RESULT OPTIONS::manage_input(const sf::Event& event)
-{
-	RESULT rs = RESULT::R_NONE;
-	if (b_Back->Pressed())
-	{
-		rs = RESULT::R_EXIT;
-	}
-
-	return rs;
-}
-
-
-
-
-
-void OPTIONS::load()
-{
-	b_Back->visible(true);
-	b_Applay->visible(true);
-}
-
-void OPTIONS::save()
-{
-	b_Back->visible(false);
-	b_Applay->visible(false);
-}
-
-void OPTIONS::advance(const float& d)
-{
-
-
-}
-
-void OPTIONS::display() const
-{
-	for (const auto& tx : menu)
-		window->draw(tx);
-	video_modes.display();
-}
 
 OPTIONS::~OPTIONS()
 {
@@ -75,55 +35,46 @@ OPTIONS::~OPTIONS()
 	//puts("Destruktor ~OPTIONS");
 }
 
-
-
-
-OPTIONS::VIDEO::VIDEO(sf::RenderWindow* w, class AM* assetmanager)
-	: video_modes(sf::VideoMode::getFullscreenModes())
-	, window(w)
-	, AM_(assetmanager)
+STATE* OPTIONS::handleInput(const sf::Event&)
 {
-
-
-	for (size_t i = 0; i < video_modes.size(); i++)
-	{
-		if (video_modes[i].bitsPerPixel != 32 || 
-			video_modes[i].width < 800 ||
-			video_modes[i].width == 1768 ||
-			video_modes[i].width == 1366 ||
-			video_modes[i].width == 1176 ||
-			video_modes[i].width == 1152)
-		{
-			video_modes.erase(video_modes.begin() + i);
-			i--;
-		}
-	}
-
-}
-
-
-void OPTIONS::VIDEO::display()const
-{
-	sf::Text text;
-	size_t SIZE = video_modes.size();
-	text.setFont(AM_->font[AM::E_FONT::F_LARABIEFONTRG]);
-	text.setCharacterSize(15);
-
-	//TODO !@!
-	char temp[255] = {'\0'};
-
-	for (size_t i = 0; i < SIZE; i++)
-	{
-		text.setPosition(window->getSize().x * 0.15, window->getSize().y * (0.05 + (0.05 * i)));
-		//text.setString(std::to_string(video_modes[i].width) + "-" + std::to_string(video_modes[i].height) + "x" +std::to_string(video_modes[i].bitsPerPixel));
-		sprintf(temp,"%u - %u x %u", video_modes[i].width, video_modes[i].height, video_modes[i].bitsPerPixel);
-		text.setString(temp);
-		window->draw(text);
-	}
-}
-
-sf::VideoMode* OPTIONS::VIDEO::manage_input(const sf::Event&)
-{
-	// TODO: insert return statement here
 	return nullptr;
 }
+
+int OPTIONS::manageInput(const sf::Event&)
+{
+	if (b_Back->Pressed())
+		return RESULT::B_BACK;
+
+	return 0;
+}
+
+void OPTIONS::update(const float&)
+{
+
+}
+
+void OPTIONS::render() const
+{
+}
+
+
+
+void OPTIONS::show() 
+{
+	show_gui(true);
+}
+
+void OPTIONS::hide() 
+{
+	show_gui(false);
+}
+
+void OPTIONS::show_gui(bool show)
+{
+	b_Back->visible(show);
+	b_Applay->visible(show);
+}
+
+
+
+

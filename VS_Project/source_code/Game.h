@@ -12,28 +12,29 @@ class GAME: public STATE
 {
     public:
         GAME(class GameWindow* w, class AM*);
+        virtual ~GAME();
+
         virtual STATE* handleInput(const sf::Event&) override;
         virtual void update(const float&) override;
         virtual void render() const override;
-        
-        virtual ~GAME();
 
+
+        virtual int manageInput(const sf::Event&) override { return 0; }
+        virtual void show() override {};
+        virtual void hide() override {};
+        
     private:
         OPTIONS options;
-        sf::Text menu[3];
+        std::stack<STATE*> substate;
+        sf::RectangleShape pause_background;
 
         class AM* const AM_;
         class GameWindow* const window;
 
         gui::Button* b_Options;
         gui::Button* b_Back;
-        gui::Button* b_Play;
+        gui::Button* b_Exit;
 
-        enum SUBSTATE
-        {
-            NONE = 0,
-            OPTIONS = 1
-        }substate;
 
         void show_gui(bool show);
 };

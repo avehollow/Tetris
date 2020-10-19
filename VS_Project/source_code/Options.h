@@ -1,6 +1,7 @@
 #pragma once
 #include "SYMBOLS.H"
 
+#include "STATE.h"
 namespace gui
 {
 	class Button;
@@ -18,21 +19,22 @@ struct MovementSettings
 };
 
 
-class OPTIONS
+class OPTIONS: public STATE
 {
 public:
 	OPTIONS(class GameWindow* w, class AM*);
-	RESULT manage_input(const sf::Event&);
-
-	void load();
-	void save();
-	void advance(const float&);
-	void display()const;
-
 	virtual ~OPTIONS();
 
+	// Inherited via STATE
+	virtual STATE* handleInput(const sf::Event&) override;
+	virtual int manageInput(const sf::Event&) override;
+	virtual void update(const float&) override;
+	virtual void render() const override;
+	virtual void show() override;
+	virtual void hide() override;
+
+
 private:
-	sf::Text menu[5];
 	GraphicsSettings gs;
 	MovementSettings ms;
 
@@ -43,17 +45,8 @@ private:
 	gui::Button* b_Back;
 	gui::DropDownList* ddl_vm;
 
-	class VIDEO
-	{
-	public:
-		VIDEO(sf::RenderWindow*, class AM*);
-		void display()const;
-		sf::VideoMode* manage_input(const sf::Event&);
-	private:
-		class AM* const AM_;
-		std::vector<sf::VideoMode> video_modes;
-		sf::RenderWindow* const window;
-	};
-	VIDEO video_modes;
+
+
+	void show_gui(bool show);
 };
 
