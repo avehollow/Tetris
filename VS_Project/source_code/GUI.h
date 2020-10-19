@@ -51,6 +51,7 @@ namespace gui
 		friend class GUI;
 	public:
 		int getDepth()const { return depth; }
+		void visible(bool isVisible) { is_visible = isVisible; }
 		//void setDepth(int depth) { this->depth = depth; } do prawid³owego dzia³ania trzeba jeszcze wywo³aæ funkcjê sort z klasy GUI
 
 		virtual ~gui__() = default;
@@ -58,6 +59,7 @@ namespace gui
 		static sf::RenderWindow* window;
 		static bool handled_event;
 		int depth;
+		bool is_visible;
 
 		virtual void onRecreateWindow() = 0;
 		virtual bool handleEvent(const sf::Event& event) = 0;
@@ -118,7 +120,10 @@ inline void gui::GUI::draw() const
 {
 	for (int i = gui.size() - 1; i >= 0; i--)
 	{
-		gui__::window->draw(*gui[i]);
+		if (gui[i]->is_visible)
+		{
+			gui__::window->draw(*gui[i]);
+		}
 	}
 }
 
@@ -135,7 +140,7 @@ inline void gui::GUI::handleEvent(const sf::Event& event) const
 	gui__::handled_event = false;
 	for (auto& g : gui)
 	{
-		if (g->handleEvent(event))
+		if (g->is_visible && g->handleEvent(event))
 			gui__::handled_event = true;
 	}
 }

@@ -53,6 +53,10 @@ AM::AM()
 	
 	texture.emplace_back(sf::Texture());
 	texture.back().loadFromFile("data/texture/bback.png");
+
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/bplay.png");
 }
 
 AM::~AM()

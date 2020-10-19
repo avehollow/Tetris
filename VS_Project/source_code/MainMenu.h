@@ -34,5 +34,10 @@ private:
         NONE = 0,
         OPTIONS = 1
     } substate;
+
+
+    void show_gui(bool show);
 };
+
+
 

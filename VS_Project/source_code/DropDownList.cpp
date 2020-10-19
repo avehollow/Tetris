@@ -39,6 +39,7 @@ namespace gui
 		SetPositionText();
 
 		this->depth = depth;
+		this->is_visible = true;
 	}
 
 	bool DropDownList::handleEvent(const sf::Event& event)

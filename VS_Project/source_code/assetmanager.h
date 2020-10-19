@@ -35,6 +35,7 @@ public:
 		T_BNEWGAME,
 		T_BOPTIONS,
 		T_BBACK,
+		T_BPLAY,
 	};
 };
 

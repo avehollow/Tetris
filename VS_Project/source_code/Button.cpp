@@ -16,6 +16,8 @@ namespace gui
 		, psY(size_y / window->getSize().y)
 	{
 		this->depth = depth;
+		this->is_visible = true;
+
 		shape.setSize(sf::Vector2f(size_x, size_y));
 		shape.setFillColor(idle_color);
 		setPosition(pos_x, pos_y);

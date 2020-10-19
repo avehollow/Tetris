@@ -12,7 +12,7 @@ MAINMENU::MAINMENU(class GameWindow* w, AM* assetmanager)
 	, substate(SUBSTATE::NONE)
 {
 	//puts("CTOR MAINMENU");
-	window->GUI_.clear();
+	//window->GUI_.clear();
 	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
 	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, - b_Exit->getSize().x / 2, 126);
 	b_Exit->setTexture(AM_->texture[AM::E_TEXTURE::T_BEXIT]);
@@ -44,6 +44,7 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 		{
 			options.save();
 			substate = SUBSTATE::NONE;
+			show_gui(true);
 		}
 		break;
 	case MAINMENU::NONE:
@@ -59,6 +60,7 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 
 		if (b_Options->Pressed())
 		{
+			show_gui(false);
 			options.load();
 			substate = SUBSTATE::OPTIONS;
 		}
@@ -102,4 +104,15 @@ void MAINMENU::render()const
 MAINMENU::~MAINMENU()
 {
 	//puts("Destruktor ~MAINMENU");
+
+	window->GUI_.erase((void*)b_NewGame);
+	window->GUI_.erase((void*)b_Options);
+	window->GUI_.erase((void*)b_Exit);
+}
+
+void MAINMENU::show_gui(bool show)
+{
+	b_NewGame->visible(show);
+	b_Options->visible(show);
+	b_Exit->visible(show);
 }

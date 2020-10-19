@@ -30,6 +30,7 @@ gui::TextBox::TextBox(float pos_x, float pos_y, float size_x, float size_y, int 
 	set_position_text();
 
 	this->depth = depth;
+	this->is_visible = true;
 }
 
 void gui::TextBox::onRecreateWindow()

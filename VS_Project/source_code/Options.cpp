@@ -1,4 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "pch.h"
 #include "Options.h"
 #include "assetmanager.h"
@@ -11,7 +10,22 @@ OPTIONS::OPTIONS(GameWindow* w, AM* assetmanager)
 	, AM_(assetmanager)
 {
 	//puts("CTOR OPTIONS");
-	
+
+	b_Back = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Back->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 106);
+	b_Back->setTexture(AM_->texture[AM::E_TEXTURE::T_BBACK]);
+	b_Back->setHoveOverColor(sf::Color::White);
+	b_Back->setFillColor(sf::Color(180, 180, 180));
+	b_Back->visible(false);
+
+
+	b_Applay = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Applay->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 510, 106);
+	b_Applay->setTexture(AM_->texture[AM::E_TEXTURE::T_BAPPLAY]);
+	b_Applay->setHoveOverColor(sf::Color::White);
+	b_Applay->setFillColor(sf::Color(180, 180, 180));
+	b_Applay->visible(false);
+
 }
 
 RESULT OPTIONS::manage_input(const sf::Event& event)
@@ -31,26 +45,14 @@ RESULT OPTIONS::manage_input(const sf::Event& event)
 
 void OPTIONS::load()
 {
-
-	b_Back = window->GUI_.CreateButton(0, 0, 247, 86);
-	b_Back->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 106);
-	b_Back->setTexture(AM_->texture[AM::E_TEXTURE::T_BBACK]);
-	b_Back->setHoveOverColor(sf::Color::White);
-	b_Back->setFillColor(sf::Color(180, 180, 180));
-
-	
-
-	b_Applay = window->GUI_.CreateButton(0, 0, 247, 86);
-	b_Applay->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 510, 106);
-	b_Applay->setTexture(AM_->texture[AM::E_TEXTURE::T_BAPPLAY]);
-	b_Applay->setHoveOverColor(sf::Color::White);
-	b_Applay->setFillColor(sf::Color(180, 180, 180));
+	b_Back->visible(true);
+	b_Applay->visible(true);
 }
 
 void OPTIONS::save()
 {
-	window->GUI_.erase((void*)b_Back);
-	window->GUI_.erase((void*)b_Applay);
+	b_Back->visible(false);
+	b_Applay->visible(false);
 }
 
 void OPTIONS::advance(const float& d)
@@ -68,6 +70,8 @@ void OPTIONS::display() const
 
 OPTIONS::~OPTIONS()
 {
+	window->GUI_.erase((void*)b_Applay);
+	window->GUI_.erase((void*)b_Back);
 	//puts("Destruktor ~OPTIONS");
 }
 

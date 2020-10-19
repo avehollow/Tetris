@@ -11,7 +11,7 @@ GAME::GAME(GameWindow* w, AM* assetmanager)
 	, AM_(assetmanager)
 	, substate(SUBSTATE::NONE)
 {
-	window->GUI_.clear();
+
 	b_Options = window->GUI_.CreateButton(0, 0, 318, 86);
 	b_Options->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 330, 214);
 	b_Options->setTexture(AM_->texture[AM::E_TEXTURE::T_BOPTIONS]);
@@ -23,6 +23,13 @@ GAME::GAME(GameWindow* w, AM* assetmanager)
 	b_Back->setTexture(AM_->texture[AM::E_TEXTURE::T_BBACK]);
 	b_Back->setHoveOverColor(sf::Color::White);
 	b_Back->setFillColor(sf::Color(180, 180, 180));
+
+
+	b_Play = window->GUI_.CreateButton(0, 0, 247, 86);
+	b_Play->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 294, 322);
+	b_Play->setTexture(AM_->texture[AM::E_TEXTURE::T_BPLAY]);
+	b_Play->setHoveOverColor(sf::Color::White);
+	b_Play->setFillColor(sf::Color(180, 180, 180));
 
 
 	//puts("CTOR Game");
@@ -39,6 +46,7 @@ STATE* GAME::handleInput(const sf::Event& event)
 		{
 			options.save();
 			substate = SUBSTATE::NONE;
+			show_gui(true);
 		}
 		break;
 
@@ -51,6 +59,7 @@ STATE* GAME::handleInput(const sf::Event& event)
 
 		if (b_Options->Pressed())
 		{
+			show_gui(false);
 			options.load();
 			substate = SUBSTATE::OPTIONS;
 		}
@@ -98,4 +107,14 @@ void GAME::render()const
 GAME::~GAME()
 {
 	//puts("Destruktor ~Game");
+	window->GUI_.erase((void*)b_Options);
+	window->GUI_.erase((void*)b_Back);
+	window->GUI_.erase((void*)b_Play);
+}
+
+void GAME::show_gui(bool show)
+{
+	b_Back->visible(show);
+	b_Options->visible(show);
+	b_Play->visible(show);
 }

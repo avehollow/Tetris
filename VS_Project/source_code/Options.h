@@ -1,5 +1,4 @@
 #pragma once
-
 #include "SYMBOLS.H"
 
 namespace gui

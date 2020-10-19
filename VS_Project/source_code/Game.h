@@ -27,11 +27,14 @@ class GAME: public STATE
 
         gui::Button* b_Options;
         gui::Button* b_Back;
+        gui::Button* b_Play;
 
         enum SUBSTATE
         {
             NONE = 0,
             OPTIONS = 1
         }substate;
+
+        void show_gui(bool show);
 };
 
