@@ -2,7 +2,7 @@
 
 #include "assetmanager.h"
 #include "GameWindow.h"
-#include "FSM.h"
+#include "PDA.h"
 
 class System
 {
@@ -14,7 +14,7 @@ public:
 	void Run();
 
 private:
-	void UpdateEvents();
+	void HandleInput();
 	void Update(const long long& teta_time);
 	void Render();
 
@@ -24,7 +24,7 @@ private:
 	sf::Text u_fps;
 	AM AM_;
 	sf::Event event_;
-	FSM menu_;
+	PDA menu_;
 
 	float uFrame = 0;
 	float uFps   = 0;

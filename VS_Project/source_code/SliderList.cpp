@@ -29,7 +29,6 @@ namespace gui
 		text.setPosition(posX + sizeX + radius + 1, button.getPosition().y - text.getGlobalBounds().height / 2);
 		
 		this->depth = depth;
-		this->is_visible = true;
 	}
 
 	SliderList::~SliderList()

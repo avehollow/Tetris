@@ -20,9 +20,13 @@ namespace gui
 	{
 	public:
 		GUI(sf::RenderWindow* window);
+		~GUI();
+
 		GUI(const GUI&)  = delete;
 		GUI(const GUI&&) = delete;
-		~GUI();
+
+		GUI& operator=(GUI&) = delete;
+		GUI& operator=(GUI&&) = delete;
 
 		inline void onRecreateWindow()const;
 		inline void handleEvent(const sf::Event& event)const;
@@ -58,8 +62,8 @@ namespace gui
 	protected:
 		static sf::RenderWindow* window;
 		static bool handled_event;
-		int depth;
-		bool is_visible;
+		int depth = 0;
+		bool is_visible = true;
 
 		virtual void onRecreateWindow() = 0;
 		virtual bool handleEvent(const sf::Event& event) = 0;

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "STATE.h"
-
-#include "PDA.h"
 #include "PAUSE.h"
 
 namespace gui
@@ -16,18 +14,22 @@ class GAME: public STATE
         GAME(class GameWindow* w, class AM*);
         virtual ~GAME();
 
-        virtual STATE* handleInput(const sf::Event&) override;
+        virtual E_STATE handleInput(const sf::Event&) override;
         virtual void update(const float&) override;
         virtual void render() const override;
 
 
-        virtual int manageInput(const sf::Event&) override { return 0; }
-        virtual void show() override {};
-        virtual void hide() override {};
-        
-    private:
-        PAUSE pause;
-        PDA substates;
+        virtual void show() override;
+        virtual void hide() override;
 
+private:
+    sf::RectangleShape pause_background;
+
+    gui::Button* b_Options;
+    gui::Button* b_Back;
+    gui::Button* b_Exit;
+
+    void show_gui(bool show);
+    bool isPause;
 };
 

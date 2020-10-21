@@ -287,7 +287,6 @@
     <ClCompile Include="assetmanager.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="DropDownList.cpp" />
-    <ClCompile Include="FSM.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="GUI.CPP" />
@@ -317,7 +316,6 @@
     <ClInclude Include="assetmanager.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="DropDownList.h" />
-    <ClInclude Include="FSM.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="GUI.h" />

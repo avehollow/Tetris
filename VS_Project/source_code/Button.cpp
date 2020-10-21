@@ -16,7 +16,6 @@ namespace gui
 		, psY(size_y / window->getSize().y)
 	{
 		this->depth = depth;
-		this->is_visible = true;
 
 		shape.setSize(sf::Vector2f(size_x, size_y));
 		shape.setFillColor(idle_color);
@@ -177,6 +176,7 @@ namespace gui
 	{
 		if (state == BUTTONSTATE::B_PRESSED)
 		{
+					shape.setFillColor(idle_color); // sometimes it is needed
 			state = BUTTONSTATE::B_NONE;
 			return true;
 		}

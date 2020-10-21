@@ -15,22 +15,22 @@
 System::System()
 #ifdef FS
 	: window_(sf::VideoMode::getDesktopMode(), "Tetris", sf::Style::Titlebar | sf::Style::Close | sf::Style::Fullscreen)
-	, menu_(new MAINMENU(dynamic_cast<GameWindow*>(&window_), &AM_))
+	, menu_(dynamic_cast<GameWindow*>(&window_), &AM_)
 #else
 	: window_(sf::VideoMode(1280, 720, 32), "Tetris", sf::Style::Titlebar | sf::Style::Close)
-	, menu_(new MAINMENU(dynamic_cast<GameWindow*>(&window_), &AM_))
+	, menu_(dynamic_cast<GameWindow*>(&window_), &AM_)
 #endif // FS
 {
 	window_.GUI_.reserve(50);
 
 	FPS = 120;
 	
-	r_fps.setPosition(window_.getSize().x * 0.85, window_.getSize().y * 0);
-	u_fps.setPosition(window_.getSize().x * 0.85, window_.getSize().y * 0.05);
+	r_fps.setPosition(window_.getSize().x * 0.90f, window_.getSize().y * 0.0f);
+	u_fps.setPosition(window_.getSize().x * 0.90f, window_.getSize().y * 0.025f);
 	r_fps.setFont(AM_.font[AM::E_FONT::F_LARABIEFONTRG]);
 	u_fps.setFont(AM_.font[AM::E_FONT::F_LARABIEFONTRG]);
-	r_fps.setCharacterSize(30);
-	u_fps.setCharacterSize(30);
+	r_fps.setCharacterSize(20);
+	u_fps.setCharacterSize(20);
 	r_fps.setFillColor(sf::Color(255, 255, 255, 70));
 	u_fps.setFillColor(sf::Color(255, 255, 255, 70));
 
@@ -45,7 +45,7 @@ System::~System()
 }
 
 
-void System::UpdateEvents()
+void System::HandleInput()
 {
 	
 	while (window_.pollEvent(event_))
@@ -133,7 +133,7 @@ void System::Run()
 		r_fps.setString(sf::String("RFPS: " + std::to_string((int)rFps)));
 
 
-		this->UpdateEvents();
+		this->HandleInput();
 		while (TSLU >= TIME_PER_FRAME)
 		{
 			++uFrame;

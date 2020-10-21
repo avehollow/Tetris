@@ -26,14 +26,15 @@ OPTIONS::OPTIONS(GameWindow* w, AM* assetmanager)
 
 
 	ddl_vm = window->GUI_.CreateDropDownList(0, 0, 300, 25, 1, "Resolution");
-	ddl_vm->setRelativePosition(gui::E_ANCHOR::A_TOP_RIGHT, 310, 25);
+	ddl_vm->setRelativePosition(gui::E_ANCHOR::A_CENTER_TOP, -150, 25);
 	ddl_vm->setFont(AM_->font[AM::E_FONT::F_LARABIEFONTRG]);
+	ddl_vm->setOutlineColor(sf::Color(50,50,50));
 
 	vm = sf::VideoMode::getFullscreenModes();
 
 	for (size_t i = 0; i < vm.size(); i++)
 	{
-		if (vm[i].bitsPerPixel < 16 ||
+		if (vm[i].bitsPerPixel != 32 ||
 			vm[i].width < 800 ||
 			vm[i].width == 1768 ||
 			vm[i].width == 1366 ||
@@ -61,29 +62,25 @@ OPTIONS::~OPTIONS()
 	//puts("Destruktor ~OPTIONS");
 }
 
-STATE* OPTIONS::handleInput(const sf::Event& event)
+E_STATE OPTIONS::handleInput(const sf::Event& event)
 {
-	STATE* s = this;
+	E_STATE s = E_STATE::ST_NONE;
 
 	if (b_Back->Pressed() || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape))
 	{
-		s = nullptr;
+		s = E_STATE::ST_BACK;
 	}
 	else if (b_Applay->Pressed())
 	{
-		window->create(vm[ddl_vm->curr_value], "tetris");
+		window->create(vm[ddl_vm->curr_value], "tetris", sf::Style::Fullscreen);
 	}
 
 	return s;
 	
 }
 
-int OPTIONS::manageInput(const sf::Event&)
-{
-	return 0;
-}
 
-void OPTIONS::update(const float&)
+void OPTIONS::update(const float& d)
 {
 
 }

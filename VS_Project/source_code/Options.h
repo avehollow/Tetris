@@ -23,8 +23,7 @@ public:
 	virtual ~OPTIONS();
 
 	// Inherited via STATE
-	virtual STATE* handleInput(const sf::Event&) override;
-	virtual int manageInput(const sf::Event&) override;
+	virtual E_STATE handleInput(const sf::Event&) override;
 	virtual void update(const float&) override;
 	virtual void render() const override;
 	virtual void show() override;

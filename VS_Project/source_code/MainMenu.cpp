@@ -1,12 +1,10 @@
 #include "pch.h"
 #include "MainMenu.h"
-#include "Game.h"
 #include "assetmanager.h"
 #include "GameWindow.h"
 #include "Button.h"
 
 MAINMENU::MAINMENU(class GameWindow* w, AM* assetmanager)
-	: options(w, assetmanager)
 {
 	window = w;
 	AM_ = assetmanager;
@@ -33,32 +31,23 @@ MAINMENU::MAINMENU(class GameWindow* w, AM* assetmanager)
 	
 }
 
-STATE* MAINMENU::handleInput(const sf::Event& event)
+E_STATE MAINMENU::handleInput(const sf::Event& event)
 {
-	STATE* s = nullptr;
+	E_STATE s = E_STATE::ST_NONE;
 
-	if (!substates.empty())
+	if (b_NewGame->Pressed())
 	{
-		substates.handleInput(event);
+		AM_->sound[AM::E_SOUND::S_CLICK_1].play();
+		s = E_STATE::ST_GAME;
 	}
-	else
+	if (b_Exit->Pressed())
 	{
-		show_gui(true);
-		if (b_NewGame->Pressed())
-		{
-			AM_->sound[AM::E_SOUND::S_CLICK_1].play();
-			s = new GAME(window, AM_);
-		}
-		if (b_Exit->Pressed())
-		{
-			window->close();
-		}
+		window->close();
+	}
 
-		if (b_Options->Pressed())
-		{
-			show_gui(false);
-			substates.add(&options);
-		}
+	if (b_Options->Pressed())
+	{
+		s = E_STATE::ST_OPTIONS;
 	}
 
     return s;
@@ -67,19 +56,22 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 void MAINMENU::update(const float& d)
 {
 
-	if (!substates.empty())
-	{
-		substates.update(d);
-		return;
-	}
 }
 
 void MAINMENU::render()const
 {
 
-	if (!substates.empty())
-		 substates.render();
 	
+}
+
+void MAINMENU::show()
+{
+	show_gui(true);
+}
+
+void MAINMENU::hide()
+{
+	show_gui(false);
 }
 
 MAINMENU::~MAINMENU()

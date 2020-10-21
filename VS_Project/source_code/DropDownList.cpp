@@ -39,7 +39,6 @@ namespace gui
 		SetPositionText();
 
 		this->depth = depth;
-		this->is_visible = true;
 	}
 
 	bool DropDownList::handleEvent(const sf::Event& event)
@@ -316,6 +315,8 @@ namespace gui
 	
 	void DropDownList::setPosition(float x, float y)
 	{
+		ppX_label = x / window->getSize().x;
+		ppY_label = y / window->getSize().y;
 		
 		float size_x = label.getSize().x + button.getOutlineThickness(); // OutlineThickness is negative
 		float size_y = label.getSize().y;
