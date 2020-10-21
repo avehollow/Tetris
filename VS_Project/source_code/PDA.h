@@ -1,6 +1,4 @@
 #pragma once
-
-#include <stack>
 #include "Options.h"
 #include "MainMenu.h"
 #include "Game.h"
