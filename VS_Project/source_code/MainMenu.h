@@ -1,7 +1,6 @@
 #pragma once
-
-#include "FSM.h"
 #include "Options.h"
+#include "PDA.h"
 
 namespace gui
 {
@@ -23,20 +22,17 @@ public:
     virtual void hide() override {};
 
 private:
-    OPTIONS options;
+   OPTIONS options;
+   PDA substates;
 
-    std::stack<STATE*> substate;
-
-    class GameWindow* const window;
-    class AM* const AM_;
- 
    gui::Button* b_NewGame;
    gui::Button* b_Options;
    gui::Button* b_Exit;
     
 
-    void show_gui(bool show);
+   void show_gui(bool show);
 };
+
 
 
 

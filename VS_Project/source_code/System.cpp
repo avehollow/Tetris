@@ -10,7 +10,7 @@
 #define _1s_ 1'000'000ll
 #define _0s_ 0ll
 
-#define FS1
+#define FS
 
 System::System()
 #ifdef FS

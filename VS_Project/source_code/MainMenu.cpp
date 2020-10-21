@@ -6,10 +6,11 @@
 #include "Button.h"
 
 MAINMENU::MAINMENU(class GameWindow* w, AM* assetmanager)
-	: window(w)
-	, options(w, assetmanager)
-	, AM_(assetmanager)
+	: options(w, assetmanager)
 {
+	window = w;
+	AM_ = assetmanager;
+
 	//puts("CTOR MAINMENU");
 
 	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
@@ -36,63 +37,49 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 {
 	STATE* s = nullptr;
 
-	int result = 0;
-
-	if (!substate.empty())
+	if (!substates.empty())
 	{
-		result = substate.top()->manageInput(event);
+		substates.handleInput(event);
 	}
-
-	switch (result)
+	else
 	{
-	case RESULT::R_NONE:
-		if (b_Exit->Pressed())
-		{
-			window->close();
-		}
+		show_gui(true);
 		if (b_NewGame->Pressed())
 		{
 			AM_->sound[AM::E_SOUND::S_CLICK_1].play();
 			s = new GAME(window, AM_);
 		}
+		if (b_Exit->Pressed())
+		{
+			window->close();
+		}
 
 		if (b_Options->Pressed())
 		{
 			show_gui(false);
-			substate.push(&options);
-			substate.top()->show();
+			substates.add(&options);
 		}
-		break;
-	case RESULT::B_BACK:
-		substate.top()->hide();
-		substate.pop();
-		show_gui(true);
-
-		break;
-	default:
-		break;
 	}
-
-	
 
     return s;
 }
 
 void MAINMENU::update(const float& d)
 {
-	if (!substate.empty())
+
+	if (!substates.empty())
 	{
-		substate.top()->update(d);
+		substates.update(d);
 		return;
 	}
 }
 
 void MAINMENU::render()const
 {
-	if (!substate.empty())
-	{
-		substate.top()->render();
-	}
+
+	if (!substates.empty())
+		 substates.render();
+	
 }
 
 MAINMENU::~MAINMENU()
@@ -103,6 +90,7 @@ MAINMENU::~MAINMENU()
 	window->GUI_.erase((void*)b_Options);
 	window->GUI_.erase((void*)b_Exit);
 }
+
 
 void MAINMENU::show_gui(bool show)
 {

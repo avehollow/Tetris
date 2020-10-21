@@ -1,7 +1,9 @@
 #pragma once
 
-#include "FSM.h"
-#include "Options.h"
+#include "STATE.h"
+
+#include "PDA.h"
+#include "PAUSE.h"
 
 namespace gui
 {
@@ -24,18 +26,8 @@ class GAME: public STATE
         virtual void hide() override {};
         
     private:
-        OPTIONS options;
-        std::stack<STATE*> substate;
-        sf::RectangleShape pause_background;
+        PAUSE pause;
+        PDA substates;
 
-        class AM* const AM_;
-        class GameWindow* const window;
-
-        gui::Button* b_Options;
-        gui::Button* b_Back;
-        gui::Button* b_Exit;
-
-
-        void show_gui(bool show);
 };
 

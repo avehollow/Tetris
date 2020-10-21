@@ -296,6 +296,7 @@
     </ClCompile>
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="PAUSE.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='WinXP_Release|Win32'">Create</PrecompiledHeader>
@@ -306,6 +307,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xp|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PDA.cpp" />
     <ClCompile Include="SliderList.cpp" />
     <ClCompile Include="STATE.cpp" />
     <ClCompile Include="System.cpp" />
@@ -321,7 +323,9 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Options.h" />
+    <ClInclude Include="PAUSE.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PDA.h" />
     <ClInclude Include="SliderList.h" />
     <ClInclude Include="STATE.h" />
     <ClInclude Include="SYMBOLS.H" />

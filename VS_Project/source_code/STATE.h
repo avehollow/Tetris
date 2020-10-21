@@ -11,5 +11,9 @@ class STATE
          virtual void hide() = 0;
 
         virtual ~STATE() {};
+
+    protected:
+        class GameWindow* window;
+        class AM* AM_;
 };
 

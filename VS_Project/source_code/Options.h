@@ -1,7 +1,6 @@
 #pragma once
-#include "SYMBOLS.H"
-
 #include "STATE.h"
+
 namespace gui
 {
 	class Button;
@@ -12,12 +11,10 @@ struct GraphicsSettings
 {
 
 };
-
 struct MovementSettings
 {
 
 };
-
 
 class OPTIONS: public STATE
 {
@@ -35,18 +32,16 @@ public:
 
 
 private:
+	std::vector<sf::VideoMode> vm;
+
 	GraphicsSettings gs;
 	MovementSettings ms;
-
-	class AM* const AM_;
-	class GameWindow* const window;
 
 	gui::Button* b_Applay;
 	gui::Button* b_Back;
 	gui::DropDownList* ddl_vm;
 
-
-
 	void show_gui(bool show);
 };
+
 
