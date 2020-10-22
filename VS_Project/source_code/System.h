@@ -19,7 +19,7 @@ private:
 	void Render();
 
 private:
-	GameWindow  window_;
+	GameWindow window_;
 	sf::Text r_fps;
 	sf::Text u_fps;
 	AM AM_;

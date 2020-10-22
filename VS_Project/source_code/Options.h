@@ -26,9 +26,10 @@ public:
 	virtual E_STATE handleInput(const sf::Event&) override;
 	virtual void update(const float&) override;
 	virtual void render() const override;
+
 	virtual void show() override;
 	virtual void hide() override;
-
+	virtual void onCreate() override;
 
 private:
 	std::vector<sf::VideoMode> vm;

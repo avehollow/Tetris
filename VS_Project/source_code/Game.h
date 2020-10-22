@@ -20,10 +20,11 @@ public:
 
     virtual void show() override;
     virtual void hide() override;
+    virtual void onCreate() override;
 
 private:
     // GUI
-    sf::RectangleShape pause_background;
+    sf::RectangleShape background_pause;
 
     gui::Button* b_Options;
     gui::Button* b_Back;
@@ -33,6 +34,14 @@ private:
     bool isPause;
 
     //
+    sf::RectangleShape background_game;
+    sf::RectangleShape background_tetromino;
+    sf::RectangleShape tetromino[200];
+    float SIZE_CUBE_PERCENT;
+    float SIZE_CUBE;
 
+#define CUBE_DIMENSIONS 50.0F
+
+    int collisions[200];
 };
 

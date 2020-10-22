@@ -74,6 +74,10 @@ void MAINMENU::hide()
 	show_gui(false);
 }
 
+void MAINMENU::onCreate()
+{
+}
+
 MAINMENU::~MAINMENU()
 {
 	//puts("Destruktor ~MAINMENU");

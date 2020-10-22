@@ -101,6 +101,10 @@ void OPTIONS::hide()
 	show_gui(false);
 }
 
+void OPTIONS::onCreate()
+{
+}
+
 
 void OPTIONS::show_gui(bool show)
 {

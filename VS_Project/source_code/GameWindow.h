@@ -8,7 +8,13 @@ public:
 	virtual ~GameWindow();
 
 	gui::GUI GUI_;
+
+	void addOnCreate(class STATE* state)
+	{
+		on_create.push_back(state);
+	};
 protected:
 	virtual void onCreate();
+	std::vector<class STATE*> on_create;
 };
 

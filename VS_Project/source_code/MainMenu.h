@@ -18,6 +18,7 @@ public:
 
     virtual void show() override;
     virtual void hide() override;
+    virtual void onCreate() override;
 
 private:
    gui::Button* b_NewGame;
