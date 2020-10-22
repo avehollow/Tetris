@@ -7,6 +7,7 @@
 
 GAME::GAME(GameWindow* w, AM* assetmanager)
 	: tetromino(w)
+	, figure(w)
 {
 	//puts("CTOR Game");
 
@@ -48,10 +49,11 @@ GAME::GAME(GameWindow* w, AM* assetmanager)
 
 	// AVE LOOK how to calculate element size
 	SIZE_CUBE = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
-	SIZE_CUBE_PERCENT = SIZE_CUBE / window->getSize().y;
+	SIZE_CUBE_PERCENT = SIZE_CUBE / (float)window->getSize().y;
 
 	tetromino.ini(SIZE_CUBE);
 	figure.setCubeSize(SIZE_CUBE);
+	figure.ini(&tetromino);
 
 	sf::Vector2f poz = tetromino.getPosition();
 
@@ -94,21 +96,21 @@ E_STATE GAME::handleInput(const sf::Event& event)
 	}
 	else
 	{
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && !this->collision_with_edges(-40, 0))
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && !this->check_collision(-SIZE_CUBE, 0))
 		{
 			figure.move(-SIZE_CUBE, 0);
 		}
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && !this->collision_with_edges(40, 0))
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && !this->check_collision(SIZE_CUBE, 0))
 		{
 			figure.move(SIZE_CUBE, 0);
 		}
 
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && !this->collision_with_edges(0, -40))
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && !this->check_collision(0, -SIZE_CUBE))
 		{
 			figure.move(0, -SIZE_CUBE);
 		}
 
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !this->collision_with_edges(0, 40))
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !this->check_collision(0, SIZE_CUBE))
 		{
 			figure.move(0, SIZE_CUBE);
 		}
@@ -134,7 +136,7 @@ void GAME::render()const
 	window->draw(background_game);
 
 	tetromino.draw();
-	figure.draw(window);
+	figure.draw();
 
 	if (isPause)
 		window->draw(background_pause);
@@ -230,25 +232,41 @@ bool GAME::collision_with_edges(float dir_x, float dir_y)
 		return true;
 	}
 
-	if (figure.squares[1].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[1].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-		figure.squares[1].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	else if (figure.squares[1].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[1].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+			figure.squares[1].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
 	{
 		return true;
 	}
 
-	if (figure.squares[2].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[2].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-		figure.squares[2].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	else if (figure.squares[2].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[2].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+			figure.squares[2].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
 	{
 		return true;
 	}
 
-	if (figure.squares[3].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[3].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-		figure.squares[3].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	else if (figure.squares[3].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[3].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+			figure.squares[3].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
 	{
 		return true;
 	}
 
 	return false;
+}
+
+bool GAME::collision_with_cubes(float dir_x, float dir_y)
+{
+
+	// [ (20*y) + x]
+	
+
+	return false;
+}
+
+bool GAME::check_collision(float dir_x, float dir_y)
+{
+
+
+	return collision_with_edges(dir_x, dir_y) || collision_with_cubes(dir_x, dir_y);
 }
 
 bool GAME::wall_kick()
@@ -314,11 +332,12 @@ bool GAME::wall_kick()
 
 void GAME::onCreate()
 {
-	sf::Vector2f size_cube{ window->getSize().y * SIZE_CUBE_PERCENT, window->getSize().y * SIZE_CUBE_PERCENT };
 
+	sf::Vector2f size_cube{ window->getSize().y * SIZE_CUBE_PERCENT, window->getSize().y * SIZE_CUBE_PERCENT };
+	SIZE_CUBE = size_cube.x;
 
 	tetromino.onCreate(size_cube.x);
-	figure.setCubeSize(size_cube.x);
+	figure.onCreate(size_cube.x);
 
 	background_game.setSize(sf::Vector2f(window->getSize()));
 

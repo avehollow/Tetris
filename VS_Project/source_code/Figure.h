@@ -4,13 +4,14 @@ class Figure
 {
 	friend class GAME;
 public:
-	Figure();
+	Figure(class GameWindow* window);
 	~Figure() = default;
 
-	void draw(class GameWindow*)const; 
-	void move(float dirx, float diry);
-	void setCubeSize(float size);
-
+	void draw()const; 
+	void move(int dirx, int diry);
+	void ini(class Tetromino* tetromino);
+	void setCubeSize(int size);
+	void onCreate(int size_cube);
 
 	void be_Z_(float pos_x, float pos_y, sf::Texture* texture);
 	void be_L_(float pos_x, float pos_y, sf::Texture* texture);
@@ -21,9 +22,15 @@ public:
 
 private:
 	std::array<sf::RectangleShape, 4> squares;
-
 	sf::RectangleShape center_sprite;
+
+	std::array<sf::Vector2i, 4> pp;
 	sf::Vector2f center_pos;
-	float CUBE_SIZE;
+	int CUBE_SIZE;
+
+	class Tetromino* tetromino;
+	class GameWindow* window;
+
+	bool isI;
 };
 

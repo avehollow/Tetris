@@ -8,8 +8,8 @@ public:
 	~Tetromino();
 
 	void draw()const;
-	void ini(float SIZE_CUBE);
-	void onCreate(float size_cube);
+	void ini(int SIZE_CUBE);
+	void onCreate(int size_cube);
 	sf::Vector2f getPosition() const { return background_tetromino.getPosition(); }
 private:
 	sf::RectangleShape tetromino[200];
@@ -20,8 +20,10 @@ private:
 	class GameWindow* window;
 	AM am_;
 
-	float LEFT_WALL;
-	float RIGHT_WALL;
-	float FLOOR_EDGE;
+	int LEFT_WALL;
+	int RIGHT_WALL;
+	int FLOOR_EDGE;
+
+	
 };
 

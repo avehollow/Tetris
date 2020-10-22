@@ -20,10 +20,10 @@ void Tetromino::draw() const
 			window->draw(tetromino[(10 * y) + x]);
 }
 
-void Tetromino::ini(float SIZE_CUBE)
+void Tetromino::ini(int SIZE_CUBE)
 {
-	float xx = (window->getSize().x / 2) - (5 * SIZE_CUBE);
-	float yy = (window->getSize().y / 2) - (10 * SIZE_CUBE);
+	int xx = (window->getSize().x / 2) - (5 * SIZE_CUBE);
+	int yy = (window->getSize().y / 2) - (10 * SIZE_CUBE);
 	for (size_t y = 0; y < 20; y++)
 	{
 		for (size_t x = 0; x < 10; x++)
@@ -35,8 +35,9 @@ void Tetromino::ini(float SIZE_CUBE)
 		}
 	}
 
-	background_tetromino.setSize(sf::Vector2(10 * SIZE_CUBE, 20 * SIZE_CUBE));
+	background_tetromino.setSize(sf::Vector2f(10 * SIZE_CUBE, 20 * SIZE_CUBE));
 	background_tetromino.setFillColor(sf::Color(20, 20, 20, 200));
+
 	background_tetromino.setPosition(xx, yy);
 	background_tetromino.setOutlineThickness(2);
 	background_tetromino.setOutlineColor(sf::Color::White);
@@ -47,12 +48,12 @@ void Tetromino::ini(float SIZE_CUBE)
 }
 
 
-void Tetromino::onCreate(float size_cube)
+void Tetromino::onCreate(int size_cube)
 {
-	float xx = (window->getSize().x / 2) - (5 * size_cube);
-	float yy = (window->getSize().y / 2) - (10 * size_cube);
+	int xx = (window->getSize().x / 2) - (5 * size_cube);
+	int yy = (window->getSize().y / 2) - (10 * size_cube);
 
-	background_tetromino.setSize(sf::Vector2(10 * size_cube, 20 * size_cube));
+	background_tetromino.setSize(sf::Vector2f(10 * size_cube, 20 * size_cube));
 	background_tetromino.setPosition(xx, yy);
 
 	for (size_t y = 0; y < 20; y++)
@@ -65,7 +66,7 @@ void Tetromino::onCreate(float size_cube)
 	}
 
 	LEFT_WALL = xx;
-	RIGHT_WALL = xx + 10 * size_cube;
-	FLOOR_EDGE = yy + 20 * size_cube;
+	RIGHT_WALL = xx + 9 * size_cube;
+	FLOOR_EDGE = yy + 19 * size_cube;
 
 }

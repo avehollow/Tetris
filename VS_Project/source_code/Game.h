@@ -37,13 +37,15 @@ private:
 
 #define CUBE_DIMENSIONS 50.0F
     float SIZE_CUBE_PERCENT;
-    float SIZE_CUBE;
+    int SIZE_CUBE;
 
     bool isPause;
     void show_gui(bool show);
 
-    void rotate();
+    bool check_collision(float dir_x, float dir_y);
     bool collision_with_edges(float dir_x, float dir_y);
+    bool collision_with_cubes(float dir_x, float dir_y);
+    void rotate();
     bool wall_kick();
 };
 
