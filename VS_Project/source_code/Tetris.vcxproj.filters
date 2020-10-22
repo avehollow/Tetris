@@ -76,6 +76,8 @@
     <ClCompile Include="PDA.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="Figure.cpp" />
+    <ClCompile Include="Tetromino.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -123,5 +125,7 @@
     <ClInclude Include="PDA.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="Figure.h" />
+    <ClInclude Include="Tetromino.h" />
   </ItemGroup>
 </Project>

@@ -61,7 +61,10 @@ AM::AM()
 	texture.back().loadFromFile("data/texture/background_game.png");
 	
 	texture.emplace_back(sf::Texture());
-	texture.back().loadFromFile("data/texture/green.png");
+	texture.back().loadFromFile("data/texture/green.png");	
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/blue.png");
 }
 
 AM::~AM()

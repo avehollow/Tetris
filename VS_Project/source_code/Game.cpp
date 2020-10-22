@@ -6,6 +6,7 @@
 
 
 GAME::GAME(GameWindow* w, AM* assetmanager)
+	: tetromino(w)
 {
 	//puts("CTOR Game");
 
@@ -47,27 +48,14 @@ GAME::GAME(GameWindow* w, AM* assetmanager)
 
 	// AVE LOOK how to calculate element size
 	SIZE_CUBE = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
-
 	SIZE_CUBE_PERCENT = SIZE_CUBE / window->getSize().y;
 
+	tetromino.ini(SIZE_CUBE);
+	figure.setCubeSize(SIZE_CUBE);
 
-	float xx = (window->getSize().x / 2) - (5 * SIZE_CUBE);
-	float yy = (window->getSize().y / 2) - (10 * SIZE_CUBE);
-	for (size_t y = 0; y < 20; y++)
-	{
-		for (size_t x = 0; x < 10; x++)
-		{
-			tetromino[(10 * y) + x].setPosition(xx + (x * SIZE_CUBE), yy + (y * SIZE_CUBE));
-			tetromino[(10 * y) + x].setSize(sf::Vector2f(SIZE_CUBE, SIZE_CUBE));
-			tetromino[(10 * y) + x].setFillColor(sf::Color::Transparent);
-		}
-	}
+	sf::Vector2f poz = tetromino.getPosition();
 
-	background_tetromino.setSize(sf::Vector2(10 * SIZE_CUBE, 20 * SIZE_CUBE));
-	background_tetromino.setFillColor(sf::Color(20, 20, 20, 200));
-	background_tetromino.setPosition(xx, yy);
-	background_tetromino.setOutlineThickness(2);
-	background_tetromino.setOutlineColor(sf::Color::White);
+	figure.be_I_(poz.x, poz.y, &AM_->texture[AM::E_TEXTURE::T_CUBE_GREEN]);
 }
 
 GAME::~GAME()
@@ -106,7 +94,29 @@ E_STATE GAME::handleInput(const sf::Event& event)
 	}
 	else
 	{
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && !this->collision_with_edges(-40, 0))
+		{
+			figure.move(-SIZE_CUBE, 0);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && !this->collision_with_edges(40, 0))
+		{
+			figure.move(SIZE_CUBE, 0);
+		}
 
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && !this->collision_with_edges(0, -40))
+		{
+			figure.move(0, -SIZE_CUBE);
+		}
+
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !this->collision_with_edges(0, 40))
+		{
+			figure.move(0, SIZE_CUBE);
+		}
+
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+		{
+			this->rotate();
+		}
 	}
 		
 	
@@ -116,19 +126,16 @@ E_STATE GAME::handleInput(const sf::Event& event)
 
 void GAME::update(const float& tt)
 {
-
+	
 }
 
 void GAME::render()const
 {
 	window->draw(background_game);
 
-	window->draw(background_tetromino);
-	for (size_t y = 0; y < 20; y++)
-		for (size_t x = 0; x < 10; x++)
-			window->draw(tetromino[(10 * y) + x]);
-		
-	
+	tetromino.draw();
+	figure.draw(window);
+
 	if (isPause)
 		window->draw(background_pause);
 	
@@ -151,27 +158,167 @@ void GAME::show_gui(bool show)
 	b_Exit->visible(show);
 }
 
-void GAME::onCreate()
+void GAME::rotate()
 {
-	sf::Vector2f size_cube{ window->getSize().y * SIZE_CUBE_PERCENT, window->getSize().y * SIZE_CUBE_PERCENT };
-	float xx = (window->getSize().x / 2) - (5 * size_cube.x);
-	float yy = (window->getSize().y / 2) - (10 * size_cube.y);
+
+	////
+	//   When function WallKick() return false
+	//		 Get the postion of the squares before rotation :)
+	sf::Vector2f square1_before_rotation = figure.squares[0].getPosition();
+	sf::Vector2f square2_before_rotation = figure.squares[1].getPosition();
+	sf::Vector2f square3_before_rotation = figure.squares[2].getPosition();
+	sf::Vector2f square4_before_rotation = figure.squares[3].getPosition();
 	
 
-	background_tetromino.setSize(sf::Vector2(10 * size_cube.x, 20 * size_cube.x));
-	background_tetromino.setPosition(xx, yy);
+
+	sf::Vector2f Vr = figure.squares[0].getPosition() - figure.center_pos;
+	sf::Vector2f Vt = sf::Vector2f((Vr.x * 0) + (Vr.y * -1), (Vr.x * 1) + (Vr.y * 0));
 
 
-	for (size_t y = 0; y < 20; y++)
+	//		 |-			  -|		|-	   -|
+	//		 | 0		-1 |		|	Vx	|
+	//		 |			   |	*  	|		|
+	//		 | 1		 0 |		|	Vy	|
+	//		 |-			  -|		|-	   -|
+
+	sf::Vector2f TransformVector = sf::Vector2f(figure.center_pos + Vt);
+
+	figure.squares[0].setPosition(TransformVector);
+
+
+
+
+	Vr = figure.squares[1].getPosition() - figure.center_pos;
+	Vt = sf::Vector2f((Vr.x * 0) + (Vr.y * -1), (Vr.x * 1) + (Vr.y * 0));
+
+	TransformVector = sf::Vector2f(figure.center_pos + Vt);
+	figure.squares[1].setPosition(TransformVector);
+
+
+
+	Vr = figure.squares[2].getPosition() - figure.center_pos;
+	Vt = sf::Vector2f((Vr.x * 0) + (Vr.y * -1), (Vr.x * 1) + (Vr.y * 0));
+
+	TransformVector = sf::Vector2f(figure.center_pos + Vt);
+	figure.squares[2].setPosition(TransformVector);
+
+
+
+	Vr = figure.squares[3].getPosition() - figure.center_pos;
+	Vt = sf::Vector2f((Vr.x * 0) + (Vr.y * -1), (Vr.x * 1) + (Vr.y * 0));
+
+	TransformVector = sf::Vector2f(figure.center_pos + Vt);
+	figure.squares[3].setPosition(TransformVector);
+
+
+	// Wall kick is not possible
+	if (!this->wall_kick())
 	{
-		for (size_t x = 0; x < 10; x++)
+		figure.squares[0].setPosition(square1_before_rotation);
+		figure.squares[1].setPosition(square2_before_rotation);
+		figure.squares[2].setPosition(square3_before_rotation);
+		figure.squares[3].setPosition(square4_before_rotation);
+	}
+}
+
+bool GAME::collision_with_edges(float dir_x, float dir_y)
+{
+
+	if (figure.squares[0].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[0].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+		figure.squares[0].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	{
+		return true;
+	}
+
+	if (figure.squares[1].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[1].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+		figure.squares[1].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	{
+		return true;
+	}
+
+	if (figure.squares[2].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[2].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+		figure.squares[2].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	{
+		return true;
+	}
+
+	if (figure.squares[3].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[3].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
+		figure.squares[3].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool GAME::wall_kick()
+{
+	for (size_t i = 0; i < 2; i++)
+	{
+		// LEFT WALL
+		if (figure.squares[0].getPosition().x < tetromino.LEFT_WALL || figure.squares[1].getPosition().x < tetromino.LEFT_WALL ||
+			figure.squares[2].getPosition().x < tetromino.LEFT_WALL || figure.squares[3].getPosition().x < tetromino.LEFT_WALL)
 		{
-			tetromino[(10 * y) + x].setPosition(xx + (x * size_cube.x), yy + (y * size_cube.x));
-			tetromino[(10 * y) + x].setSize(size_cube);
+			// TODO Need check if wall kick is possible
+			if (true)
+			{
+				figure.move(SIZE_CUBE,0);
+			}
+			else
+			{
+				// Wall kick is not possible
+				return false;
+			}
+
+
+		}
+
+		// RIGHT WALL
+		else if (figure.squares[0].getPosition().x > tetromino.RIGHT_WALL || figure.squares[1].getPosition().x > tetromino.RIGHT_WALL ||
+			figure.squares[2].getPosition().x > tetromino.RIGHT_WALL || figure.squares[3].getPosition().x > tetromino.RIGHT_WALL)
+		{
+			// TODO Need check if wall kick is possible
+			if (true)
+			{
+				figure.move(-SIZE_CUBE, 0);
+			}
+			else
+			{
+				// Wall kick is not possible
+				return false;
+			}
+		}
+
+		// FLOOR
+		else if (figure.squares[0].getPosition().y > tetromino.FLOOR_EDGE || figure.squares[1].getPosition().y > tetromino.FLOOR_EDGE ||
+			figure.squares[2].getPosition().y > tetromino.FLOOR_EDGE || figure.squares[3].getPosition().y > tetromino.FLOOR_EDGE)
+		{
+			// TODO Need check if wall kick is possible
+			if (true)
+			{
+
+				figure.move(0 ,-SIZE_CUBE);
+			}
+			else
+			{
+				// Wall kick is not possible
+				return false;
+			}
 		}
 	}
 
+	return true;
+}
 
+
+
+void GAME::onCreate()
+{
+	sf::Vector2f size_cube{ window->getSize().y * SIZE_CUBE_PERCENT, window->getSize().y * SIZE_CUBE_PERCENT };
+
+
+	tetromino.onCreate(size_cube.x);
+	figure.setCubeSize(size_cube.x);
 
 	background_game.setSize(sf::Vector2f(window->getSize()));
 

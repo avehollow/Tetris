@@ -37,7 +37,8 @@ public:
 		T_BBACK,
 		T_BPLAY,
 		T_BACKGROUND_GAME,
-		T_CUBE_GREEN
+		T_CUBE_GREEN,
+		T_CUBE_BLUE
 	};
 };
 

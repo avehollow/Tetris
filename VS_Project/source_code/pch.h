@@ -10,6 +10,7 @@
 #include <queue>
 #include <conio.h>
 #include <thread>
+#include <array>
 
 	#include <Windows.h>
 #ifndef _XP

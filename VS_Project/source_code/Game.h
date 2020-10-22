@@ -1,6 +1,8 @@
 #pragma once
 
 #include "STATE.h"
+#include "Figure.h"
+#include "Tetromino.h"
 
 namespace gui
 {
@@ -23,25 +25,25 @@ public:
     virtual void onCreate() override;
 
 private:
-    // GUI
+    Tetromino tetromino;
+    Figure figure;
+
     sf::RectangleShape background_pause;
+    sf::RectangleShape background_game;
 
     gui::Button* b_Options;
     gui::Button* b_Back;
     gui::Button* b_Exit;
 
-    void show_gui(bool show);
-    bool isPause;
-
-    //
-    sf::RectangleShape background_game;
-    sf::RectangleShape background_tetromino;
-    sf::RectangleShape tetromino[200];
+#define CUBE_DIMENSIONS 50.0F
     float SIZE_CUBE_PERCENT;
     float SIZE_CUBE;
 
-#define CUBE_DIMENSIONS 50.0F
+    bool isPause;
+    void show_gui(bool show);
 
-    int collisions[200];
+    void rotate();
+    bool collision_with_edges(float dir_x, float dir_y);
+    bool wall_kick();
 };
 
