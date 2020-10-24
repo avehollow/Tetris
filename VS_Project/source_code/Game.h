@@ -1,7 +1,6 @@
 #pragma once
 
 #include "STATE.h"
-#include "Figure.h"
 #include "Tetromino.h"
 
 namespace gui
@@ -26,7 +25,6 @@ public:
 
 private:
     Tetromino tetromino;
-    Figure figure;
 
     sf::RectangleShape background_pause;
     sf::RectangleShape background_game;
@@ -41,11 +39,5 @@ private:
 
     bool isPause;
     void show_gui(bool show);
-
-    bool check_collision(float dir_x, float dir_y);
-    bool collision_with_edges(float dir_x, float dir_y);
-    bool collision_with_cubes(float dir_x, float dir_y);
-    void rotate();
-    bool wall_kick();
 };
 

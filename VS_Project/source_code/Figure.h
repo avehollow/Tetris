@@ -1,17 +1,16 @@
 #pragma once
 
-class Figure
+class Figure: public sf::Drawable
 {
-	friend class GAME;
+	friend class Tetromino;
 public:
-	Figure(class GameWindow* window);
+	Figure();
 	~Figure() = default;
 
-	void draw()const; 
 	void move(int dirx, int diry);
-	void ini(class Tetromino* tetromino);
-	void setCubeSize(int size);
-	void onCreate(int size_cube);
+	void ini(float cube_size, class AM* assetmanager, const sf::Vector2f& tetromino_pos);
+	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
+	void rotate();
 
 	void be_Z_(float pos_x, float pos_y, sf::Texture* texture);
 	void be_L_(float pos_x, float pos_y, sf::Texture* texture);
@@ -25,13 +24,22 @@ private:
 	std::array<sf::RectangleShape, 4> squares;
 	sf::RectangleShape center_sprite;
 
-	std::array<sf::Vector2i, 4> pp;
+	std::array<sf::Vector2i, 4> indices;
 	sf::Vector2f center_pos;
-	int CUBE_SIZE;
-
-	class Tetromino* tetromino;
-	class GameWindow* window;
-
+	sf::Vector2f tetromino_pos;
+	float cube_size;
+	class AM* am;
 	bool isI;
+
+	// Inherited via Drawable
+	inline virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
+
+inline void Figure::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (auto& sq : squares)
+		target.draw(sq);
+
+	target.draw(center_sprite);
+}
 
