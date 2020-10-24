@@ -22,13 +22,14 @@ public:
     virtual void show() override;
     virtual void hide() override;
     virtual void onCreate() override;
-
+    void ini();
 private:
     Tetromino tetromino;
 
     sf::RectangleShape background_pause;
     sf::RectangleShape background_game;
 
+    class AM* am;
     gui::Button* b_Options;
     gui::Button* b_Back;
     gui::Button* b_Exit;

@@ -11,6 +11,8 @@
 #include <conio.h>
 #include <thread>
 #include <array>
+#include <random>
+#include <chrono>
 
 	#include <Windows.h>
 #ifndef _XP

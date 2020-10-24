@@ -21,6 +21,7 @@ System::System()
 	, menu_(dynamic_cast<GameWindow*>(&window_), &AM_)
 #endif // FS
 {
+	std::srand(time(NULL));
 	window_.GUI_.reserve(50);
 
 	FPS = 120;

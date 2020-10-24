@@ -7,6 +7,7 @@
 
 GAME::GAME(GameWindow* w, AM* assetmanager)
 	: tetromino(w,assetmanager)
+	, am(assetmanager)
 {
 	//puts("CTOR Game");
 
@@ -131,36 +132,6 @@ void GAME::show_gui(bool show)
 }
 
 
-//
-//bool GAME::collision_with_edges(float dir_x, float dir_y)
-//{
-//
-//	if (figure.squares[0].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[0].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-//		figure.squares[0].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
-//	{
-//		return true;
-//	}
-//
-//	else if (figure.squares[1].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[1].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-//			figure.squares[1].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
-//	{
-//		return true;
-//	}
-//
-//	else if (figure.squares[2].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[2].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-//			figure.squares[2].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
-//	{
-//		return true;
-//	}
-//
-//	else if (figure.squares[3].getPosition().x + dir_x < tetromino.LEFT_WALL || figure.squares[3].getPosition().x + dir_x > tetromino.RIGHT_WALL ||
-//			figure.squares[3].getPosition().y + dir_y > tetromino.FLOOR_EDGE)
-//	{
-//		return true;
-//	}
-//
-//	return false;
-//}
 
 //bool GAME::collision_with_cubes(float dir_x, float dir_y)
 //{
@@ -178,64 +149,7 @@ void GAME::show_gui(bool show)
 //	return collision_with_edges(dir_x, dir_y) || collision_with_cubes(dir_x, dir_y);
 //}
 //
-//bool GAME::wall_kick()
-//{
-//	for (size_t i = 0; i < 2; i++)
-//	{
-//		// LEFT WALL
-//		if (figure.squares[0].getPosition().x < tetromino.LEFT_WALL || figure.squares[1].getPosition().x < tetromino.LEFT_WALL ||
-//			figure.squares[2].getPosition().x < tetromino.LEFT_WALL || figure.squares[3].getPosition().x < tetromino.LEFT_WALL)
-//		{
-//			// TODO Need check if wall kick is possible
-//			if (true)
-//			{
-//				figure.move(SIZE_CUBE,0);
-//			}
-//			else
-//			{
-//				// Wall kick is not possible
-//				return false;
-//			}
-//
-//
-//		}
-//
-//		// RIGHT WALL
-//		else if (figure.squares[0].getPosition().x > tetromino.RIGHT_WALL || figure.squares[1].getPosition().x > tetromino.RIGHT_WALL ||
-//			figure.squares[2].getPosition().x > tetromino.RIGHT_WALL || figure.squares[3].getPosition().x > tetromino.RIGHT_WALL)
-//		{
-//			// TODO Need check if wall kick is possible
-//			if (true)
-//			{
-//				figure.move(-SIZE_CUBE, 0);
-//			}
-//			else
-//			{
-//				// Wall kick is not possible
-//				return false;
-//			}
-//		}
-//
-//		// FLOOR
-//		else if (figure.squares[0].getPosition().y > tetromino.FLOOR_EDGE || figure.squares[1].getPosition().y > tetromino.FLOOR_EDGE ||
-//			figure.squares[2].getPosition().y > tetromino.FLOOR_EDGE || figure.squares[3].getPosition().y > tetromino.FLOOR_EDGE)
-//		{
-//			// TODO Need check if wall kick is possible
-//			if (true)
-//			{
-//
-//				figure.move(0 ,-SIZE_CUBE);
-//			}
-//			else
-//			{
-//				// Wall kick is not possible
-//				return false;
-//			}
-//		}
-//	}
-//
-//	return true;
-//}
+
 
 
 
@@ -251,6 +165,11 @@ void GAME::onCreate()
 
 	background_pause.setSize(sf::Vector2f(window->getSize().x / 3, window->getSize().y));
 	background_pause.setPosition(window->getSize().x / 2 - background_pause.getSize().x / 2, window->getSize().y / 2 - background_pause.getSize().y / 2);
+}
+
+void GAME::ini()
+{
+	tetromino.restart();
 }
 
 

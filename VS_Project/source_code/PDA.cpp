@@ -33,7 +33,10 @@ void PDA::handleInput(const sf::Event& event)
 
 		//if (!states_.empty())
 			states_.top()->show();
-			
+			if (nstate == E_STATE::ST_GAME)
+			{
+				// states_.top()->ini();
+			}
 	}
 	else
 	{

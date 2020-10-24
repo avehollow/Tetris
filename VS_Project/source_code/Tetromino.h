@@ -22,7 +22,11 @@ public:
 	void ini(int cube_size, int width = 10, int height = 20);
 	void onCreate(int size_cube);
 	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
+	void restart();
+
 private:
+	bool wall_kick();
+	bool collision_with_edges(float dir_x, float dir_y);
 	sf::RectangleShape tetromino[200];
 	Figure figure;
 	int collisions[200] = { 0 };
