@@ -19,6 +19,7 @@ public:
 	void be_T_(float pos_x, float pos_y, sf::Texture* texture);
 	void be_ZM_(float pos_x, float pos_y, sf::Texture* texture);
 	void be_LM_(float pos_x, float pos_y, sf::Texture* texture);
+	void be_O_(float pos_x, float pos_y, sf::Texture* texture);
 
 private:
 	std::array<sf::RectangleShape, 4> squares;

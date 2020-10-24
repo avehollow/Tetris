@@ -56,7 +56,6 @@ void Figure::be_Z_(float pos_x, float pos_y, sf::Texture* texture)
 	for (auto& sq : squares)
 		sq.setTexture(texture);
 	
-
 	squares[0].setPosition(pos_x, pos_y);
 	squares[1].setPosition(pos_x + CUBE_SIZE, pos_y);
 	squares[2].setPosition(pos_x + CUBE_SIZE, pos_y + CUBE_SIZE);
@@ -134,11 +133,29 @@ void Figure::be_ZM_(float pos_x, float pos_y, sf::Texture* texture)
 
 void Figure::be_LM_(float pos_x, float pos_y, sf::Texture* texture)
 {
+	for (auto& sq : squares)
+		sq.setTexture(texture);
 
 	squares[0].setPosition(pos_x, pos_y + CUBE_SIZE);
 	squares[1].setPosition(pos_x + CUBE_SIZE, pos_y + CUBE_SIZE);
 	squares[2].setPosition(pos_x + 2*CUBE_SIZE, pos_y + CUBE_SIZE);
 	squares[3].setPosition(pos_x + 2*CUBE_SIZE, pos_y);
+
+	center_pos = squares[1].getPosition();
+	center_sprite.setPosition(center_pos);
+	move(0, 0);
+	isI = false;
+}
+
+void Figure::be_O_(float pos_x, float pos_y, sf::Texture* texture)
+{
+	for (auto& sq : squares)
+		sq.setTexture(texture);
+
+	squares[0].setPosition(pos_x, pos_y);
+	squares[1].setPosition(pos_x +CUBE_SIZE, pos_y);
+	squares[2].setPosition(pos_x, pos_y + CUBE_SIZE);
+	squares[3].setPosition(pos_x +CUBE_SIZE, pos_y + CUBE_SIZE);
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
@@ -155,7 +172,7 @@ void Figure::onCreate(int size_cube)
 		squares[i].setSize(sf::Vector2f(size_cube, size_cube));
 	}
 	if (isI)
-		center_pos = sf::Vector2f(squares[2].getPosition().x - (CUBE_SIZE / 2), squares[2].getPosition().y - (CUBE_SIZE / 2));
+		center_pos = sf::Vector2f(squares[2].getPosition().x - (size_cube / 2.0f), squares[2].getPosition().y - (size_cube / 2.0f));
 	else
 		center_pos = squares[1].getPosition();
 
