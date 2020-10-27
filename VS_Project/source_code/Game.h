@@ -40,5 +40,7 @@ private:
 
     bool isPause;
     void show_gui(bool show);
+
+
 };
 

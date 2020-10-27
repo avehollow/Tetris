@@ -8,6 +8,8 @@ Tetromino::Tetromino(GameWindow* window, AM* assetmanager)
 	, am(assetmanager)
 {
 
+	shift_interval = sf::seconds(1);
+	shift_time     = sf::seconds(0);
 }
 
 void Tetromino::handleInput(const sf::Event& event)
@@ -136,6 +138,16 @@ void Tetromino::restart()
 	{
 		//tetromino[i].setFillColor(sf::Color::Transparent);
 		collisions[i] = 0;
+	}
+}
+
+void Tetromino::update(const float& tt)
+{
+	shift_time += shift_clock.restart();
+	if (shift_time >= shift_interval)
+	{
+		figure.move(0,1);
+		shift_time -= shift_interval;
 	}
 }
 

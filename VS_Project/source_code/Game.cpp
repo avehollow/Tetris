@@ -71,6 +71,7 @@ E_STATE GAME::handleInput(const sf::Event& event)
 	{
 		isPause = !isPause;
 		show_gui(isPause);
+
 	}
 	else if (isPause)
 	{
@@ -101,7 +102,14 @@ E_STATE GAME::handleInput(const sf::Event& event)
 
 void GAME::update(const float& tt)
 {
-	
+	if (!isPause)
+	{
+		tetromino.update(tt);
+	}
+	else
+	{
+		
+	}
 }
 
 void GAME::render()const

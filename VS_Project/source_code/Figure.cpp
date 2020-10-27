@@ -208,4 +208,5 @@ void Figure::rotate()
 	TransformVector = sf::Vector2f(center_pos + Vt);
 	squares[3].setPosition(TransformVector);
 
+	move(0, 0);
 }

@@ -24,15 +24,20 @@ public:
 	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
 	sf::Vector2f getPosition()const { return background_tetromino.getPosition(); }
 	void restart();
+	void update(const float& tt);
 
 private:
+	Figure figure;
 	bool wall_kick();
 	bool collision_with_edges(float dir_x, float dir_y);
 	sf::RectangleShape tetromino[200];
-	Figure figure;
 	int collisions[200] = { 0 };
 
 	sf::RectangleShape background_tetromino;
+
+	sf::Clock shift_clock;
+	sf::Time  shift_interval;
+	sf::Time  shift_time;
 
 	class GameWindow* window;
 	// AVE LOOK usun¹æ potem
