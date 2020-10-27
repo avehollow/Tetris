@@ -52,6 +52,7 @@ GAME::GAME(GameWindow* w, AM* assetmanager)
 	SIZE_CUBE_PERCENT = SIZE_CUBE / (float)window->getSize().y;
 
 	tetromino.ini(SIZE_CUBE);
+	tetromino.spawnFigure(NULL, NULL, &am->texture[AM::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
 }
 
 GAME::~GAME()

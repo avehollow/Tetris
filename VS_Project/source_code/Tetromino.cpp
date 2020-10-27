@@ -7,6 +7,7 @@ Tetromino::Tetromino(GameWindow* window, AM* assetmanager)
 	: window(window)
 	, am(assetmanager)
 {
+
 }
 
 void Tetromino::handleInput(const sf::Event& event)
@@ -83,7 +84,7 @@ void Tetromino::ini(int cube_size, int width, int height)
 	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
 
 	figure.ini(cube_size, am, sf::Vector2f(xx, yy));
-	spawnFigure(xx, yy, &am->texture[AM::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
+
 }
 
 
@@ -98,28 +99,30 @@ void Tetromino::onCreate(int cube_size)
 
 void Tetromino::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type)
 {
+	float xx = background_tetromino.getPosition().x;
+	float yy = background_tetromino.getPosition().y;
 	switch (type)
 	{
 	case I:
-		figure.be_I_(pos_x, pos_y, texture);
+		figure.be_I_(xx, yy, texture);
 		break;
 	case L:
-		figure.be_L_(pos_x, pos_y, texture);
+		figure.be_L_(xx, yy, texture);
 		break;
 	case T:
-		figure.be_T_(pos_x, pos_y, texture);
+		figure.be_T_(xx, yy, texture);
 		break;
 	case Z:
-		figure.be_Z_(pos_x, pos_y, texture);
+		figure.be_Z_(xx, yy, texture);
 		break;
 	case O:
-		figure.be_O_(pos_x, pos_y, texture);
+		figure.be_O_(xx, yy, texture);
 		break;
 	case LM:
-		figure.be_LM_(pos_x, pos_y, texture);
+		figure.be_LM_(xx, yy, texture);
 		break;
 	case ZM:
-		figure.be_ZM_(pos_x, pos_y, texture);
+		figure.be_ZM_(xx, yy, texture);
 		break;
 	default:
 		break;

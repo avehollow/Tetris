@@ -22,6 +22,7 @@ public:
 	void ini(int cube_size, int width = 10, int height = 20);
 	void onCreate(int size_cube);
 	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
+	sf::Vector2f getPosition()const { return background_tetromino.getPosition(); }
 	void restart();
 
 private:
