@@ -29,7 +29,6 @@ void Figure::ini(float cube_size, AM* assetmanager, const sf::Vector2f& tetromin
 {
 	this->cube_size = cube_size;
 	this->tetromino_pos = tetromino_pos;
-	this->am = assetmanager;
 
 	for (auto& sq : squares)
 		sq.setSize(sf::Vector2f(cube_size, cube_size));

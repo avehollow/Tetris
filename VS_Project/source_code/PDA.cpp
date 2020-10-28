@@ -4,16 +4,19 @@
 #include "assetmanager.h"
 
 PDA::PDA(class GameWindow* w, class AM* am)
-	: main_menu(w, am)
-	, game(w, am)
-	, options(w, am)
 {
-	states_.push(&main_menu);
+	data_states_[E_STATE::ST_MAINMENU] = new MAINMENU(w, am);
+	data_states_[E_STATE::ST_GAME] = new GAME(w, am);
+	data_states_[E_STATE::ST_OPTIONS] = new OPTIONS(w, am);
+	states_.push(data_states_[E_STATE::ST_MAINMENU]);
 }
 
 PDA::~PDA()
 {
-	
+	for (auto& st : data_states_)
+	{
+		delete st;
+	}
 }
 
 void PDA::handleInput(const sf::Event& event)

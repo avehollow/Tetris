@@ -12,7 +12,6 @@ public:
     void handleInput(const sf::Event&);
     void update(float) const;
     void render() const;
-    inline bool empty()const;
 
 
     PDA(const PDA&) = delete;
@@ -23,16 +22,7 @@ public:
 
 private:
     std::stack<class STATE*> states_;
-
-    MAINMENU main_menu;
-    GAME game;
-    OPTIONS options;
-
-    STATE* st_ptrs[3] = { &main_menu, &game, &options};
+    std::array<class STATE*, 3> data_states_;
 };
 
-inline bool PDA::empty()const
-{
-    return states_.empty();
-}
 

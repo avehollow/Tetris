@@ -7,7 +7,6 @@
 
 GAME::GAME(GameWindow* w, AM* assetmanager)
 	: tetromino(w,assetmanager)
-	, am(assetmanager)
 {
 	//puts("CTOR Game");
 
@@ -40,19 +39,13 @@ GAME::GAME(GameWindow* w, AM* assetmanager)
 	background_pause.setPosition(window->getSize().x / 2 - background_pause.getSize().x / 2, window->getSize().y / 2 - background_pause.getSize().y / 2);
 	background_pause.setFillColor(sf::Color(55, 55, 55, 200));
 
-
 	show_gui(false);
-
 
 	background_game.setSize(sf::Vector2f(window->getSize()));
 	background_game.setTexture(&AM_->texture[AM::E_TEXTURE::T_BACKGROUND_GAME]);
 
-	// AVE LOOK how to calculate element size
-	SIZE_CUBE = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
-	SIZE_CUBE_PERCENT = SIZE_CUBE / (float)window->getSize().y;
 
-	tetromino.ini(SIZE_CUBE);
-	tetromino.spawnFigure(NULL, NULL, &am->texture[AM::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
+	tetromino.spawnFigure(NULL, NULL, &AM_->texture[AM::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
 }
 
 GAME::~GAME()
@@ -139,26 +132,6 @@ void GAME::show_gui(bool show)
 	b_Options->visible(show);
 	b_Exit->visible(show);
 }
-
-
-
-//bool GAME::collision_with_cubes(float dir_x, float dir_y)
-//{
-//
-//	// [ (20*y) + x]
-//	
-//
-//	return false;
-//}
-//
-//bool GAME::check_collision(float dir_x, float dir_y)
-//{
-//
-//
-//	return collision_with_edges(dir_x, dir_y) || collision_with_cubes(dir_x, dir_y);
-//}
-//
-
 
 
 

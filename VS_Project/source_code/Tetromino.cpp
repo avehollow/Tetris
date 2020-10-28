@@ -10,6 +10,13 @@ Tetromino::Tetromino(GameWindow* window, AM* assetmanager)
 
 	shift_interval = sf::seconds(1);
 	shift_time     = sf::seconds(0);
+
+
+	// AVE LOOK how to calculate element size
+	SIZE_CUBE = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
+	SIZE_CUBE_PERCENT = SIZE_CUBE / (float)window->getSize().y;
+
+	ini();
 }
 
 void Tetromino::handleInput(const sf::Event& event)
@@ -56,7 +63,7 @@ void Tetromino::handleInput(const sf::Event& event)
 }
 
 
-void Tetromino::ini(int cube_size, int width, int height)
+void Tetromino::ini(int width, int height)
 {
 	WIDTH = width;
 	HEIGHT = height;

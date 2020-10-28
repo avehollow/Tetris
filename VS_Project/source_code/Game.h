@@ -29,14 +29,9 @@ private:
     sf::RectangleShape background_pause;
     sf::RectangleShape background_game;
 
-    class AM* am;
     gui::Button* b_Options;
     gui::Button* b_Back;
     gui::Button* b_Exit;
-
-#define CUBE_DIMENSIONS 50.0F
-    float SIZE_CUBE_PERCENT;
-    int SIZE_CUBE;
 
     bool isPause;
     void show_gui(bool show);

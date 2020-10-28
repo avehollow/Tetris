@@ -1,5 +1,6 @@
 #pragma once
 
+
 enum E_STATE
 {
     ST_BACK = -2,
@@ -8,7 +9,6 @@ enum E_STATE
     ST_GAME,
     ST_OPTIONS,
 };
-
 
 class STATE
 {
