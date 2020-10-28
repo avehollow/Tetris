@@ -19,17 +19,18 @@ struct MovementSettings
 class OPTIONS: public STATE
 {
 public:
-	OPTIONS(class GameWindow* w, class AM*);
+	OPTIONS();
 	virtual ~OPTIONS();
 
 	// Inherited via STATE
-	virtual E_STATE handleInput(const sf::Event&) override;
+	virtual STATE* handleInput(const sf::Event&) override;
 	virtual void update(const float&) override;
 	virtual void render() const override;
 
 	virtual void show() override;
 	virtual void hide() override;
 	virtual void onCreate() override;
+	virtual void ini() override;
 
 private:
 	std::vector<sf::VideoMode> vm;

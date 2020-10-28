@@ -78,6 +78,7 @@
     </ClCompile>
     <ClCompile Include="Figure.cpp" />
     <ClCompile Include="Tetromino.cpp" />
+    <ClCompile Include="WORLD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -127,5 +128,6 @@
     </ClInclude>
     <ClInclude Include="Figure.h" />
     <ClInclude Include="Tetromino.h" />
+    <ClInclude Include="WORLD.h" />
   </ItemGroup>
 </Project>

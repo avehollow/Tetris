@@ -3,8 +3,9 @@
 #include "assetmanager.h"
 #include "GameWindow.h"
 #include "PDA.h"
+#include "WORLD.h"
 
-class System
+class System: public WORLD
 {
 public:
 	System();
@@ -19,10 +20,8 @@ private:
 	void Render();
 
 private:
-	GameWindow window_;
 	sf::Text r_fps;
 	sf::Text u_fps;
-	AM AM_;
 	sf::Event event_;
 	PDA menu_;
 

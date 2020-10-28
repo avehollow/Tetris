@@ -1,16 +1,13 @@
 #pragma once
-#include "Options.h"
-#include "MainMenu.h"
-#include "Game.h"
 
 
 class PDA
 {
 public:
-    PDA(class GameWindow* w, class AM*);
+    PDA(class STATE* state);
     ~PDA();
     void handleInput(const sf::Event&);
-    void update(float) const;
+    void update(float tt) const;
     void render() const;
 
 
@@ -22,7 +19,6 @@ public:
 
 private:
     std::stack<class STATE*> states_;
-    std::array<class STATE*, 3> data_states_;
 };
 
 

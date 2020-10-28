@@ -3,20 +3,9 @@
 #include "assetmanager.h"
 #include "GameWindow.h"
 
-Tetromino::Tetromino(GameWindow* window, AM* assetmanager)
-	: window(window)
-	, am(assetmanager)
+Tetromino::Tetromino()
 {
 
-	shift_interval = sf::seconds(1);
-	shift_time     = sf::seconds(0);
-
-
-	// AVE LOOK how to calculate element size
-	SIZE_CUBE = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
-	SIZE_CUBE_PERCENT = SIZE_CUBE / (float)window->getSize().y;
-
-	ini();
 }
 
 void Tetromino::handleInput(const sf::Event& event)
@@ -65,6 +54,14 @@ void Tetromino::handleInput(const sf::Event& event)
 
 void Tetromino::ini(int width, int height)
 {
+	shift_interval = sf::seconds(1);
+	shift_time = sf::seconds(0);
+
+	// AVE LOOK how to calculate element size
+	cube_size = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
+	cube_size_percent = cube_size / (float)window->getSize().y;
+
+
 	WIDTH = width;
 	HEIGHT = height;
 
@@ -74,10 +71,11 @@ void Tetromino::ini(int width, int height)
 	{
 		for (size_t x = 0; x < WIDTH; x++)
 		{
-			tetromino[(10 * y) + x].setPosition(xx + (x * cube_size), yy + (y * cube_size));
-			tetromino[(10 * y) + x].setSize(sf::Vector2f(cube_size, cube_size));
+			tetromino[(WIDTH * y) + x].setPosition(xx + (x * cube_size), yy + (y * cube_size));
+			tetromino[(WIDTH * y) + x].setSize(sf::Vector2f(cube_size, cube_size));
 			//tetromino[(10 * y) + x].setFillColor(sf::Color::Transparent);
-			tetromino[(10 * y) + x].setTexture(&am->texture[AM::E_TEXTURE::T_CUBE_BLUE]);
+			tetromino[(WIDTH * y) + x].setTexture(&AM->texture[AM_::E_TEXTURE::T_CUBE_BLUE]);
+			collisions[(WIDTH * y) + x] = 0;
 		}
 	}
 
@@ -92,14 +90,16 @@ void Tetromino::ini(int width, int height)
 	RIGHT_WALL = xx + (WIDTH - 1) * cube_size;
 	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
 
-	figure.ini(cube_size, am, sf::Vector2f(xx, yy));
+	figure.ini(cube_size, AM, sf::Vector2f(xx, yy));
 
+	spawnFigure(background_tetromino.getPosition().x, background_tetromino.getPosition().y, &AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
 }
 
 
-void Tetromino::onCreate(int cube_size)
+void Tetromino::onCreate()
 {
-	this->ini(cube_size, WIDTH, HEIGHT);
+	cube_size = window->getSize().y * cube_size_percent;
+	this->ini(WIDTH, HEIGHT);
 
 	int xx = (window->getSize().x / 2) - (WIDTH / 2 * cube_size);
 	int yy = (window->getSize().y / 2) - (HEIGHT / 2 * cube_size);
@@ -138,14 +138,11 @@ void Tetromino::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FI
 	}
 }
 
-void Tetromino::restart()
+
+void Tetromino::pause()
 {
-	spawnFigure(background_tetromino.getPosition().x, background_tetromino.getPosition().y, &am->texture[AM::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
-	for (size_t i = 0; i < 200; i++)
-	{
-		//tetromino[i].setFillColor(sf::Color::Transparent);
-		collisions[i] = 0;
-	}
+	shift_clock.restart();
+	shift_time = sf::seconds(0);
 }
 
 void Tetromino::update(const float& tt)

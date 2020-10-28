@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "System.h"
-
 #include "MainMenu.h"
-
+#include "Options.h"
+#include "Game.h"
 //! 1s = 1'000'000'000 ns
 //! 1s = 1'000'000 us
 //! 1s = 1'000 ms
@@ -10,26 +10,31 @@
 #define _1s_ 1'000'000ll
 #define _0s_ 0ll
 
-#define FS3
+
+
+
+extern MAINMENU main_menu;
+extern GAME game;
+extern OPTIONS options;
 
 System::System()
-#ifdef FS
-	: window_(sf::VideoMode::getDesktopMode(), "Tetris", sf::Style::Titlebar | sf::Style::Close | sf::Style::Fullscreen)
-	, menu_(dynamic_cast<GameWindow*>(&window_), &AM_)
-#else
-	: window_(sf::VideoMode(1280, 720, 32), "Tetris", sf::Style::Titlebar | sf::Style::Close)
-	, menu_(dynamic_cast<GameWindow*>(&window_), &AM_)
-#endif // FS
+	: menu_(&main_menu)
 {
+	WORLD::ini();
+
+	main_menu.ini();
+	game.ini();
+	options.ini();
+
 	std::srand(time(NULL));
-	window_.GUI_.reserve(50);
+	window->GUI_.reserve(50);
 
 	FPS = 120;
 	
-	r_fps.setPosition(window_.getSize().x * 0.90f, window_.getSize().y * 0.0f);
-	u_fps.setPosition(window_.getSize().x * 0.90f, window_.getSize().y * 0.025f);
-	r_fps.setFont(AM_.font[AM::E_FONT::F_LARABIEFONTRG]);
-	u_fps.setFont(AM_.font[AM::E_FONT::F_LARABIEFONTRG]);
+	r_fps.setPosition(window->getSize().x * 0.90f, window->getSize().y * 0.0f);
+	u_fps.setPosition(window->getSize().x * 0.90f, window->getSize().y * 0.025f);
+	r_fps.setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
+	u_fps.setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
 	r_fps.setCharacterSize(20);
 	u_fps.setCharacterSize(20);
 	r_fps.setFillColor(sf::Color(255, 255, 255, 70));
@@ -41,6 +46,7 @@ System::System()
 
 System::~System()
 {
+	WORLD::free();
 	// AVE LOOK not necessary for <60 fps
 	timeEndPeriod(1);
 }
@@ -49,29 +55,23 @@ System::~System()
 void System::HandleInput()
 {
 	
-	while (window_.pollEvent(event_))
+	while (window->pollEvent(event_))
 	{
 		if (event_.type == sf::Event::Closed)
 		{
-			window_.close();
+			window->close();
 			break;
 		}
 
-		//if (event_.type == sf::Event::KeyReleased && event_.key.code == sf::Keyboard::Escape)
-		//{
-		//	window_.close();
-		//	break;
-		//}
-
-		window_.GUI_.handleEvent(event_);
+		window->GUI_.handleEvent(event_);
 		menu_.handleInput(event_);
 	}
 }
 
 void System::Update(const long long& teta_time)
 {
-	float dt = teta_time / (float)_1s_;
-	menu_.update(dt);
+	float tt = teta_time / (float)_1s_;
+	menu_.update(tt);
 }
 
 void System::Render()
@@ -80,13 +80,13 @@ void System::Render()
 
 
 
-	window_.GUI_.draw();
+	window->GUI_.draw();
 
-	window_.draw(r_fps);
-	window_.draw(u_fps);
+	window->draw(r_fps);
+	window->draw(u_fps);
 
-	window_.display();
-	window_.clear();
+	window->display();
+	window->clear();
 }
 
 
@@ -113,7 +113,7 @@ void System::Run()
 	QueryPerformanceFrequency(&frequency);
 	QueryPerformanceCounter(&beg_time);
 	// // // //
-	while (window_.isOpen())
+	while (window->isOpen())
 	{
 		QueryPerformanceCounter(&end_time);
 		TSLU += (((end_time.QuadPart - beg_time.QuadPart) * _1s_) / frequency.QuadPart);

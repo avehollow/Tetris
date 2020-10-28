@@ -8,7 +8,7 @@ public:
 	~Figure() = default;
 
 	void move(int dirx, int diry);
-	void ini(float cube_size, class AM* assetmanager, const sf::Vector2f& tetromino_pos);
+	void ini(float cube_size, class AM_* assetmanager, const sf::Vector2f& tetromino_pos);
 	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
 	void rotate();
 

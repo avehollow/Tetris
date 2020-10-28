@@ -1,10 +1,10 @@
 #pragma once
 
-class AM
+class AM_
 {
 public:
-	AM();
-	~AM();
+	AM_();
+	~AM_();
 
 	std::vector<sf::Font>    font;
 	std::vector<sf::Texture> texture;

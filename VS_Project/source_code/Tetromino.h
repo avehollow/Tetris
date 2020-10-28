@@ -1,5 +1,6 @@
 #pragma once
 #include "Figure.h"
+#include "WORLD.h"
 
 enum E_FIGURE
 {
@@ -12,18 +13,18 @@ enum E_FIGURE
 	ZM
 };
 
-class Tetromino : public sf::Drawable
+class Tetromino : public sf::Drawable, public WORLD
 {
 public:
-	Tetromino(class GameWindow* window, class AM* assetmanager) ;
+	Tetromino();
 	~Tetromino() = default;
 
 	void handleInput(const sf::Event& event);
 	void ini(int width = 10, int height = 20);
-	void onCreate(int size_cube);
+	void onCreate();
 	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
 	sf::Vector2f getPosition()const { return background_tetromino.getPosition(); }
-	void restart();
+	void pause();
 	void update(const float& tt);
 
 private:
@@ -31,17 +32,13 @@ private:
 	bool wall_kick();
 	bool collision_with_edges(float dir_x, float dir_y);
 	sf::RectangleShape tetromino[200];
-	int collisions[200] = { 0 };
+	int collisions[200];
 
 	sf::RectangleShape background_tetromino;
 
 	sf::Clock shift_clock;
 	sf::Time  shift_interval;
 	sf::Time  shift_time;
-
-	class GameWindow* window;
-	// AVE LOOK usun¹æ potem
-	class AM* am;
 
 	int LEFT_WALL;
 	int RIGHT_WALL;
@@ -51,8 +48,8 @@ private:
 	int HEIGHT;
 
 #define CUBE_DIMENSIONS 50.0F
-	float SIZE_CUBE_PERCENT;
-	int SIZE_CUBE;
+	float cube_size_percent;
+	int cube_size;
 
 	// Inherited via Drawable
 	inline virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

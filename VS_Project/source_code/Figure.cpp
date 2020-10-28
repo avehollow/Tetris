@@ -6,6 +6,11 @@ Figure::Figure()
 {
 	center_sprite.setSize(sf::Vector2f(5, 5));
 	center_sprite.setFillColor(sf::Color::Green);
+	for (auto& idx : indices)
+	{
+		idx.x = 0;
+		idx.y = 0;
+	}
 }
 
 
@@ -25,7 +30,7 @@ void Figure::move(int dirx, int diry)
 
 }
 
-void Figure::ini(float cube_size, AM* assetmanager, const sf::Vector2f& tetromino_pos)
+void Figure::ini(float cube_size, AM_* assetmanager, const sf::Vector2f& tetromino_pos)
 {
 	this->cube_size = cube_size;
 	this->tetromino_pos = tetromino_pos;

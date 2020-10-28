@@ -312,6 +312,7 @@
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="WORLD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assetmanager.h" />
@@ -331,6 +332,7 @@
     <ClInclude Include="System.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="WORLD.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

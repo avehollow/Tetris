@@ -3,49 +3,16 @@
 #include "assetmanager.h"
 #include "GameWindow.h"
 #include "Button.h"
+#include "Options.h"
+
+GAME game;
 
 
-GAME::GAME(GameWindow* w, AM* assetmanager)
-	: tetromino(w,assetmanager)
+extern OPTIONS options;
+
+GAME::GAME()
 {
 	//puts("CTOR Game");
-
-	window = w;
-	AM_ = assetmanager;
-	isPause = false;
-
-	window->addOnCreate(this);
-
-	b_Options = window->GUI_.CreateButton(0, 0, 318, 86);
-	b_Options->setRelativePosition(gui::E_ANCHOR::A_CENTER, -159, -143);
-	b_Options->setTexture(AM_->texture[AM::E_TEXTURE::T_BOPTIONS]);
-	b_Options->setHoveOverColor(sf::Color::White);
-	b_Options->setFillColor(sf::Color(180, 180, 180));
-
-
-	b_Back = window->GUI_.CreateButton(0, 0, 248, 86);
-	b_Back->setRelativePosition(gui::E_ANCHOR::A_CENTER, -124, 43);
-	b_Back->setTexture(AM_->texture[AM::E_TEXTURE::T_BBACK]);
-	b_Back->setHoveOverColor(sf::Color::White);
-	b_Back->setFillColor(sf::Color(180, 180, 180));
-
-	b_Exit = window->GUI_.CreateButton(0, 0, 248, 86);
-	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER, -124, 143);
-	b_Exit->setTexture(AM_->texture[AM::E_TEXTURE::T_BEXIT]);
-	b_Exit->setHoveOverColor(sf::Color::White);
-	b_Exit->setFillColor(sf::Color(180, 180, 180));
-
-	background_pause.setSize(sf::Vector2f(window->getSize().x / 3, window->getSize().y));
-	background_pause.setPosition(window->getSize().x / 2 - background_pause.getSize().x / 2, window->getSize().y / 2 - background_pause.getSize().y / 2);
-	background_pause.setFillColor(sf::Color(55, 55, 55, 200));
-
-	show_gui(false);
-
-	background_game.setSize(sf::Vector2f(window->getSize()));
-	background_game.setTexture(&AM_->texture[AM::E_TEXTURE::T_BACKGROUND_GAME]);
-
-
-	tetromino.spawnFigure(NULL, NULL, &AM_->texture[AM::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
 }
 
 GAME::~GAME()
@@ -56,15 +23,14 @@ GAME::~GAME()
 	window->GUI_.erase((void*)b_Exit);
 }
 
-E_STATE GAME::handleInput(const sf::Event& event)
+STATE* GAME::handleInput(const sf::Event& event)
 {
-	E_STATE s = E_STATE::ST_NONE;
+	STATE* state = this;
 	
 	if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
 	{
 		isPause = !isPause;
 		show_gui(isPause);
-
 	}
 	else if (isPause)
 	{
@@ -75,11 +41,11 @@ E_STATE GAME::handleInput(const sf::Event& event)
 		}
 		else if (b_Options->Pressed())
 		{
-			s = E_STATE::ST_OPTIONS;
+			state = &options;
 		}
 		else if (b_Exit->Pressed())
 		{
-			s = E_STATE::ST_BACK;
+			state = nullptr;
 			isPause = false;
 		}
 	}
@@ -89,7 +55,7 @@ E_STATE GAME::handleInput(const sf::Event& event)
 	}
 		
 	
-	return s;
+	return state;
 }
 
 
@@ -101,7 +67,7 @@ void GAME::update(const float& tt)
 	}
 	else
 	{
-		
+		tetromino.pause();
 	}
 }
 
@@ -137,11 +103,7 @@ void GAME::show_gui(bool show)
 
 void GAME::onCreate()
 {
-
-	sf::Vector2f size_cube{ window->getSize().y * SIZE_CUBE_PERCENT, window->getSize().y * SIZE_CUBE_PERCENT };
-	SIZE_CUBE = size_cube.x;
-
-	tetromino.onCreate(size_cube.x);
+	tetromino.onCreate();
 
 	background_game.setSize(sf::Vector2f(window->getSize()));
 
@@ -151,7 +113,42 @@ void GAME::onCreate()
 
 void GAME::ini()
 {
-	tetromino.restart();
+
+	isPause = false;
+
+	window->addOnCreate(this);
+
+	b_Options = window->GUI_.CreateButton(0, 0, 318, 86);
+	b_Options->setRelativePosition(gui::E_ANCHOR::A_CENTER, -159, -143);
+	b_Options->setTexture(AM->texture[AM_::E_TEXTURE::T_BOPTIONS]);
+	b_Options->setHoveOverColor(sf::Color::White);
+	b_Options->setFillColor(sf::Color(180, 180, 180));
+
+
+	b_Back = window->GUI_.CreateButton(0, 0, 248, 86);
+	b_Back->setRelativePosition(gui::E_ANCHOR::A_CENTER, -124, 43);
+	b_Back->setTexture(AM->texture[AM_::E_TEXTURE::T_BBACK]);
+	b_Back->setHoveOverColor(sf::Color::White);
+	b_Back->setFillColor(sf::Color(180, 180, 180));
+
+	b_Exit = window->GUI_.CreateButton(0, 0, 248, 86);
+	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER, -124, 143);
+	b_Exit->setTexture(AM->texture[AM_::E_TEXTURE::T_BEXIT]);
+	b_Exit->setHoveOverColor(sf::Color::White);
+	b_Exit->setFillColor(sf::Color(180, 180, 180));
+
+	background_pause.setSize(sf::Vector2f(window->getSize().x / 3, window->getSize().y));
+	background_pause.setPosition(window->getSize().x / 2 - background_pause.getSize().x / 2, window->getSize().y / 2 - background_pause.getSize().y / 2);
+	background_pause.setFillColor(sf::Color(55, 55, 55, 200));
+
+	show_gui(false);
+
+	background_game.setSize(sf::Vector2f(window->getSize()));
+	background_game.setTexture(&AM->texture[AM_::E_TEXTURE::T_BACKGROUND_GAME]);
+
+
+	tetromino.spawnFigure(NULL, NULL, &AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
+	tetromino.ini();
 }
 
 

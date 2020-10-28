@@ -7,7 +7,6 @@
 int main()
 {
 	ENTRY_POINT
-
 	return 0;
 }
 

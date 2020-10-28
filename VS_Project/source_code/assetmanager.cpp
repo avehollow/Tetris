@@ -3,7 +3,7 @@
 
 
 
-AM::AM()
+AM_::AM_()
 {
 	///
 	//! FONTS
@@ -67,6 +67,6 @@ AM::AM()
 	texture.back().loadFromFile("data/texture/blue.png");
 }
 
-AM::~AM()
+AM_::~AM_()
 {
 }

@@ -11,10 +11,10 @@ namespace gui
 class GAME: public STATE
 {
 public:
-    GAME(class GameWindow* w, class AM*);
+    GAME();
     virtual ~GAME();
 
-    virtual E_STATE handleInput(const sf::Event&) override;
+    virtual STATE* handleInput(const sf::Event&) override;
     virtual void update(const float&) override;
     virtual void render() const override;
 
@@ -22,7 +22,7 @@ public:
     virtual void show() override;
     virtual void hide() override;
     virtual void onCreate() override;
-    void ini();
+    virtual void ini() override;
 private:
     Tetromino tetromino;
 
@@ -35,7 +35,5 @@ private:
 
     bool isPause;
     void show_gui(bool show);
-
-
 };
 
