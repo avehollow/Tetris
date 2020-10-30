@@ -11,8 +11,11 @@ namespace gui
 class GAME: public STATE
 {
 public:
+   // friend class PDA;
     GAME();
     virtual ~GAME();
+    void setToPlay();
+
 
     virtual STATE* handleInput(const sf::Event&) override;
     virtual void update(const float&) override;
@@ -21,8 +24,8 @@ public:
 
     virtual void show() override;
     virtual void hide() override;
-    virtual void onCreate() override;
-    virtual void ini() override;
+    virtual void startUp() override;
+
 private:
     Tetromino tetromino;
 
@@ -35,5 +38,7 @@ private:
 
     bool isPause;
     void show_gui(bool show);
+
+    virtual void onCreate() override;
 };
 

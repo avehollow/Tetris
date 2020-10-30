@@ -23,6 +23,7 @@ STATE* MAINMENU::handleInput(const sf::Event& event)
 	{
 		AM->sound[AM_::E_SOUND::S_CLICK_1].play();
 		state = &game;
+		game.setToPlay();;
 	}
 	if (b_Exit->Pressed())
 	{
@@ -62,9 +63,8 @@ void MAINMENU::onCreate()
 {
 }
 
-void MAINMENU::ini()
+void MAINMENU::startUp()
 {
-
 	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
 	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, -b_Exit->getSize().x / 2, 126);
 	b_Exit->setTexture(AM->texture[AM_::E_TEXTURE::T_BEXIT]);
@@ -82,15 +82,14 @@ void MAINMENU::ini()
 	b_NewGame->setTexture(AM->texture[AM_::E_TEXTURE::T_BNEWGAME]);
 	b_NewGame->setHoveOverColor(sf::Color::White);
 	b_NewGame->setFillColor(sf::Color(180, 180, 180));
+
+	options.startUp();
+	game.startUp();
 }
 
 MAINMENU::~MAINMENU()
 {
 	//puts("Destruktor ~MAINMENU");
-
-	window->GUI_.erase((void*)b_NewGame);
-	window->GUI_.erase((void*)b_Options);
-	window->GUI_.erase((void*)b_Exit);
 }
 
 

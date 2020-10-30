@@ -1,5 +1,16 @@
 #pragma once
 
+enum E_FIGURE
+{
+	I = 0,
+	L,
+	T,
+	Z,
+	O,
+	LM,
+	ZM
+};
+
 class Figure: public sf::Drawable
 {
 	friend class Tetromino;
@@ -11,7 +22,9 @@ public:
 	void ini(float cube_size, class AM_* assetmanager, const sf::Vector2f& tetromino_pos);
 	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
 	void rotate();
+	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
 
+private:
 	void be_Z_(float pos_x, float pos_y, sf::Texture* texture);
 	void be_L_(float pos_x, float pos_y, sf::Texture* texture);
 	void be_I_(float pos_x, float pos_y, sf::Texture* texture);

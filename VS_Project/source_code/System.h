@@ -4,6 +4,7 @@
 #include "GameWindow.h"
 #include "PDA.h"
 #include "WORLD.h"
+#include "STATE.h"
 
 class System: public WORLD
 {
@@ -23,7 +24,7 @@ private:
 	sf::Text r_fps;
 	sf::Text u_fps;
 	sf::Event event_;
-	PDA menu_;
+	PDA<STATE> menu_;
 
 	float uFrame = 0;
 	float uFps   = 0;

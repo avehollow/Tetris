@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "System.h"
 #include "MainMenu.h"
-#include "Options.h"
-#include "Game.h"
+
 //! 1s = 1'000'000'000 ns
 //! 1s = 1'000'000 us
 //! 1s = 1'000 ms
@@ -12,19 +11,14 @@
 
 
 
-
 extern MAINMENU main_menu;
-extern GAME game;
-extern OPTIONS options;
 
 System::System()
 	: menu_(&main_menu)
 {
 	WORLD::ini();
 
-	main_menu.ini();
-	game.ini();
-	options.ini();
+	main_menu.startUp();
 
 	std::srand(time(NULL));
 	window->GUI_.reserve(50);

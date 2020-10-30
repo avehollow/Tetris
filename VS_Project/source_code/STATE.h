@@ -10,7 +10,7 @@ class STATE : public WORLD
          virtual void show() = 0;
          virtual void hide() = 0;
          virtual void onCreate() = 0;
-         virtual void ini() = 0;
+         virtual void startUp() = 0;
          virtual ~STATE() {};
 };
 

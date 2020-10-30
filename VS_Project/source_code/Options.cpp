@@ -15,8 +15,6 @@ OPTIONS::OPTIONS()
 
 OPTIONS::~OPTIONS()
 {
-	window->GUI_.erase((void*)b_Applay);
-	window->GUI_.erase((void*)b_Back);
 	//puts("Destruktor ~OPTIONS");
 }
 
@@ -63,7 +61,7 @@ void OPTIONS::onCreate()
 {
 }
 
-void OPTIONS::ini()
+void OPTIONS::startUp()
 {
 
 	b_Back = window->GUI_.CreateButton(0, 0, 247, 86);

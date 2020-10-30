@@ -111,9 +111,8 @@ void GAME::onCreate()
 	background_pause.setPosition(window->getSize().x / 2 - background_pause.getSize().x / 2, window->getSize().y / 2 - background_pause.getSize().y / 2);
 }
 
-void GAME::ini()
+void GAME::startUp()
 {
-
 	isPause = false;
 
 	window->addOnCreate(this);
@@ -146,8 +145,10 @@ void GAME::ini()
 	background_game.setSize(sf::Vector2f(window->getSize()));
 	background_game.setTexture(&AM->texture[AM_::E_TEXTURE::T_BACKGROUND_GAME]);
 
+}
 
-	tetromino.spawnFigure(NULL, NULL, &AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
+void GAME::setToPlay()
+{
 	tetromino.ini();
 }
 

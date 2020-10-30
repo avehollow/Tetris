@@ -2,16 +2,6 @@
 #include "Figure.h"
 #include "WORLD.h"
 
-enum E_FIGURE
-{
-	I = 0,
-	L,
-	T,
-	Z,
-	O,
-	LM,
-	ZM
-};
 
 class Tetromino : public sf::Drawable, public WORLD
 {
@@ -22,19 +12,20 @@ public:
 	void handleInput(const sf::Event& event);
 	void ini(int width = 10, int height = 20);
 	void onCreate();
-	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
-	sf::Vector2f getPosition()const { return background_tetromino.getPosition(); }
 	void pause();
 	void update(const float& tt);
 
 private:
-	Figure figure;
 	bool wall_kick();
 	bool collision_with_edges(float dir_x, float dir_y);
+
+private:
+	Figure figure;
 	sf::RectangleShape tetromino[200];
 	int collisions[200];
-
 	sf::RectangleShape background_tetromino;
+
+	std::mt19937 rand_gen;
 
 	sf::Clock shift_clock;
 	sf::Time  shift_interval;

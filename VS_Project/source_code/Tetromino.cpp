@@ -54,6 +54,7 @@ void Tetromino::handleInput(const sf::Event& event)
 
 void Tetromino::ini(int width, int height)
 {
+	shift_clock.restart();
 	shift_interval = sf::seconds(1);
 	shift_time = sf::seconds(0);
 
@@ -92,7 +93,7 @@ void Tetromino::ini(int width, int height)
 
 	figure.ini(cube_size, AM, sf::Vector2f(xx, yy));
 
-	spawnFigure(background_tetromino.getPosition().x, background_tetromino.getPosition().y, &AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
+	figure.spawnFigure(background_tetromino.getPosition().x , background_tetromino.getPosition().y - 3 * cube_size, &AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN], E_FIGURE::I);
 }
 
 
@@ -104,38 +105,6 @@ void Tetromino::onCreate()
 	int xx = (window->getSize().x / 2) - (WIDTH / 2 * cube_size);
 	int yy = (window->getSize().y / 2) - (HEIGHT / 2 * cube_size);
 	figure.onCreate(cube_size, sf::Vector2f(xx, yy));
-}
-
-void Tetromino::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type)
-{
-	float xx = background_tetromino.getPosition().x;
-	float yy = background_tetromino.getPosition().y;
-	switch (type)
-	{
-	case I:
-		figure.be_I_(xx, yy, texture);
-		break;
-	case L:
-		figure.be_L_(xx, yy, texture);
-		break;
-	case T:
-		figure.be_T_(xx, yy, texture);
-		break;
-	case Z:
-		figure.be_Z_(xx, yy, texture);
-		break;
-	case O:
-		figure.be_O_(xx, yy, texture);
-		break;
-	case LM:
-		figure.be_LM_(xx, yy, texture);
-		break;
-	case ZM:
-		figure.be_ZM_(xx, yy, texture);
-		break;
-	default:
-		break;
-	}
 }
 
 

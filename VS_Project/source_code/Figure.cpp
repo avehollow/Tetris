@@ -214,3 +214,35 @@ void Figure::rotate()
 
 	move(0, 0);
 }
+
+void Figure::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type)
+{
+	float xx = pos_x;
+	float yy = pos_y;
+	switch (type)
+	{
+	case I:
+		this->be_I_(xx, yy, texture);
+		break;
+	case L:
+		this->be_L_(xx, yy, texture);
+		break;
+	case T:
+		this->be_T_(xx, yy, texture);
+		break;
+	case Z:
+		this->be_Z_(xx, yy, texture);
+		break;
+	case O:
+		this->be_O_(xx, yy, texture);
+		break;
+	case LM:
+		this->be_LM_(xx, yy, texture);
+		break;
+	case ZM:
+		this->be_ZM_(xx, yy, texture);
+		break;
+	default:
+		break;
+	}
+}
