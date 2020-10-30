@@ -1,10 +1,7 @@
 #pragma once
 
-#include "assetmanager.h"
-#include "GameWindow.h"
 #include "PDA.h"
 #include "WORLD.h"
-#include "STATE.h"
 
 class System: public WORLD
 {
@@ -25,6 +22,7 @@ private:
 	sf::Text u_fps;
 	sf::Event event_;
 	PDA<STATE> menu_;
+	GameWindow* wnd;
 
 	float uFrame = 0;
 	float uFps   = 0;

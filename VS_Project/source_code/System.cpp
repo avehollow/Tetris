@@ -17,16 +17,16 @@ System::System()
 	: menu_(&main_menu)
 {
 	WORLD::ini();
-
+	wnd = window;
 	main_menu.startUp();
 
 	std::srand(time(NULL));
-	window->GUI_.reserve(50);
+	wnd->GUI_.reserve(50);
 
 	FPS = 120;
 	
-	r_fps.setPosition(window->getSize().x * 0.90f, window->getSize().y * 0.0f);
-	u_fps.setPosition(window->getSize().x * 0.90f, window->getSize().y * 0.025f);
+	r_fps.setPosition(wnd->getSize().x * 0.90f, wnd->getSize().y * 0.0f);
+	u_fps.setPosition(wnd->getSize().x * 0.90f, wnd->getSize().y * 0.025f);
 	r_fps.setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
 	u_fps.setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
 	r_fps.setCharacterSize(20);
@@ -49,15 +49,15 @@ System::~System()
 void System::HandleInput()
 {
 	
-	while (window->pollEvent(event_))
+	while (wnd->pollEvent(event_))
 	{
 		if (event_.type == sf::Event::Closed)
 		{
-			window->close();
+			wnd->close();
 			break;
 		}
 
-		window->GUI_.handleEvent(event_);
+		wnd->GUI_.handleEvent(event_);
 		menu_.handleInput(event_);
 	}
 }
@@ -74,13 +74,13 @@ void System::Render()
 
 
 
-	window->GUI_.draw();
+	wnd->GUI_.draw();
 
-	window->draw(r_fps);
-	window->draw(u_fps);
+	wnd->draw(r_fps);
+	wnd->draw(u_fps);
 
-	window->display();
-	window->clear();
+	wnd->display();
+	wnd->clear();
 }
 
 
@@ -107,7 +107,7 @@ void System::Run()
 	QueryPerformanceFrequency(&frequency);
 	QueryPerformanceCounter(&beg_time);
 	// // // //
-	while (window->isOpen())
+	while (wnd->isOpen())
 	{
 		QueryPerformanceCounter(&end_time);
 		TSLU += (((end_time.QuadPart - beg_time.QuadPart) * _1s_) / frequency.QuadPart);

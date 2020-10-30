@@ -5,7 +5,9 @@
 Figure::Figure()
 {
 	center_sprite.setSize(sf::Vector2f(5, 5));
-	center_sprite.setFillColor(sf::Color::Green);
+	center_sprite.setFillColor(sf::Color(255,0,0));
+
+
 	for (auto& idx : indices)
 	{
 		idx.x = 0;
@@ -56,7 +58,7 @@ void Figure::be_Z_(float pos_x, float pos_y, sf::Texture* texture)
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = false;
+	type = E_FIGURE::Z;
 }
 
 void Figure::be_L_(float pos_x, float pos_y, sf::Texture* texture)
@@ -72,7 +74,7 @@ void Figure::be_L_(float pos_x, float pos_y, sf::Texture* texture)
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = false;
+	type = E_FIGURE::L;
 }
 
 void Figure::be_I_(float pos_x, float pos_y, sf::Texture* texture)
@@ -88,7 +90,7 @@ void Figure::be_I_(float pos_x, float pos_y, sf::Texture* texture)
 	center_pos = sf::Vector2f(squares[2].getPosition().x - (cube_size / 2), squares[2].getPosition().y - (cube_size / 2));
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = true;
+	type = E_FIGURE::I;
 }
 
 void Figure::be_T_(float pos_x, float pos_y, sf::Texture* texture)
@@ -104,7 +106,7 @@ void Figure::be_T_(float pos_x, float pos_y, sf::Texture* texture)
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = false;
+	type = E_FIGURE::T;
 }
 
 void Figure::be_ZM_(float pos_x, float pos_y, sf::Texture* texture)
@@ -120,7 +122,7 @@ void Figure::be_ZM_(float pos_x, float pos_y, sf::Texture* texture)
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = false;
+	type = E_FIGURE::ZM;
 }
 
 void Figure::be_LM_(float pos_x, float pos_y, sf::Texture* texture)
@@ -136,7 +138,7 @@ void Figure::be_LM_(float pos_x, float pos_y, sf::Texture* texture)
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = false;
+	type = E_FIGURE::LM;
 }
 
 void Figure::be_O_(float pos_x, float pos_y, sf::Texture* texture)
@@ -146,13 +148,13 @@ void Figure::be_O_(float pos_x, float pos_y, sf::Texture* texture)
 
 	squares[0].setPosition(pos_x, pos_y);
 	squares[1].setPosition(pos_x +cube_size, pos_y);
-	squares[2].setPosition(pos_x, pos_y + cube_size);
-	squares[3].setPosition(pos_x +cube_size, pos_y + cube_size);
+	squares[3].setPosition(pos_x, pos_y + cube_size);
+	squares[2].setPosition(pos_x +cube_size, pos_y + cube_size);
 
-	center_pos = squares[1].getPosition();
+	center_pos = sf::Vector2f(squares[2].getPosition().x - (cube_size / 2), squares[2].getPosition().y - (cube_size / 2));
 	center_sprite.setPosition(center_pos);
 	move(0, 0);
-	isI = false;
+	type = E_FIGURE::O;
 }
 
 
@@ -164,12 +166,16 @@ void Figure::onCreate(int size_cube, const sf::Vector2f& tetromino_pos)
 		squares[i].setPosition(tetromino_pos.x + size_cube * indices[i].x, tetromino_pos.y + size_cube * indices[i].y);
 		squares[i].setSize(sf::Vector2f(size_cube, size_cube));
 	}
-	if (isI)
-		center_pos = sf::Vector2f(squares[2].getPosition().x - (size_cube / 2.0f), squares[2].getPosition().y - (size_cube / 2.0f));
+
+	if (type == E_FIGURE::I || type == E_FIGURE::O)
+		center_pos = sf::Vector2f(squares[2].getPosition().x - (size_cube / 2.0), squares[2].getPosition().y - (size_cube / 2.0));
 	else
 		center_pos = squares[1].getPosition();
 
 	center_sprite.setPosition(center_pos);
+
+	this->tetromino_pos.x = tetromino_pos.x; 
+	this->tetromino_pos.y = tetromino_pos.y;
 }
 
 void Figure::rotate()
@@ -212,7 +218,6 @@ void Figure::rotate()
 	TransformVector = sf::Vector2f(center_pos + Vt);
 	squares[3].setPosition(TransformVector);
 
-	move(0, 0);
 }
 
 void Figure::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type)

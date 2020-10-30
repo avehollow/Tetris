@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "Game.h"
-#include "assetmanager.h"
-#include "GameWindow.h"
 #include "Button.h"
 #include "Options.h"
 
@@ -75,7 +73,7 @@ void GAME::render()const
 {
 	window->draw(background_game);
 
-	window->draw(tetromino);
+	tetromino.draw(window);
 
 	if (isPause)
 		window->draw(background_pause);

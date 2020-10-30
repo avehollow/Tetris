@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "Options.h"
-#include "assetmanager.h"
-#include "GameWindow.h"
 #include "DropDownList.h"
 
 
@@ -28,7 +26,12 @@ STATE* OPTIONS::handleInput(const sf::Event& event)
 	}
 	else if (b_Applay->Pressed())
 	{
-		window->create(vm[ddl_vm->curr_value], "tetris", sf::Style::Fullscreen);
+#ifdef FS
+		window->create(vm[ddl_vm->curr_value], "Tetris", sf::Style::Fullscreen);
+#else
+		window->create(vm[ddl_vm->curr_value], "Tetris");
+#endif // FS
+
 	}
 
 	return state;

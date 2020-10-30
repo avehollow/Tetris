@@ -3,7 +3,7 @@
 #include "WORLD.h"
 
 
-class Tetromino : public sf::Drawable, public WORLD
+class Tetromino: public WORLD
 {
 public:
 	Tetromino();
@@ -11,13 +11,15 @@ public:
 
 	void handleInput(const sf::Event& event);
 	void ini(int width = 10, int height = 20);
-	void onCreate();
-	void pause();
+	void draw(GameWindow* __restrict const window) const ;
 	void update(const float& tt);
+	void pause();
+	void onCreate();
 
 private:
 	bool wall_kick();
 	bool collision_with_edges(float dir_x, float dir_y);
+	bool collision_with_cubes(float dir_x, float dir_y);
 
 private:
 	Figure figure;
@@ -42,16 +44,21 @@ private:
 	float cube_size_percent;
 	int cube_size;
 
-	// Inherited via Drawable
-	inline virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 };
 
-inline void Tetromino::draw(sf::RenderTarget& target, sf::RenderStates states) const
+inline void Tetromino::draw(GameWindow* __restrict const window) const
 {
-	target.draw(background_tetromino);
-	for (size_t y = 0; y < 20; y++)
-		for (size_t x = 0; x < 10; x++)
-			target.draw(tetromino[(10 * y) + x]);
+	window->draw(background_tetromino);
+	for (size_t y = 0; y < HEIGHT; y++)
+		for (size_t x = 0; x < WIDTH; x++)
+			window->draw(tetromino[(WIDTH * y) + x]);
 
-	target.draw(figure);
+	figure.draw(window);
+}
+
+inline void Tetromino::pause()
+{
+	shift_clock.restart();
+	shift_time = sf::seconds(0);
 }

@@ -1,5 +1,8 @@
 #pragma once
+#include "GameWindow.h"
+#include "assetmanager.h"
 
+#define FS1
 
 class WORLD
 {
