@@ -6,7 +6,7 @@
 class Tetromino: public WORLD
 {
 public:
-	Tetromino();
+	Tetromino() = default;
 	~Tetromino() = default;
 
 	void handleInput(const sf::Event& event);
@@ -15,11 +15,12 @@ public:
 	void update(const float& tt);
 	void pause();
 	void onCreate();
-
 private:
+	void check_tetris();
+	void play_anim_tetris();
 	bool wall_kick();
-	bool collision_with_edges(float dir_x, float dir_y);
-	bool collision_with_cubes(float dir_x, float dir_y);
+	bool collision_with_edges(int dir_x, int dir_y);
+	bool collision_with_cubes(int dir_x, int dir_y);
 
 private:
 	Figure figure;
@@ -33,6 +34,8 @@ private:
 	sf::Time  shift_interval;
 	sf::Time  shift_time;
 
+	std::vector<int> tetris_row;
+
 	int LEFT_WALL;
 	int RIGHT_WALL;
 	int FLOOR_EDGE;
@@ -45,6 +48,8 @@ private:
 	float cube_size_percent;
 	int cube_size;
 
+	bool tetris = false;
+	int at = 0;
 
 	bool xyz = false;
 	sf::View view;

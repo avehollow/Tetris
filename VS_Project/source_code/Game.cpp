@@ -5,21 +5,7 @@
 
 GAME game;
 
-
 extern OPTIONS options;
-
-GAME::GAME()
-{
-	//puts("CTOR Game");
-}
-
-GAME::~GAME()
-{
-	//puts("Destruktor ~Game");
-	window->GUI_.erase((void*)b_Options);
-	window->GUI_.erase((void*)b_Back);
-	window->GUI_.erase((void*)b_Exit);
-}
 
 STATE* GAME::handleInput(const sf::Event& event)
 {
@@ -36,6 +22,7 @@ STATE* GAME::handleInput(const sf::Event& event)
 		{
 			isPause = false;
 			show_gui(false);
+			tetromino.pause();
 		}
 		else if (b_Options->Pressed())
 		{
@@ -63,10 +50,7 @@ void GAME::update(const float& tt)
 	{
 		tetromino.update(tt);
 	}
-	else
-	{
-		tetromino.pause();
-	}
+
 }
 
 void GAME::render()const

@@ -21,20 +21,20 @@ public:
 	~Figure() = default;
 
 	void move(int dirx, int diry);
-	void ini(float cube_size, class AM_* assetmanager, const sf::Vector2f& tetromino_pos);
+	void ini(float cube_size, const sf::Vector2f& tetromino_pos);
 	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
 	void rotate();
-	void spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type);
+	void spawnFigure(float pos_x, float pos_y, const sf::Texture* texture, E_FIGURE type);
 	void draw(GameWindow* __restrict const window) const;
 
 private:
-	void be_Z_(float pos_x, float pos_y, sf::Texture* texture);
-	void be_L_(float pos_x, float pos_y, sf::Texture* texture);
-	void be_I_(float pos_x, float pos_y, sf::Texture* texture);
-	void be_T_(float pos_x, float pos_y, sf::Texture* texture);
-	void be_ZM_(float pos_x, float pos_y, sf::Texture* texture);
-	void be_LM_(float pos_x, float pos_y, sf::Texture* texture);
-	void be_O_(float pos_x, float pos_y, sf::Texture* texture);
+	void be_Z_(float pos_x, float pos_y, const sf::Texture* texture);
+	void be_L_(float pos_x, float pos_y, const sf::Texture* texture);
+	void be_I_(float pos_x, float pos_y, const sf::Texture* texture);
+	void be_T_(float pos_x, float pos_y, const sf::Texture* texture);
+	void be_ZM_(float pos_x, float pos_y, const sf::Texture* texture);
+	void be_LM_(float pos_x, float pos_y, const sf::Texture* texture);
+	void be_O_(float pos_x, float pos_y,  const sf::Texture* texture);
 
 private:
 	std::array<sf::RectangleShape, 4> squares;

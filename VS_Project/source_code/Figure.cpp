@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Figure.h"
-#include "assetmanager.h"
+
 
 Figure::Figure()
 {
@@ -22,17 +22,17 @@ void Figure::move(int dirx, int diry)
 	for (int i = 0; i < 4; i++)
 	{
 		squares[i].move(dirx * cube_size, diry * cube_size);
-		indices[i].x = (squares[i].getPosition().x - tetromino_pos.x ) / cube_size;
-		indices[i].y = (squares[i].getPosition().y - tetromino_pos.y ) / cube_size;
+		indices[i].x = abs((squares[i].getPosition().x - tetromino_pos.x ) / cube_size);
+		indices[i].y = abs((squares[i].getPosition().y - tetromino_pos.y ) / cube_size);
 	}
-	std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
+	//std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
 	center_pos.x += cube_size * dirx;
 	center_pos.y += cube_size * diry;
 	center_sprite.setPosition(center_pos);
 
 }
 
-void Figure::ini(float cube_size, AM_* assetmanager, const sf::Vector2f& tetromino_pos)
+void Figure::ini(float cube_size, const sf::Vector2f& tetromino_pos)
 {
 	this->cube_size = cube_size;
 	this->tetromino_pos = tetromino_pos;
@@ -45,7 +45,7 @@ void Figure::ini(float cube_size, AM_* assetmanager, const sf::Vector2f& tetromi
 
 
 
-void Figure::be_Z_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_Z_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
@@ -61,7 +61,7 @@ void Figure::be_Z_(float pos_x, float pos_y, sf::Texture* texture)
 	type = E_FIGURE::Z;
 }
 
-void Figure::be_L_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_L_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
@@ -77,7 +77,7 @@ void Figure::be_L_(float pos_x, float pos_y, sf::Texture* texture)
 	type = E_FIGURE::L;
 }
 
-void Figure::be_I_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_I_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
@@ -93,7 +93,7 @@ void Figure::be_I_(float pos_x, float pos_y, sf::Texture* texture)
 	type = E_FIGURE::I;
 }
 
-void Figure::be_T_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_T_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 
 	for (auto& sq : squares)
@@ -110,7 +110,7 @@ void Figure::be_T_(float pos_x, float pos_y, sf::Texture* texture)
 	type = E_FIGURE::T;
 }
 
-void Figure::be_ZM_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_ZM_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
@@ -126,7 +126,7 @@ void Figure::be_ZM_(float pos_x, float pos_y, sf::Texture* texture)
 	type = E_FIGURE::ZM;
 }
 
-void Figure::be_LM_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_LM_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
@@ -142,7 +142,7 @@ void Figure::be_LM_(float pos_x, float pos_y, sf::Texture* texture)
 	type = E_FIGURE::LM;
 }
 
-void Figure::be_O_(float pos_x, float pos_y, sf::Texture* texture)
+void Figure::be_O_(float pos_x, float pos_y,const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
@@ -222,7 +222,7 @@ void Figure::rotate()
 	move(0, 0);
 }
 
-void Figure::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type)
+void Figure::spawnFigure(float pos_x, float pos_y,const sf::Texture* texture, E_FIGURE type)
 {
 
 	float xx = pos_x;

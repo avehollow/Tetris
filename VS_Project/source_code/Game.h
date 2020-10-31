@@ -11,9 +11,8 @@ namespace gui
 class GAME: public STATE
 {
 public:
-   // friend class PDA;
-    GAME();
-    virtual ~GAME();
+    GAME() = default;
+    virtual ~GAME() = default;
     void setToPlay();
 
 
