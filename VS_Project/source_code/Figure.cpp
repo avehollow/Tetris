@@ -95,13 +95,14 @@ void Figure::be_I_(float pos_x, float pos_y, sf::Texture* texture)
 
 void Figure::be_T_(float pos_x, float pos_y, sf::Texture* texture)
 {
+
 	for (auto& sq : squares)
 		sq.setTexture(texture);
 
 	squares[0].setPosition(pos_x, pos_y + cube_size);
-	squares[1].setPosition(pos_y + cube_size, pos_y + cube_size);
-	squares[2].setPosition(pos_y + cube_size, pos_y);
-	squares[3].setPosition(pos_y + 2*cube_size, pos_y + cube_size);
+	squares[1].setPosition(pos_x + cube_size, pos_y + cube_size);
+	squares[2].setPosition(pos_x + cube_size, pos_y);
+	squares[3].setPosition(pos_x + 2*cube_size, pos_y + cube_size);
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
@@ -218,10 +219,12 @@ void Figure::rotate()
 	TransformVector = sf::Vector2f(center_pos + Vt);
 	squares[3].setPosition(TransformVector);
 
+	move(0, 0);
 }
 
 void Figure::spawnFigure(float pos_x, float pos_y, sf::Texture* texture, E_FIGURE type)
 {
+
 	float xx = pos_x;
 	float yy = pos_y;
 	switch (type)

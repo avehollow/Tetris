@@ -24,7 +24,7 @@ private:
 private:
 	Figure figure;
 	sf::RectangleShape tetromino[200];
-	int collisions[200];
+	int collisions[240];
 	sf::RectangleShape background_tetromino;
 
 	std::mt19937 rand_gen;
@@ -36,6 +36,7 @@ private:
 	int LEFT_WALL;
 	int RIGHT_WALL;
 	int FLOOR_EDGE;
+	int CEIL_EDGE;
 
 	int WIDTH;
 	int HEIGHT;
@@ -45,6 +46,9 @@ private:
 	int cube_size;
 
 
+	bool xyz = false;
+	sf::View view;
+	bool elo();
 };
 
 inline void Tetromino::draw(GameWindow* __restrict const window) const

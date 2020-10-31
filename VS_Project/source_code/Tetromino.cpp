@@ -26,6 +26,10 @@ void Tetromino::handleInput(const sf::Event& event)
 	{
 		figure.move(0, 1);
 	}
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
+	{
+		xyz = !xyz;
+	}
 
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
 	{
@@ -36,7 +40,21 @@ void Tetromino::handleInput(const sf::Event& event)
 		sf::Vector2f square2_before_rotation = figure.squares[1].getPosition();
 		sf::Vector2f square3_before_rotation = figure.squares[2].getPosition();
 		sf::Vector2f square4_before_rotation = figure.squares[3].getPosition();
+		sf::Vector2f center_before_rotation = figure.center_pos;
 		figure.rotate();
+		
+		if (collision_with_cubes(0,0))
+		{
+			if (!elo())
+			{
+				figure.squares[0].setPosition(square1_before_rotation);
+				figure.squares[1].setPosition(square2_before_rotation);
+				figure.squares[2].setPosition(square3_before_rotation);
+				figure.squares[3].setPosition(square4_before_rotation);
+				figure.center_pos = center_before_rotation;
+			}
+			pause();
+		}
 
 		// Wall kick is not possible
 		if (!this->wall_kick())
@@ -45,15 +63,21 @@ void Tetromino::handleInput(const sf::Event& event)
 			figure.squares[1].setPosition(square2_before_rotation);
 			figure.squares[2].setPosition(square3_before_rotation);
 			figure.squares[3].setPosition(square4_before_rotation);
+			figure.center_pos = center_before_rotation;
 		}
-
 		figure.move(0, 0);
+
 	}
+
+	
 }
 
 
 void Tetromino::ini(int width, int height)
 {
+	view = window->getDefaultView();
+	view.zoom(1.5);
+	window->setView(view);
 	rand_gen.seed(time(NULL));
 
 	
@@ -79,6 +103,13 @@ void Tetromino::ini(int width, int height)
 			tetromino[(WIDTH * y) + x].setSize(sf::Vector2f(cube_size, cube_size));
 			//tetromino[(10 * y) + x].setFillColor(sf::Color::Transparent);
 			tetromino[(WIDTH * y) + x].setTexture(&AM->texture[AM_::E_TEXTURE::T_CUBE_BLUE]);
+		}
+	}	
+	
+	for (size_t y = 0; y < HEIGHT + 4; y++)
+	{
+		for (size_t x = 0; x < WIDTH; x++)
+		{
 			collisions[(WIDTH * y) + x] = 0;
 		}
 	}
@@ -93,14 +124,16 @@ void Tetromino::ini(int width, int height)
 	LEFT_WALL = xx;
 	RIGHT_WALL = xx + (WIDTH - 1) * cube_size;
 	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
+	CEIL_EDGE = yy;
 
-	figure.ini(cube_size, AM, sf::Vector2f(xx, yy));
+	figure.ini(cube_size, AM, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
+
 
 	figure.spawnFigure(
 		background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
-		background_tetromino.getPosition().y - 3 * cube_size,
+		background_tetromino.getPosition().y - 2 * cube_size,
 		&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
-		//E_FIGURE::I);
+		//E_FIGURE::T);
 		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES));
 	
 }
@@ -122,14 +155,15 @@ void Tetromino::onCreate()
 		}
 	}
 
-	background_tetromino.setSize(sf::Vector2f(10 * cube_size, 20 * cube_size));
+	background_tetromino.setSize(sf::Vector2f(WIDTH * cube_size, HEIGHT * cube_size));
 	background_tetromino.setPosition(xx, yy);
 
 	LEFT_WALL = xx;
 	RIGHT_WALL = xx + (WIDTH - 1) * cube_size;
 	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
+	CEIL_EDGE = yy;
 
-	figure.onCreate(cube_size, sf::Vector2f(xx, yy));
+	figure.onCreate(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 
 }
 
@@ -141,26 +175,37 @@ void Tetromino::update(const float& tt)
 	{
 		if (!collision_with_edges(0, 1) && !collision_with_cubes(0, 1))
 		{
-			figure.move(0, 1);
+			//figure.move(0, 1);
 		}
 		else
 		{
+
 			sf::Vector2i c1 = figure.indices[0];
 			sf::Vector2i c2 = figure.indices[1];
 			sf::Vector2i c3 = figure.indices[2];
 			sf::Vector2i c4 = figure.indices[3];
 		
+			if (!xyz)
+			{
+				collisions[(WIDTH * c1.y ) + c1.x  ] = 1;
+				collisions[(WIDTH * c2.y ) + c2.x  ] = 1;
+				collisions[(WIDTH * c3.y ) + c3.x  ] = 1;
+				collisions[(WIDTH * c4.y ) + c4.x  ] = 1;
 
-			collisions[(WIDTH * c1.y ) + c1.x  ] = 1;
-			collisions[(WIDTH * c2.y ) + c2.x  ] = 1;
-			collisions[(WIDTH * c3.y ) + c3.x  ] = 1;
-			collisions[(WIDTH * c4.y ) + c4.x  ] = 1;
 
+
+				tetromino[(WIDTH * (c1.y-4) ) + c1.x  ].setTexture(figure.squares[0].getTexture());
+				tetromino[(WIDTH * (c2.y-4) ) + c2.x  ].setTexture(figure.squares[1].getTexture());
+				tetromino[(WIDTH * (c3.y-4) ) + c3.x  ].setTexture(figure.squares[2].getTexture());
+				tetromino[(WIDTH * (c4.y-4) ) + c4.x  ].setTexture(figure.squares[3].getTexture());
+
+			}
+			
 			figure.spawnFigure(
 				background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
-				background_tetromino.getPosition().y - 3 * cube_size,
+				background_tetromino.getPosition().y - 2 * cube_size,
 				&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
-				//E_FIGURE::I);
+				//E_FIGURE::T);
 				E_FIGURE(rand_gen() % NUMBER_OF_FIGURES));
 
 		}
@@ -177,12 +222,24 @@ bool Tetromino::wall_kick()
 			figure.squares[2].getPosition().x < LEFT_WALL || figure.squares[3].getPosition().x < LEFT_WALL)
 		{
 			// TODO Need check if wall kick is possible
-			if (true)
+			if (!collision_with_cubes(1,0))
 			{
 				figure.move(1,0);
 			}
 			else
 			{
+				figure.move(1,0);
+				if (!collision_with_cubes(1, 0))
+				{
+					figure.move(1, 0);
+					return true;
+				}
+
+				if (!collision_with_cubes(2, 0))
+				{
+					figure.move(2, 0);
+					return true;
+				}
 				// Wall kick is not possible
 				return false;
 			}
@@ -195,12 +252,24 @@ bool Tetromino::wall_kick()
 			figure.squares[2].getPosition().x > RIGHT_WALL || figure.squares[3].getPosition().x > RIGHT_WALL)
 		{
 			// TODO Need check if wall kick is possible
-			if (true)
+			if (!collision_with_cubes(-1, 0))
 			{
 				figure.move(-1, 0);
 			}
 			else
 			{
+				figure.move(-1, 0);
+				if (!collision_with_cubes(-1, 0))
+				{
+					figure.move(-1, 0);
+					return true;
+				}
+
+				if (!collision_with_cubes(-2, 0))
+				{
+					figure.move(-2, 0);
+					return true;
+				}
 				// Wall kick is not possible
 				return false;
 			}
@@ -211,19 +280,34 @@ bool Tetromino::wall_kick()
 			figure.squares[2].getPosition().y > FLOOR_EDGE || figure.squares[3].getPosition().y > FLOOR_EDGE)
 		{
 			// TODO Need check if wall kick is possible
-			if (true)
+			if (!collision_with_cubes(0, -1))
 			{
 
 				figure.move(0, -1);
 			}
 			else
 			{
+				figure.move(0, -1);
+
+				if (!collision_with_cubes(0, -1))
+				{
+					figure.move(0, -1);
+					return true;
+				}
+
+				if (!collision_with_cubes(0, -2))
+				{
+					figure.move(0, -2);
+					return true;
+				}
+		
 				// Wall kick is not possible
 				return false;
+				
 			}
 		}
 	}
-
+	pause();
 	return true;
 }
 
@@ -264,27 +348,56 @@ bool Tetromino::collision_with_cubes(float dir_x, float dir_y)
 	sf::Vector2i c2 = figure.indices[1];
 	sf::Vector2i c3 = figure.indices[2];
 	sf::Vector2i c4 = figure.indices[3];
-	float cs = figure.cube_size;
 
 	if (collisions[(WIDTH * (c1.y + (int)dir_y)) + (c1.x + (int)dir_x)] || 
 		collisions[(WIDTH * (c2.y + (int)dir_y)) + (c2.x + (int)dir_x)] ||
 		collisions[(WIDTH * (c3.y + (int)dir_y)) + (c3.x + (int)dir_x)] || 
 		collisions[(WIDTH * (c4.y + (int)dir_y)) + (c4.x + (int)dir_x)] 
-
-		/*collisions[(HEIGHT * c1.y) + (c1.x + 1 )] ||
-		collisions[(HEIGHT * c2.y) + (c2.x + 1 )] ||
-		collisions[(HEIGHT * c3.y) + (c3.x + 1 )] ||
-		collisions[(HEIGHT * c4.y) + (c4.x + 1 )] ||
-
-		collisions[(HEIGHT * c1.y) + (c1.x - 1)] ||
-		collisions[(HEIGHT * c2.y) + (c2.x - 1)] ||
-		collisions[(HEIGHT * c3.y) + (c3.x - 1)] ||
-		collisions[(HEIGHT * c4.y) + (c4.x - 1)] */
 		)
 	{
 		return true;
 	}
 
+	return false;
+}
+
+bool Tetromino::elo()
+{
+	if (!collision_with_cubes(1,0))
+	{
+		figure.move(1, 0);
+		return true;
+	}
+
+	if (!collision_with_cubes(2, 0))
+	{
+		figure.move(2, 0);
+		return true;
+	}
+
+	if (!collision_with_cubes(-1,0))
+	{
+		figure.move(-1, 0);
+		return true;
+	}
+
+	if (!collision_with_cubes(-2, 0))
+	{
+		figure.move(-2, 0);
+		return true;
+	}
+
+	if (!collision_with_cubes(0, -1))
+	{
+		figure.move(0, -1);
+		return true;
+	}
+
+	if (!collision_with_cubes(0, -2))
+	{
+		figure.move(0, -2);
+		return true;
+	}
 	return false;
 }
 
