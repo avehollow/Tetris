@@ -18,6 +18,8 @@ public:
 private:
 	void check_tetris();
 	void play_anim_tetris();
+	void lose();
+
 	bool wall_kick();
 	bool collision_with_edges(int dir_x, int dir_y);
 	bool collision_with_cubes(int dir_x, int dir_y);
@@ -54,6 +56,8 @@ private:
 	bool xyz = false;
 	sf::View view;
 	bool elo();
+
+	void (Tetromino::*s)();
 };
 
 inline void Tetromino::draw(GameWindow* __restrict const window) const
@@ -63,6 +67,16 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 		for (size_t x = 0; x < WIDTH; x++)
 			window->draw(tetromino[(WIDTH * y) + x]);
 
+	sf::RectangleShape s;
+	s.setSize(sf::Vector2f(cube_size, cube_size));
+	s.setFillColor(sf::Color(200, 200, 0));
+
+	for (size_t y = 1; y <= 4; y++)
+		for (size_t x = 0; x < WIDTH; x++)
+		{
+			s.setPosition(background_tetromino.getPosition().x + x *cube_size, background_tetromino.getPosition().y - y * cube_size);
+			window->draw(s);
+		}
 	figure.draw(window);
 }
 

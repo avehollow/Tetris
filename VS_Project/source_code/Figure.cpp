@@ -22,10 +22,10 @@ void Figure::move(int dirx, int diry)
 	for (int i = 0; i < 4; i++)
 	{
 		squares[i].move(dirx * cube_size, diry * cube_size);
-		indices[i].x = abs((squares[i].getPosition().x - tetromino_pos.x ) / cube_size);
-		indices[i].y = abs((squares[i].getPosition().y - tetromino_pos.y ) / cube_size);
+		indices[i].x = (squares[i].getPosition().x - tetromino_pos.x ) / cube_size;
+		indices[i].y = (squares[i].getPosition().y - tetromino_pos.y ) / cube_size;
 	}
-	//std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
+	std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
 	center_pos.x += cube_size * dirx;
 	center_pos.y += cube_size * diry;
 	center_sprite.setPosition(center_pos);
@@ -34,6 +34,7 @@ void Figure::move(int dirx, int diry)
 
 void Figure::ini(float cube_size, const sf::Vector2f& tetromino_pos)
 {
+
 	this->cube_size = cube_size;
 	this->tetromino_pos = tetromino_pos;
 
