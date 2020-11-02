@@ -6,74 +6,7 @@
 
 void Tetromino::handleInput(const sf::Event& event)
 {
-	if (tetris)
-	{
-		return;
-	}
-
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left  && !collision_with_edges(-1,0) && !collision_with_cubes(-1,0))
-	{
-		figure.move(-1, 0);
-	}
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && !collision_with_edges(1, 0) && !collision_with_cubes(1, 0))
-	{
-		figure.move(1, 0);
-	}
-
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && !collision_with_edges(0, -1) && !collision_with_cubes(0, -1))
-	{
-		figure.move(0, -1);
-	}
-
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !collision_with_edges(0, 1) && !collision_with_cubes(0, 1))
-	{
-		figure.move(0, 1);
-		pause();
-	}
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
-	{
-		xyz = !xyz;
-	}
-
-	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
-	{
-		////
-		//   When function WallKick() return false
-		//		 Get the postion of the squares before rotation :)
-		sf::Vector2f square1_before_rotation = figure.squares[0].getPosition();
-		sf::Vector2f square2_before_rotation = figure.squares[1].getPosition();
-		sf::Vector2f square3_before_rotation = figure.squares[2].getPosition();
-		sf::Vector2f square4_before_rotation = figure.squares[3].getPosition();
-		sf::Vector2f center_before_rotation = figure.center_pos;
-		figure.rotate();
-		
-		if (collision_with_cubes(0,0))
-		{
-			if (!elo())
-			{
-				figure.squares[0].setPosition(square1_before_rotation);
-				figure.squares[1].setPosition(square2_before_rotation);
-				figure.squares[2].setPosition(square3_before_rotation);
-				figure.squares[3].setPosition(square4_before_rotation);
-				figure.center_pos = center_before_rotation;
-			}
-			pause();
-		}
-
-		// Wall kick is not possible
-		if (!this->wall_kick())
-		{
-			figure.squares[0].setPosition(square1_before_rotation);
-			figure.squares[1].setPosition(square2_before_rotation);
-			figure.squares[2].setPosition(square3_before_rotation);
-			figure.squares[3].setPosition(square4_before_rotation);
-			figure.center_pos = center_before_rotation;
-		}
-		figure.move(0, 0);
-
-	}
-
-	
+	(this->*curr_hdl_fun)(event);
 }
 
 
@@ -135,12 +68,16 @@ void Tetromino::ini(int width, int height)
 	figure.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 
 
+	int __t = rand_gen() % NUMBER_OF_FIGURES;
 	figure.spawnFigure(
 		background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
 		background_tetromino.getPosition().y - 2 * cube_size,
 		&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
-		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES));
-	
+		E_FIGURE(__t),
+		__t % 4);
+
+	curr_hdl_fun = &Tetromino::standard_input;
+	curr_upd_fun = &Tetromino::tick;
 }
 
 
@@ -169,12 +106,10 @@ void Tetromino::onCreate()
 	CEIL_EDGE = yy;
 
 	figure.onCreate(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
-
 }
 
 void Tetromino::check_tetris()
 {
-
  	int yes = 0;
 	for (int y = 0; y < HEIGHT + 4; y++)
 	{
@@ -188,15 +123,15 @@ void Tetromino::check_tetris()
 				collisions[(WIDTH * y) + x] = 0;
 
 			tetris_row[y] = y;
-			tetris = true;
-			s = &play_anim_tetris;
+			curr_upd_fun = &Tetromino::play_anim_tetris;
+			curr_hdl_fun = &Tetromino::disable_input;
 		}
 			yes = 0;
 	}
 	
 }
 
-void Tetromino::play_anim_tetris()
+void Tetromino::play_anim_tetris(const float& tt)
 {
 	static int n = 0;
 	for (auto& y : tetris_row)
@@ -215,68 +150,144 @@ void Tetromino::play_anim_tetris()
 		at = 0;
 		for (auto& y : tetris_row)
 			y = -1;
-		tetris = false;
+		curr_upd_fun = &Tetromino::tick;
+		curr_hdl_fun = &Tetromino::standard_input;
 	}
 
 }
 
-void Tetromino::lose()
+void Tetromino::lose(const float& tt)
 {
+}
+
+void Tetromino::tick(const float& tt)
+{
+	if (!collision_with_edges(0, 1) && !collision_with_cubes(0, 1))
+	{
+		figure.move(0, 1);
+	}
+	else
+	{
+
+		sf::Vector2i c1 = figure.indices[0];
+		sf::Vector2i c2 = figure.indices[1];
+		sf::Vector2i c3 = figure.indices[2];
+		sf::Vector2i c4 = figure.indices[3];
+
+		if (!xyz)
+		{
+			if (c1.y < 4 || c2.y < 4 || c3.y < 4 || c4.y < 4)
+			{
+				ini();
+				return;
+			}
+			collisions[(WIDTH * c1.y) + c1.x] = 1;
+			collisions[(WIDTH * c2.y) + c2.x] = 1;
+			collisions[(WIDTH * c3.y) + c3.x] = 1;
+			collisions[(WIDTH * c4.y) + c4.x] = 1;
+
+			tetromino[(WIDTH * (c1.y - 4)) + c1.x].setTexture(figure.squares[0].getTexture());
+			tetromino[(WIDTH * (c2.y - 4)) + c2.x].setTexture(figure.squares[1].getTexture());
+			tetromino[(WIDTH * (c3.y - 4)) + c3.x].setTexture(figure.squares[2].getTexture());
+			tetromino[(WIDTH * (c4.y - 4)) + c4.x].setTexture(figure.squares[3].getTexture());
+
+			tetromino[(WIDTH * (c1.y - 4)) + c1.x].setFillColor(sf::Color::White);
+			tetromino[(WIDTH * (c2.y - 4)) + c2.x].setFillColor(sf::Color::White);
+			tetromino[(WIDTH * (c3.y - 4)) + c3.x].setFillColor(sf::Color::White);
+			tetromino[(WIDTH * (c4.y - 4)) + c4.x].setFillColor(sf::Color::White);
+
+		}
+
+		int __t = rand_gen() % NUMBER_OF_FIGURES;
+		figure.spawnFigure(
+			background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
+			background_tetromino.getPosition().y - 2 * cube_size,
+			&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
+			E_FIGURE(__t),
+			__t % 4
+		);
+
+		check_tetris();
+	}
+
+}
+
+void Tetromino::standard_input(const sf::Event& event)
+{
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && !collision_with_edges(-1, 0) && !collision_with_cubes(-1, 0))
+	{
+		figure.move(-1, 0);
+	}
+	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && !collision_with_edges(1, 0) && !collision_with_cubes(1, 0))
+	{
+		figure.move(1, 0);
+	}
+
+	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && !collision_with_edges(0, -1) && !collision_with_cubes(0, -1))
+	{
+		figure.move(0, -1);
+	}
+
+	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !collision_with_edges(0, 1) && !collision_with_cubes(0, 1))
+	{
+		figure.move(0, 1);
+		pause();
+	}
+	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
+	{
+		xyz = !xyz;
+	}
+
+	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+	{
+		////
+		//   When function WallKick() return false
+		//		 Get the postion of the squares before rotation :)
+		sf::Vector2f square1_before_rotation = figure.squares[0].getPosition();
+		sf::Vector2f square2_before_rotation = figure.squares[1].getPosition();
+		sf::Vector2f square3_before_rotation = figure.squares[2].getPosition();
+		sf::Vector2f square4_before_rotation = figure.squares[3].getPosition();
+		sf::Vector2f center_before_rotation = figure.center_pos;
+		figure.rotate();
+
+		if (collision_with_cubes(0, 0))
+		{
+			if (!elo())
+			{
+				figure.squares[0].setPosition(square1_before_rotation);
+				figure.squares[1].setPosition(square2_before_rotation);
+				figure.squares[2].setPosition(square3_before_rotation);
+				figure.squares[3].setPosition(square4_before_rotation);
+				figure.center_pos = center_before_rotation;
+			}
+		}
+
+		// Wall kick is not possible
+		if (!this->wall_kick())
+		{
+			figure.squares[0].setPosition(square1_before_rotation);
+			figure.squares[1].setPosition(square2_before_rotation);
+			figure.squares[2].setPosition(square3_before_rotation);
+			figure.squares[3].setPosition(square4_before_rotation);
+			figure.center_pos = center_before_rotation;
+		}
+		figure.move(0, 0);
+		pause();
+	}
+}
+
+void Tetromino::disable_input(const sf::Event& event)
+{
+	// None input
 }
 
 
 void Tetromino::update(const float& tt)
 {
-	
-
 	shift_time += shift_clock.restart();
 	if (shift_time >= shift_interval)
 	{
-		(this->*s)();
-		if (tetris)
-		{
-			play_anim_tetris();
-		}
-		else if (!collision_with_edges(0, 1) && !collision_with_cubes(0, 1))
-		{
-			//figure.move(0, 1);
-		}
-		else
-		{
-
-			sf::Vector2i c1 = figure.indices[0];
-			sf::Vector2i c2 = figure.indices[1];
-			sf::Vector2i c3 = figure.indices[2];
-			sf::Vector2i c4 = figure.indices[3];
-		
-			if (!xyz)
-			{
-				collisions[(WIDTH * c1.y) + c1.x] = 1;
-				collisions[(WIDTH * c2.y) + c2.x] = 1;
-				collisions[(WIDTH * c3.y) + c3.x] = 1;
-				collisions[(WIDTH * c4.y) + c4.x] = 1;
-
-				tetromino[(WIDTH * (c1.y - 4)) + c1.x].setTexture(figure.squares[0].getTexture());
-				tetromino[(WIDTH * (c2.y - 4)) + c2.x].setTexture(figure.squares[1].getTexture());
-				tetromino[(WIDTH * (c3.y - 4)) + c3.x].setTexture(figure.squares[2].getTexture());
-				tetromino[(WIDTH * (c4.y - 4)) + c4.x].setTexture(figure.squares[3].getTexture());
-
-				tetromino[(WIDTH * (c1.y - 4)) + c1.x].setFillColor(sf::Color::White);
-				tetromino[(WIDTH * (c2.y - 4)) + c2.x].setFillColor(sf::Color::White);
-				tetromino[(WIDTH * (c3.y - 4)) + c3.x].setFillColor(sf::Color::White);
-				tetromino[(WIDTH * (c4.y - 4)) + c4.x].setFillColor(sf::Color::White);
-
-			}
-			
-			figure.spawnFigure(
-				background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
-				background_tetromino.getPosition().y - 2 * cube_size,
-				&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
-				E_FIGURE(rand_gen() % NUMBER_OF_FIGURES));
-
-			check_tetris();
-
-		}
+		(this->*curr_upd_fun)(tt);
 		shift_time -= shift_interval;
 	}
 }

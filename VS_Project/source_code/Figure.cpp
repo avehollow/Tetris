@@ -148,10 +148,10 @@ void Figure::be_O_(float pos_x, float pos_y,const sf::Texture* texture)
 	for (auto& sq : squares)
 		sq.setTexture(texture);
 
-	squares[0].setPosition(pos_x, pos_y);
-	squares[1].setPosition(pos_x +cube_size, pos_y);
-	squares[3].setPosition(pos_x, pos_y + cube_size);
-	squares[2].setPosition(pos_x +cube_size, pos_y + cube_size);
+	squares[0].setPosition(pos_x + cube_size, pos_y);
+	squares[1].setPosition(pos_x + cube_size +cube_size, pos_y);
+	squares[3].setPosition(pos_x + cube_size, pos_y + cube_size);
+	squares[2].setPosition(pos_x + cube_size +cube_size, pos_y + cube_size);
 
 	center_pos = sf::Vector2f(squares[2].getPosition().x - (cube_size / 2), squares[2].getPosition().y - (cube_size / 2));
 	center_sprite.setPosition(center_pos);
@@ -223,7 +223,7 @@ void Figure::rotate()
 	move(0, 0);
 }
 
-void Figure::spawnFigure(float pos_x, float pos_y,const sf::Texture* texture, E_FIGURE type)
+void Figure::spawnFigure(float pos_x, float pos_y,const sf::Texture* texture, E_FIGURE type, size_t rotation)
 {
 
 	float xx = pos_x;
@@ -254,4 +254,7 @@ void Figure::spawnFigure(float pos_x, float pos_y,const sf::Texture* texture, E_
 	default:
 		break;
 	}
+	for (size_t i = 0; i < rotation; i++)
+		rotate();
+	
 }

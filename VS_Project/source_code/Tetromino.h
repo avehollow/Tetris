@@ -16,10 +16,14 @@ public:
 	void pause();
 	void onCreate();
 private:
-	void check_tetris();
-	void play_anim_tetris();
-	void lose();
+	void play_anim_tetris(const float& tt);
+	void lose(const float& tt);
+	void tick(const float& tt);
 
+	void standard_input(const sf::Event& event);
+	void disable_input(const sf::Event& event);
+
+	void check_tetris();
 	bool wall_kick();
 	bool collision_with_edges(int dir_x, int dir_y);
 	bool collision_with_cubes(int dir_x, int dir_y);
@@ -50,14 +54,14 @@ private:
 	float cube_size_percent;
 	int cube_size;
 
-	bool tetris = false;
 	int at = 0;
 
 	bool xyz = false;
 	sf::View view;
 	bool elo();
 
-	void (Tetromino::*s)();
+	void (Tetromino::*curr_upd_fun)(const float& tt);
+	void (Tetromino::*curr_hdl_fun)(const sf::Event& event);
 };
 
 inline void Tetromino::draw(GameWindow* __restrict const window) const

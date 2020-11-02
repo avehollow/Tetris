@@ -24,7 +24,7 @@ public:
 	void ini(float cube_size, const sf::Vector2f& tetromino_pos);
 	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
 	void rotate();
-	void spawnFigure(float pos_x, float pos_y, const sf::Texture* texture, E_FIGURE type);
+	void spawnFigure(float pos_x, float pos_y, const sf::Texture* texture, E_FIGURE type, size_t rotation);
 	void draw(GameWindow* __restrict const window) const;
 
 private:
