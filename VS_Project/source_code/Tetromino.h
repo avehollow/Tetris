@@ -17,6 +17,7 @@ public:
 	void onCreate();
 private:
 	void play_anim_tetris(const float& tt);
+	void shift_tetris(const float& tt);
 	void lose(const float& tt);
 	void tick(const float& tt);
 
@@ -34,7 +35,9 @@ private:
 	int collisions[240];
 	sf::RectangleShape background_tetromino;
 
+	std::random_device rd;
 	std::mt19937 rand_gen;
+
 
 	sf::Clock shift_clock;
 	sf::Time  shift_interval;
@@ -54,14 +57,14 @@ private:
 	float cube_size_percent;
 	int cube_size;
 
-	int at = 0;
-
 	bool xyz = false;
 	sf::View view;
 	bool elo();
 
 	void (Tetromino::*curr_upd_fun)(const float& tt);
 	void (Tetromino::*curr_hdl_fun)(const sf::Event& event);
+
+	int numT = 0;
 };
 
 inline void Tetromino::draw(GameWindow* __restrict const window) const

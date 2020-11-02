@@ -65,6 +65,21 @@ AM_::AM_()
 
 	texture.emplace_back(sf::Texture());
 	texture.back().loadFromFile("data/texture/blue.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/gold.png");	
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/red.png");
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/cyan.png");
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/purple.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/yellow.png");
 }
 
 AM_::~AM_()

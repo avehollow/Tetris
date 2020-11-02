@@ -12,13 +12,14 @@ void Tetromino::handleInput(const sf::Event& event)
 
 void Tetromino::ini(int width, int height)
 {
+	
 	view = window->getDefaultView();
 	view.zoom(1.5);
 	window->setView(view);
 
 	tetris_row.resize(height + 4, -1);
 
-	rand_gen.seed(time(NULL));
+	rand_gen.seed(rd());
 
 	
 	shift_interval = sf::seconds(1);
@@ -67,14 +68,12 @@ void Tetromino::ini(int width, int height)
 
 	figure.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 
-
-	int __t = rand_gen() % NUMBER_OF_FIGURES;
 	figure.spawnFigure(
 		background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
 		background_tetromino.getPosition().y - 2 * cube_size,
-		&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
-		E_FIGURE(__t),
-		__t % 4);
+		&AM->texture[(rand_gen() % 7) + 8],
+		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
+		rand_gen() % 4);
 
 	curr_hdl_fun = &Tetromino::standard_input;
 	curr_upd_fun = &Tetromino::tick;
@@ -125,15 +124,16 @@ void Tetromino::check_tetris()
 			tetris_row[y] = y;
 			curr_upd_fun = &Tetromino::play_anim_tetris;
 			curr_hdl_fun = &Tetromino::disable_input;
+			numT++;
 		}
 			yes = 0;
 	}
-	
+		
 }
 
 void Tetromino::play_anim_tetris(const float& tt)
 {
-	static int n = 0;
+	static int at = 0;
 	for (auto& y : tetris_row)
 	{
 		if (y != -1)
@@ -141,19 +141,46 @@ void Tetromino::play_anim_tetris(const float& tt)
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) + at].setFillColor(sf::Color::Transparent);
 			// AVE LOOK problem with unusual size of tetromino
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) - (at+1)].setFillColor(sf::Color::Transparent);
-			n++;
+
 		}
 	}
 	if (at++; at == WIDTH / 2)
 	{
-		n = 0;
 		at = 0;
+		curr_upd_fun = &Tetromino::shift_tetris;
+		// wyzerowc wektor aby bylo -1
+	}
+
+}
+
+//AVE LOOK tetris_row u¿yæ erase and push_back
+
+void Tetromino::shift_tetris(const float& tt)
+{
+	for (int row = 5, size  = tetris_row.size(); row < size ; row++)
+	{
+		for (int y = row; (tetris_row[row] != -1) && (y >= 5); y--)
+		{
+			for (int x = 0; x < WIDTH; x++)
+			{
+				tetromino[(WIDTH * (y - 4)) + x].setTexture(tetromino[(WIDTH * (y - 5)) + x].getTexture());
+			}
+		}
+		/*for (int x = 0; x < WIDTH; x++)
+		{
+			tetromino[(WIDTH * (row - 5)) + x].setFillColor(sf::Color::Transparent);
+		}*/
+	}
+
+	if (numT--; numT == 0)
+	{
 		for (auto& y : tetris_row)
 			y = -1;
 		curr_upd_fun = &Tetromino::tick;
 		curr_hdl_fun = &Tetromino::standard_input;
 	}
-
+	//curr_upd_fun = &Tetromino::tick;
+	//curr_hdl_fun = &Tetromino::standard_input;
 }
 
 void Tetromino::lose(const float& tt)
@@ -181,30 +208,33 @@ void Tetromino::tick(const float& tt)
 				ini();
 				return;
 			}
-			collisions[(WIDTH * c1.y) + c1.x] = 1;
-			collisions[(WIDTH * c2.y) + c2.x] = 1;
-			collisions[(WIDTH * c3.y) + c3.x] = 1;
-			collisions[(WIDTH * c4.y) + c4.x] = 1;
+			else
+			{
+				collisions[(WIDTH * c1.y) + c1.x] = 1;
+				collisions[(WIDTH * c2.y) + c2.x] = 1;
+				collisions[(WIDTH * c3.y) + c3.x] = 1;
+				collisions[(WIDTH * c4.y) + c4.x] = 1;
 
-			tetromino[(WIDTH * (c1.y - 4)) + c1.x].setTexture(figure.squares[0].getTexture());
-			tetromino[(WIDTH * (c2.y - 4)) + c2.x].setTexture(figure.squares[1].getTexture());
-			tetromino[(WIDTH * (c3.y - 4)) + c3.x].setTexture(figure.squares[2].getTexture());
-			tetromino[(WIDTH * (c4.y - 4)) + c4.x].setTexture(figure.squares[3].getTexture());
+				tetromino[(WIDTH * (c1.y - 4)) + c1.x].setTexture(figure.squares[0].getTexture());
+				tetromino[(WIDTH * (c2.y - 4)) + c2.x].setTexture(figure.squares[1].getTexture());
+				tetromino[(WIDTH * (c3.y - 4)) + c3.x].setTexture(figure.squares[2].getTexture());
+				tetromino[(WIDTH * (c4.y - 4)) + c4.x].setTexture(figure.squares[3].getTexture());
 
-			tetromino[(WIDTH * (c1.y - 4)) + c1.x].setFillColor(sf::Color::White);
-			tetromino[(WIDTH * (c2.y - 4)) + c2.x].setFillColor(sf::Color::White);
-			tetromino[(WIDTH * (c3.y - 4)) + c3.x].setFillColor(sf::Color::White);
-			tetromino[(WIDTH * (c4.y - 4)) + c4.x].setFillColor(sf::Color::White);
+				tetromino[(WIDTH * (c1.y - 4)) + c1.x].setFillColor(sf::Color::White);
+				tetromino[(WIDTH * (c2.y - 4)) + c2.x].setFillColor(sf::Color::White);
+				tetromino[(WIDTH * (c3.y - 4)) + c3.x].setFillColor(sf::Color::White);
+				tetromino[(WIDTH * (c4.y - 4)) + c4.x].setFillColor(sf::Color::White);
+			}
 
 		}
 
-		int __t = rand_gen() % NUMBER_OF_FIGURES;
+		
 		figure.spawnFigure(
 			background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
 			background_tetromino.getPosition().y - 2 * cube_size,
-			&AM->texture[AM_::E_TEXTURE::T_CUBE_GREEN],
-			E_FIGURE(__t),
-			__t % 4
+			&AM->texture[(rand_gen() % 7) + 8],
+			E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
+			rand_gen() % 4
 		);
 
 		check_tetris();

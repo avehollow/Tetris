@@ -50,6 +50,10 @@ void GAME::update(const float& tt)
 	{
 		tetromino.update(tt);
 	}
+	else
+	{
+		tetromino.pause();
+	}
 
 }
 
