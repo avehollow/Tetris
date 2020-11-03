@@ -148,7 +148,6 @@ void Tetromino::play_anim_tetris(const float& tt)
 	{
 		at = 0;
 		curr_upd_fun = &Tetromino::shift_tetris;
-		// wyzerowc wektor aby bylo -1
 	}
 
 }
@@ -157,30 +156,56 @@ void Tetromino::play_anim_tetris(const float& tt)
 
 void Tetromino::shift_tetris(const float& tt)
 {
-	for (int row = 5, size  = tetris_row.size(); row < size ; row++)
+	/*for (int row = 5, size  = tetris_row.size(); row < size ; row++)
 	{
 		for (int y = row; (tetris_row[row] != -1) && (y >= 5); y--)
 		{
 			for (int x = 0; x < WIDTH; x++)
 			{
 				tetromino[(WIDTH * (y - 4)) + x].setTexture(tetromino[(WIDTH * (y - 5)) + x].getTexture());
+				tetromino[(WIDTH * (y - 4)) + x].setFillColor(tetromino[(WIDTH * (y - 5)) + x].getFillColor());
+				collisions[(WIDTH * (y) + x)] = collisions[(WIDTH * (y - 1) + x)]; 
 			}
 		}
-		/*for (int x = 0; x < WIDTH; x++)
-		{
-			tetromino[(WIDTH * (row - 5)) + x].setFillColor(sf::Color::Transparent);
-		}*/
 	}
+
+	for (int x = 0; x < WIDTH; x++)
+		tetromino[x].setFillColor(sf::Color::Transparent);
+	
+	for (auto& y : tetris_row)
+		y = -1;
+	curr_upd_fun = &Tetromino::tick;
+	curr_hdl_fun = &Tetromino::standard_input;*/
+
+	for (int y = HEIGHT - 2; y >= 0; y--)
+	{
+		int a = 0;
+		for (int x = 0; x < WIDTH; x++)
+		{
+			a += collisions[(WIDTH * (y + 5)) + x];
+		}
+
+		if (!a)
+		{
+			for (int x = 0; x < WIDTH; x++)
+			{
+				tetromino[(WIDTH * (y + 1)) + x].setTexture(tetromino[(WIDTH * y) + x].getTexture());
+				tetromino[(WIDTH * (y + 1)) + x].setFillColor(tetromino[(WIDTH * y) + x].getFillColor());
+				collisions[(WIDTH * (y + 5)) + x] = collisions[(WIDTH * (y + 4)) + x];
+				collisions[(WIDTH * (y + 4)) + x] = 0;
+			}
+		}
+	}
+
 
 	if (numT--; numT == 0)
 	{
 		for (auto& y : tetris_row)
 			y = -1;
+
 		curr_upd_fun = &Tetromino::tick;
 		curr_hdl_fun = &Tetromino::standard_input;
 	}
-	//curr_upd_fun = &Tetromino::tick;
-	//curr_hdl_fun = &Tetromino::standard_input;
 }
 
 void Tetromino::lose(const float& tt)
