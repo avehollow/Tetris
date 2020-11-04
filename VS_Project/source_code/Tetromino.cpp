@@ -152,7 +152,6 @@ void Tetromino::play_anim_tetris(const float& tt)
 
 }
 
-//AVE LOOK tetris_row u¿yæ erase and push_back
 
 void Tetromino::shift_tetris(const float& tt)
 {
@@ -177,6 +176,7 @@ void Tetromino::shift_tetris(const float& tt)
 	curr_upd_fun = &Tetromino::tick;
 	curr_hdl_fun = &Tetromino::standard_input;*/
 
+
 	for (int y = HEIGHT - 2; y >= 0; y--)
 	{
 		int a = 0;
@@ -196,6 +196,9 @@ void Tetromino::shift_tetris(const float& tt)
 			}
 		}
 	}
+
+	for (size_t x = 0; x < WIDTH; x++)
+		tetromino[x].setFillColor(sf::Color::Transparent);	
 
 
 	if (numT--; numT == 0)
