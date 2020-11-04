@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Tetromino.h"
 
-
-
+// > 100
+#define SCORE_FACTOR 300
 
 void Tetromino::handleInput(const sf::Event& event)
 {
@@ -15,16 +15,16 @@ void Tetromino::ini(int width, int height)
 	
 	view = window->getDefaultView();
 	view.zoom(1.5);
-	window->setView(view);
+	//window->setView(view);
 
 	tetris_row.resize(height + 4, -1);
-
 	rand_gen.seed(rd());
 
 	
-	shift_interval = sf::seconds(1);
-	shift_time = sf::seconds(0);
+	shift_interval = sf::milliseconds(1000);
+	shift_time = sf::milliseconds(0);
 	shift_clock.restart();
+	score = 0;
 
 	// AVE LOOK how to calculate element size
 	cube_size = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
@@ -34,39 +34,63 @@ void Tetromino::ini(int width, int height)
 	WIDTH = width;
 	HEIGHT = height;
 
-	int xx = (window->getSize().x / 2) - (WIDTH / 2 * cube_size);
-	int yy = (window->getSize().y / 2) - (HEIGHT / 2 * cube_size);
+
 	for (size_t y = 0; y < HEIGHT; y++)
 	{
 		for (size_t x = 0; x < WIDTH; x++)
 		{
-			tetromino[(WIDTH * y) + x].setPosition(xx + (x * cube_size), yy + (y * cube_size));
-			tetromino[(WIDTH * y) + x].setSize(sf::Vector2f(cube_size, cube_size));
 			tetromino[(WIDTH * y) + x].setFillColor(sf::Color::Transparent);
+			collisions[(WIDTH * (y + 4)) + x] = 0;
 		}
 	}	
 	
-	for (size_t y = 0; y < HEIGHT + 4; y++)
-	{
+	for (size_t y = 0; y <  4; y++)
 		for (size_t x = 0; x < WIDTH; x++)
-		{
 			collisions[(WIDTH * y) + x] = 0;
-		}
-	}
+		
+	
 
-	background_tetromino.setSize(sf::Vector2f(10 * cube_size, 20 * cube_size));
 	background_tetromino.setFillColor(sf::Color(20, 20, 20, 200));
-
-	background_tetromino.setPosition(xx, yy);
 	background_tetromino.setOutlineThickness(2);
 	background_tetromino.setOutlineColor(sf::Color::White);
+	
+	background_score.setFillColor(sf::Color(20, 20, 20, 200));
+	background_score.setOutlineThickness(2);
+	background_score.setOutlineColor(sf::Color::White);	
 
-	LEFT_WALL = xx;
-	RIGHT_WALL = xx + (WIDTH - 1) * cube_size;
-	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
-	CEIL_EDGE = yy;
+	background_next.setFillColor(sf::Color(20, 20, 20, 200));
+	background_next.setOutlineThickness(2);
+	background_next.setOutlineColor(sf::Color::White);
+
+
+	txNext.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	txNext.setString("Next");
+
+	txScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	txScore.setString("Score");
+	
+	txNumScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+
+	this->onCreate();
 
 	figure.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
+
+	for (int i = 0; i < 3; i++)
+	{
+		nextFigures[i].ini(cube_size, sf::Vector2f(0, 0));
+
+
+		for (size_t k = rand_gen() % 4, ; k >=0 ; k--)
+		{
+			nextFigures[i].rotate();
+		}
+		nextFigures[i].spawnFigure(
+			background_next.getPosition().x + 1 * cube_size,
+			background_next.getPosition().y + 2 * cube_size * (i+1),
+			&AM->texture[(rand_gen() % 7) + 8],
+			E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
+			rand_gen() % 4);
+	}
 
 	figure.spawnFigure(
 		background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
@@ -99,13 +123,66 @@ void Tetromino::onCreate()
 	background_tetromino.setSize(sf::Vector2f(WIDTH * cube_size, HEIGHT * cube_size));
 	background_tetromino.setPosition(xx, yy);
 
+
+	int endTetrominoX = xx + (WIDTH * cube_size);
+	
+	background_score.setSize(sf::Vector2f(10 * cube_size, 1 * cube_size));
+	background_score.setPosition(
+		endTetrominoX + (((window->getSize().x - endTetrominoX) / 2) - (background_score.getSize().x / 2)),
+		yy + 18 * cube_size);
+
+
+	background_next.setSize(sf::Vector2f(4 * cube_size, 12 * cube_size));
+	background_next.setPosition(
+		endTetrominoX + (((window->getSize().x - endTetrominoX) / 2) - (background_next.getSize().x / 2)),
+		yy + 3 * cube_size);
+
+
+	txNext.setCharacterSize(cube_size);
+	txNext.setPosition(
+		endTetrominoX + (((window->getSize().x - endTetrominoX) / 2) - (txNext.getGlobalBounds().width / 2))
+		, background_next.getPosition().y - cube_size - 3);
+
+
+	txScore.setCharacterSize(cube_size);
+	txScore.setPosition(
+		endTetrominoX + (((window->getSize().x - endTetrominoX) / 2) - (txScore.getGlobalBounds().width / 2))
+		, background_score.getPosition().y - cube_size - 3);
+
+
+
 	LEFT_WALL = xx;
 	RIGHT_WALL = xx + (WIDTH - 1) * cube_size;
 	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
 	CEIL_EDGE = yy;
 
+	update_score(0);
+
 	figure.onCreate(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 }
+
+void Tetromino::update_score(size_t pointsToAdd)
+{
+	score += pointsToAdd;
+	txNumScore.setString(std::to_string(score));
+	txNumScore.setOrigin(txNumScore.getLocalBounds().left, txNumScore.getLocalBounds().top);
+
+	txNumScore.setPosition(
+		background_score.getPosition().x + background_score.getSize().x / 2 - txNumScore.getGlobalBounds().width / 2,
+		background_score.getPosition().y + background_score.getSize().y / 2 - txNumScore.getGlobalBounds().height / 2
+	);
+
+	if (shift_interval > sf::milliseconds(300))
+	{
+		shift_interval = sf::milliseconds(1000 - (score / (SCORE_FACTOR * 0.15)));
+	}
+	else
+	{
+
+	}
+}
+
+
 
 void Tetromino::check_tetris()
 {
@@ -128,7 +205,6 @@ void Tetromino::check_tetris()
 		}
 			yes = 0;
 	}
-		
 }
 
 void Tetromino::play_anim_tetris(const float& tt)
@@ -141,7 +217,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) + at].setFillColor(sf::Color::Transparent);
 			// AVE LOOK problem with unusual size of tetromino
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) - (at+1)].setFillColor(sf::Color::Transparent);
-
+			update_score((at + 2) * SCORE_FACTOR);
 		}
 	}
 	if (at++; at == WIDTH / 2)
@@ -223,7 +299,6 @@ void Tetromino::tick(const float& tt)
 	}
 	else
 	{
-
 		sf::Vector2i c1 = figure.indices[0];
 		sf::Vector2i c2 = figure.indices[1];
 		sf::Vector2i c3 = figure.indices[2];
@@ -289,6 +364,7 @@ void Tetromino::standard_input(const sf::Event& event)
 	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !collision_with_edges(0, 1) && !collision_with_cubes(0, 1))
 	{
 		figure.move(0, 1);
+		update_score(SCORE_FACTOR * 0.01);
 		pause();
 	}
 	else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
@@ -541,3 +617,7 @@ bool Tetromino::elo()
 }
 
 
+void Tetromino::spawn_figure()
+{
+
+}

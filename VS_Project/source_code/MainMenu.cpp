@@ -13,9 +13,9 @@ MAINMENU::MAINMENU()
 	//puts("CTOR MAINMENU");	
 }
 
-STATE* MAINMENU::handleInput(const sf::Event& event)
+ISTATE* MAINMENU::handleInput(const sf::Event& event)
 {
-	STATE* state = this;
+	ISTATE* state = this;
 
 	if (b_NewGame->Pressed())
 	{

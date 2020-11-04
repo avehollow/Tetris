@@ -16,9 +16,9 @@ OPTIONS::~OPTIONS()
 	//puts("Destruktor ~OPTIONS");
 }
 
-STATE* OPTIONS::handleInput(const sf::Event& event)
+ISTATE* OPTIONS::handleInput(const sf::Event& event)
 {
-	STATE* state = this;
+	ISTATE* state = this;
 
 	if (b_Back->Pressed() || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape))
 	{

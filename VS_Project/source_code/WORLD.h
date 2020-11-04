@@ -2,7 +2,7 @@
 #include "GameWindow.h"
 #include "assetmanager.h"
 
-#define FS1
+#define FS
 
 class WORLD
 {

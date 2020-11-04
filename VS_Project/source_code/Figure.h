@@ -27,6 +27,7 @@ public:
 	void spawnFigure(float pos_x, float pos_y, const sf::Texture* texture, E_FIGURE type, size_t rotation);
 	void draw(GameWindow* __restrict const window) const;
 
+	Figure& operator=(const Figure& f);
 private:
 	void be_Z_(float pos_x, float pos_y, const sf::Texture* texture);
 	void be_L_(float pos_x, float pos_y, const sf::Texture* texture);
@@ -56,5 +57,15 @@ inline void Figure::draw(GameWindow* __restrict const window) const
 		window->draw(sq);
 
 	window->draw(center_sprite);
+}
+
+inline Figure& Figure::operator=(const Figure& f)
+{
+	for (size_t i = 0; i < 4; i++)
+	{
+		squares[i].setTexture(f.squares[i].getTexture());
+		squares[i].setPosition(f.squares[i].getPosition());
+	}
+	return *this;
 }
 

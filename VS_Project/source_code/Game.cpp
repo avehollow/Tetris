@@ -7,9 +7,9 @@ GAME game;
 
 extern OPTIONS options;
 
-STATE* GAME::handleInput(const sf::Event& event)
+ISTATE* GAME::handleInput(const sf::Event& event)
 {
-	STATE* state = this;
+	ISTATE* state = this;
 	
 	if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
 	{

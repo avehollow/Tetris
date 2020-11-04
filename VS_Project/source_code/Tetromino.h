@@ -24,6 +24,8 @@ private:
 	void standard_input(const sf::Event& event);
 	void disable_input(const sf::Event& event);
 
+	void spawn_figure();
+	void update_score(size_t pointsToAdd);
 	void check_tetris();
 	bool wall_kick();
 	bool collision_with_edges(int dir_x, int dir_y);
@@ -31,9 +33,17 @@ private:
 
 private:
 	Figure figure;
+
+	std::array<Figure, 3> nextFigures;
+	
 	sf::RectangleShape tetromino[200];
 	int collisions[240];
 	sf::RectangleShape background_tetromino;
+	sf::RectangleShape background_score;
+	sf::RectangleShape background_next;
+	sf::Text txScore;
+	sf::Text txNext;
+	sf::Text txNumScore;
 
 	std::random_device rd;
 	std::mt19937 rand_gen;
@@ -45,6 +55,7 @@ private:
 
 	std::vector<int> tetris_row;
 
+	size_t score;
 	int LEFT_WALL;
 	int RIGHT_WALL;
 	int FLOOR_EDGE;
@@ -67,6 +78,8 @@ private:
 	int numT = 0;
 };
 
+
+
 inline void Tetromino::draw(GameWindow* __restrict const window) const
 {
 	window->draw(background_tetromino);
@@ -85,6 +98,15 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 			window->draw(s);
 		}
 	figure.draw(window);
+
+	window->draw(background_score);
+	window->draw(background_next);
+	window->draw(txScore);
+	window->draw(txNumScore);
+	window->draw(txNext);
+	
+	for (auto& f : nextFigures)
+		f.draw(window);
 }
 
 inline void Tetromino::pause()

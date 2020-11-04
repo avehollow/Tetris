@@ -1,16 +1,12 @@
 #pragma once
-#include "WORLD.h"
 
-class STATE : public WORLD
+__interface ISTATE
 {
-    public:
-         virtual STATE* handleInput(const sf::Event&) = 0;
-         virtual void update(const float&) = 0;
-         virtual void render() const = 0;
-         virtual void show() = 0;
-         virtual void hide() = 0;
-         virtual void onCreate() = 0;
-         virtual void startUp() = 0;
-         virtual ~STATE() {};
+	ISTATE* handleInput(const sf::Event&);
+	void update(const float&);
+	void render() const;
+	void show();
+	void hide();
+	void onCreate();
+	void startUp();
 };
-

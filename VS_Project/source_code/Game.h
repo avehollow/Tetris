@@ -1,6 +1,7 @@
 #pragma once
 
 #include "STATE.h"
+#include "WORLD.h"
 #include "Tetromino.h"
 
 namespace gui
@@ -8,7 +9,7 @@ namespace gui
     class Button;
 };
 
-class GAME: public STATE
+class GAME: public ISTATE, public WORLD
 {
 public:
     GAME() = default;
@@ -16,7 +17,7 @@ public:
     void setToPlay();
 
 
-    virtual STATE* handleInput(const sf::Event&) override;
+    virtual ISTATE* handleInput(const sf::Event&) override;
     virtual void update(const float&) override;
     virtual void render() const override;
 

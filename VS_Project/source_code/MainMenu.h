@@ -1,18 +1,19 @@
 #pragma once
 #include "STATE.h"
+#include "WORLD.h"
 
 namespace gui
 {
     class Button;
 }
 
-class MAINMENU : public STATE
+class MAINMENU : public ISTATE, public WORLD
 {
 public:
     MAINMENU();
     virtual ~MAINMENU();
 
-    virtual STATE* handleInput(const sf::Event&) override;
+    virtual ISTATE* handleInput(const sf::Event&) override;
     virtual void update(const float&) override;
     virtual void render() const override;
 

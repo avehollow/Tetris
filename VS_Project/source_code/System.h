@@ -3,6 +3,7 @@
 #include "PDA.h"
 #include "WORLD.h"
 
+
 class System: public WORLD
 {
 public:
@@ -21,7 +22,7 @@ private:
 	sf::Text r_fps;
 	sf::Text u_fps;
 	sf::Event event_;
-	PDA<STATE> menu_;
+	PDA<ISTATE> menu_;
 	GameWindow* wnd;
 
 	float uFrame = 0;

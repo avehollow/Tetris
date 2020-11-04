@@ -9,12 +9,12 @@ public:
 
 	gui::GUI GUI_;
 
-	void addOnCreate(class STATE* state)
+	void addOnCreate(__interface ISTATE* state)
 	{
 		on_create.push_back(state);
 	};
 protected:
 	virtual void onCreate();
-	std::vector<class STATE*> on_create;
+	std::vector<__interface ISTATE*> on_create;
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "STATE.h"
+#include "WORLD.h"
 
 namespace gui
 {
@@ -16,14 +17,14 @@ struct MovementSettings
 
 };
 
-class OPTIONS: public STATE
+class OPTIONS: public ISTATE, public WORLD
 {
 public:
 	OPTIONS();
 	virtual ~OPTIONS();
 
 	// Inherited via STATE
-	virtual STATE* handleInput(const sf::Event&) override;
+	virtual ISTATE* handleInput(const sf::Event&) override;
 	virtual void update(const float&) override;
 	virtual void render() const override;
 
