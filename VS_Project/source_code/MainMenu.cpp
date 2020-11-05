@@ -23,12 +23,11 @@ ISTATE* MAINMENU::handleInput(const sf::Event& event)
 		state = &game;
 		game.setToPlay();;
 	}
-	if (b_Exit->Pressed())
+	else if (b_Exit->Pressed())
 	{
 		window->close();
 	}
-
-	if (b_Options->Pressed())
+	else if (b_Options->Pressed())
 	{
 		state = &options;
 	}

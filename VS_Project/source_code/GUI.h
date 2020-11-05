@@ -46,6 +46,11 @@ namespace gui
 	private:
 		std::vector<class gui__*> gui;
 
+		std::vector<Button> buttons;
+		std::vector<DropDownList> dropDownLists;
+		std::vector<SliderList> sliderLists;
+		std::vector<TextBox> textBoxs;
+
 		inline void sort();
 	};
 

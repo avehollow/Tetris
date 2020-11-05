@@ -25,7 +25,7 @@ void Figure::move(int dirx, int diry)
 		indices[i].x = (squares[i].getPosition().x - tetromino_pos.x ) / cube_size;
 		indices[i].y = (squares[i].getPosition().y - tetromino_pos.y ) / cube_size;
 	}
-	std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
+	//std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
 	center_pos.x += cube_size * dirx;
 	center_pos.y += cube_size * diry;
 	center_sprite.setPosition(center_pos);
@@ -184,6 +184,7 @@ void Figure::onCreate(int size_cube, const sf::Vector2f& tetromino_pos)
 
 	this->tetromino_pos.x = tetromino_pos.x; 
 	this->tetromino_pos.y = tetromino_pos.y;
+	move(0, 0);
 }
 
 void Figure::rotate()

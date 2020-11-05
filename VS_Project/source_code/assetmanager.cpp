@@ -80,6 +80,9 @@ AM_::AM_()
 
 	texture.emplace_back(sf::Texture());
 	texture.back().loadFromFile("data/texture/yellow.png");
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/place_holder.png");
 }
 
 AM_::~AM_()

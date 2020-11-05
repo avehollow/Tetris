@@ -1,6 +1,7 @@
 #pragma once
 
-__interface ISTATE
+
+__interface ISTATE // to samo co   class __declspec(novtable) ISTATE { ... };
 {
 	ISTATE* handleInput(const sf::Event&);
 	void update(const float&);

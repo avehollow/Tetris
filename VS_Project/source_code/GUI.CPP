@@ -14,10 +14,7 @@ namespace gui
 
 	GUI::~GUI()
 	{
-		for (gui__* g : gui)
-		{
-			delete g;
-		}
+		
 	}
 
 	void GUI::erase(void* const elem_of_gui)
@@ -29,7 +26,6 @@ namespace gui
 		{
 			if (gui[i] == ptr)
 			{
-				delete gui[i];
 				gui.erase(gui.begin() + i);
 				break;
 			}
@@ -39,38 +35,78 @@ namespace gui
 	void GUI::reserve(const size_t _Newcapacity)
 	{
 		gui.reserve(_Newcapacity);
+		buttons.reserve(_Newcapacity);
+		dropDownLists.reserve(_Newcapacity);
+		sliderLists.reserve(_Newcapacity);
+		textBoxs.reserve(_Newcapacity);
 	}
 
 
 	Button* GUI::CreateButton(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text)
 	{
-		Button* bt = new Button(pos_x, pos_y, size_x, size_y, depth, text);
-		gui.push_back(dynamic_cast<gui__*>(bt));
+
+		//Button* bt = new Button(pos_x, pos_y, size_x, size_y, depth, text);
+		//gui.push_back(dynamic_cast<gui__*>(bt));
+		//sort();
+		//return bt;
+
+		
+		buttons.push_back(Button(pos_x, pos_y, size_x, size_y, depth, text));
+		Button* bt = &buttons.back();
+		for (auto& bt : buttons)
+			gui.push_back(dynamic_cast<gui__*>(&bt));
+		
+	
+		
 		sort();
 		return bt;
 	}
 
 	DropDownList* GUI::CreateDropDownList(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text, int max_show)
 	{
-		DropDownList* ddl = new DropDownList(pos_x, pos_y, size_x, size_y, depth, text, max_show);
+		/*DropDownList* ddl = new DropDownList(pos_x, pos_y, size_x, size_y, depth, text, max_show);
 		gui.push_back(dynamic_cast<gui__*>(ddl));
+		sort();
+		return ddl;*/
+		
+		gui.clear();
+		dropDownLists.push_back(DropDownList(pos_x, pos_y, size_x, size_y, depth, text, max_show));
+		DropDownList* ddl = &dropDownLists.back();
+		for (auto& ddl : dropDownLists)
+			gui.push_back(dynamic_cast<gui__*>(&ddl));
+
 		sort();
 		return ddl;
 	}
 
 	SliderList* GUI::CreateSliderList(float pos_x, float pos_y, float size_x, int depth, float radius, float size_y)
 	{
-		SliderList* sl = new SliderList(pos_x, pos_y, size_x, depth, radius, size_y);
+		/*SliderList* sl = new SliderList(pos_x, pos_y, size_x, depth, radius, size_y);
 		gui.push_back(dynamic_cast<gui__*>(sl));
+		sort();
+		return sl;	*/
+		
+		sliderLists.push_back(SliderList(pos_x, pos_y, size_x, depth, radius, size_y));
+		SliderList* sl = &sliderLists.back();
+		for (auto& sl : sliderLists)
+			gui.push_back(dynamic_cast<gui__*>(&sl));
+
 		sort();
 		return sl;
 	}
 
 	TextBox* GUI::CreateTextBox(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text)
 	{
-
-		TextBox* tb = new TextBox(pos_x, pos_y, size_x, size_y, depth, text);
+		/*TextBox* tb = new TextBox(pos_x, pos_y, size_x, size_y, depth, text);
 		gui.push_back(dynamic_cast<gui__*>(tb));
+		sort();
+		return tb;*/
+
+		textBoxs.push_back(TextBox(pos_x, pos_y, size_x, size_y, depth, text));
+		TextBox* tb = &textBoxs.back();
+		for (auto& tb : textBoxs)
+			gui.push_back(dynamic_cast<gui__*>(&tb));
+
 		sort();
 		return tb;
 	}

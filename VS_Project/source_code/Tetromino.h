@@ -12,27 +12,28 @@ public:
 	void handleInput(const sf::Event& event);
 	void ini(int width = 10, int height = 20);
 	void draw(GameWindow* __restrict const window) const ;
-	void update(const float& tt);
+	int update(const float& tt);
 	void pause();
 	void onCreate();
 private:
 	void play_anim_tetris(const float& tt);
 	void shift_tetris(const float& tt);
-	void lose(const float& tt);
 	void tick(const float& tt);
 
 	void standard_input(const sf::Event& event);
 	void disable_input(const sf::Event& event);
 
+	void update_placeholder();
 	void spawn_figure();
 	void update_score(size_t pointsToAdd);
 	void check_tetris();
 	bool wall_kick();
-	bool collision_with_edges(int dir_x, int dir_y);
-	bool collision_with_cubes(int dir_x, int dir_y);
+	bool collision_with_edges(int dir_x, int dir_y, const Figure* figure);
+	bool collision_with_cubes(int dir_x, int dir_y, const Figure* figure);
 
 private:
 	Figure figure;
+	Figure place_holder;
 
 	std::array<Figure, 3> nextFigures;
 	
@@ -68,6 +69,7 @@ private:
 	float cube_size_percent;
 	int cube_size;
 
+	bool bGameOver;
 	bool xyz = false;
 	sf::View view;
 	bool elo();
@@ -97,6 +99,7 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 			s.setPosition(background_tetromino.getPosition().x + x *cube_size, background_tetromino.getPosition().y - y * cube_size);
 			window->draw(s);
 		}
+	place_holder.draw(window);
 	figure.draw(window);
 
 	window->draw(background_score);

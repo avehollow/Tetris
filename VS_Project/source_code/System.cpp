@@ -18,10 +18,10 @@ System::System()
 {
 	WORLD::ini();
 	wnd = window;
+	//wnd->GUI_.reserve(50);
 	main_menu.startUp();
 
 	std::srand(time(NULL));
-	wnd->GUI_.reserve(50);
 
 	FPS = 120;
 	
