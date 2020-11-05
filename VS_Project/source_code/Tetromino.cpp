@@ -79,14 +79,9 @@ void Tetromino::ini(int width, int height)
 	{
 		nextFigures[i].ini(cube_size, sf::Vector2f(0, 0));
 
-
-		for (size_t k = rand_gen() % 4, ; k >=0 ; k--)
-		{
-			nextFigures[i].rotate();
-		}
 		nextFigures[i].spawnFigure(
-			background_next.getPosition().x + 1 * cube_size,
-			background_next.getPosition().y + 2 * cube_size * (i+1),
+			background_next.getPosition().x,
+			background_next.getPosition().y + cube_size * (4 * i + 1),
 			&AM->texture[(rand_gen() % 7) + 8],
 			E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
 			rand_gen() % 4);
@@ -94,7 +89,7 @@ void Tetromino::ini(int width, int height)
 
 	figure.spawnFigure(
 		background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
-		background_tetromino.getPosition().y - 2 * cube_size,
+		background_tetromino.getPosition().y - 3 * cube_size,
 		&AM->texture[(rand_gen() % 7) + 8],
 		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
 		rand_gen() % 4);
@@ -159,6 +154,9 @@ void Tetromino::onCreate()
 	update_score(0);
 
 	figure.onCreate(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
+	for (auto& f : nextFigures)
+		f.onCreate(cube_size, sf::Vector2f(0,0));
+	
 }
 
 void Tetromino::update_score(size_t pointsToAdd)
@@ -172,14 +170,15 @@ void Tetromino::update_score(size_t pointsToAdd)
 		background_score.getPosition().y + background_score.getSize().y / 2 - txNumScore.getGlobalBounds().height / 2
 	);
 
-	if (shift_interval > sf::milliseconds(300))
-	{
-		shift_interval = sf::milliseconds(1000 - (score / (SCORE_FACTOR * 0.15)));
-	}
-	else
-	{
+	//if (shift_interval > sf::milliseconds(300))
+	//{
+	//	// zrobiæ zale¿noœæ od spadniêtych klocków !
+	//	shift_interval = sf::milliseconds(1000 - (score / (SCORE_FACTOR * 0.15)));
+	//}
+	//else
+	//{
 
-	}
+	//}
 }
 
 
@@ -331,15 +330,13 @@ void Tetromino::tick(const float& tt)
 
 		}
 
-		
-		figure.spawnFigure(
-			background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
-			background_tetromino.getPosition().y - 2 * cube_size,
-			&AM->texture[(rand_gen() % 7) + 8],
-			E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
-			rand_gen() % 4
-		);
+		if (shift_interval > sf::milliseconds(300))
+			shift_interval -= sf::milliseconds(10);
+		else
+		{
 
+		}
+		spawn_figure();
 		check_tetris();
 	}
 
@@ -619,5 +616,27 @@ bool Tetromino::elo()
 
 void Tetromino::spawn_figure()
 {
+	figure.spawnFigure(
+		background_tetromino.getPosition().x + ((WIDTH / 2) - 2) * cube_size,
+		background_tetromino.getPosition().y - 3 * cube_size,
+		nextFigures[0].getTexture(),
+		nextFigures[0].type,
+		nextFigures[0].rotation
+	);
+
+
+	nextFigures[0] = nextFigures[1];
+	nextFigures[0].move(0, -4);
+	nextFigures[1] = nextFigures[2];
+	nextFigures[1].move(0, -4);
+	
+
+	nextFigures[2].spawnFigure(
+		background_next.getPosition().x,
+		background_next.getPosition().y + cube_size * 9,
+		& AM->texture[(rand_gen() % 7) + 8],
+		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
+		rand_gen() % 4);
+
 
 }

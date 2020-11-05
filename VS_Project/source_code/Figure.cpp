@@ -6,7 +6,7 @@ Figure::Figure()
 {
 	center_sprite.setSize(sf::Vector2f(5, 5));
 	center_sprite.setFillColor(sf::Color(255,0,0));
-
+	rotation = 0;
 
 	for (auto& idx : indices)
 	{
@@ -83,10 +83,15 @@ void Figure::be_I_(float pos_x, float pos_y,const sf::Texture* texture)
 	for (auto& sq : squares)
 		sq.setTexture(texture);
 
-	squares[0].setPosition(pos_x, pos_y);
-	squares[1].setPosition(pos_x + cube_size, pos_y);
-	squares[2].setPosition(pos_x + 2*cube_size, pos_y);
-	squares[3].setPosition(pos_x + 3*cube_size, pos_y);
+	squares[0].setPosition(pos_x, pos_y + cube_size);
+	squares[1].setPosition(pos_x + cube_size, pos_y + cube_size);
+	squares[2].setPosition(pos_x + 2*cube_size, pos_y + cube_size);
+	squares[3].setPosition(pos_x + 3*cube_size, pos_y + cube_size);
+
+	//squares[0].setPosition(pos_x, pos_y);
+	//squares[1].setPosition(pos_x + cube_size, pos_y);
+	//squares[2].setPosition(pos_x + 2*cube_size, pos_y);
+	//squares[3].setPosition(pos_x + 3*cube_size, pos_y);
 
 	center_pos = sf::Vector2f(squares[2].getPosition().x - (cube_size / 2), squares[2].getPosition().y - (cube_size / 2));
 	center_sprite.setPosition(center_pos);
@@ -120,6 +125,7 @@ void Figure::be_ZM_(float pos_x, float pos_y,const sf::Texture* texture)
 	squares[1].setPosition(pos_x + cube_size, pos_y + cube_size);
 	squares[2].setPosition(pos_x + cube_size, pos_y);
 	squares[3].setPosition(pos_x + 2*cube_size, pos_y);
+
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
@@ -223,11 +229,11 @@ void Figure::rotate()
 	move(0, 0);
 }
 
-void Figure::spawnFigure(float pos_x, float pos_y,const sf::Texture* texture, E_FIGURE type, size_t rotation)
+void Figure::spawnFigure(float posOfCenterX, float posOfCenterY, const sf::Texture* texture, E_FIGURE type, size_t rotation)
 {
 
-	float xx = pos_x;
-	float yy = pos_y;
+	float xx = posOfCenterX;
+	float yy = posOfCenterY;
 	switch (type)
 	{
 	case I:
@@ -257,4 +263,5 @@ void Figure::spawnFigure(float pos_x, float pos_y,const sf::Texture* texture, E_
 	for (size_t i = 0; i < rotation; i++)
 		rotate();
 	
+	this->rotation = rotation;
 }

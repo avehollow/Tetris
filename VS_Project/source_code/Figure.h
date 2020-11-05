@@ -24,10 +24,11 @@ public:
 	void ini(float cube_size, const sf::Vector2f& tetromino_pos);
 	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
 	void rotate();
-	void spawnFigure(float pos_x, float pos_y, const sf::Texture* texture, E_FIGURE type, size_t rotation);
+	void spawnFigure(float posOfCenterX, float posOfCenterY, const sf::Texture* texture, E_FIGURE type, size_t rotation);
 	void draw(GameWindow* __restrict const window) const;
-
-	Figure& operator=(const Figure& f);
+	void setTexture(const sf::Texture* texture);
+	const sf::Texture* getTexture() const;
+	
 private:
 	void be_Z_(float pos_x, float pos_y, const sf::Texture* texture);
 	void be_L_(float pos_x, float pos_y, const sf::Texture* texture);
@@ -47,7 +48,7 @@ private:
 	float cube_size;
 	// AVE LOOK zamieniæ na bool?
 	E_FIGURE type;
-
+	short rotation;
 
 };
 
@@ -59,13 +60,13 @@ inline void Figure::draw(GameWindow* __restrict const window) const
 	window->draw(center_sprite);
 }
 
-inline Figure& Figure::operator=(const Figure& f)
+inline void Figure::setTexture(const sf::Texture* texture)
 {
-	for (size_t i = 0; i < 4; i++)
-	{
-		squares[i].setTexture(f.squares[i].getTexture());
-		squares[i].setPosition(f.squares[i].getPosition());
-	}
-	return *this;
+	for (auto& sq : squares)
+		sq.setTexture(texture);
 }
 
+inline const sf::Texture* Figure::getTexture() const
+{
+	return squares[0].getTexture();
+}
