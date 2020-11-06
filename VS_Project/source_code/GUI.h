@@ -32,7 +32,6 @@ namespace gui
 		inline void handleEvent(const sf::Event& event)const;
 
 		void erase(void* const elem_of_gui);
-		void reserve(const size_t _Newcapacity);
 
 		inline void draw() const;
 		inline void clear();
@@ -52,6 +51,7 @@ namespace gui
 		std::vector<TextBox> textBoxs;
 
 		inline void sort();
+		inline void bad_way();
 	};
 
 
@@ -111,10 +111,6 @@ inline void gui::gui__::getDeltaMouse(int* dtX, int* dtY)
 
 inline void gui::GUI::clear()
 {
-	for (gui__* g : gui)
-	{
-		delete g;
-	}
 	gui.clear();
 }
 

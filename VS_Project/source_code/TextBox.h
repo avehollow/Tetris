@@ -8,7 +8,7 @@ namespace gui
 	{
 	public:
 		TextBox(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = "");
-		~TextBox() {};
+		~TextBox() = default;
 
 		inline sf::String getString()const;
 

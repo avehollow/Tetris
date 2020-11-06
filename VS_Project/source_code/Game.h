@@ -50,7 +50,10 @@ private:
     bool bPause;
     bool bGameOver;
     int score;
-    void show_gui(bool show);
+    void show_pause_menu(bool show);
+    void show_gameover_menu(bool show);
+
+    void update_hightscore();
 
     virtual void onCreate() override;
 };
