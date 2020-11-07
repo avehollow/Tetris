@@ -230,11 +230,11 @@ void Figure::rotate()
 	move(0, 0);
 }
 
-void Figure::spawnFigure(float posOfCenterX, float posOfCenterY, const sf::Texture* texture, E_FIGURE type, size_t rotation)
+void Figure::spawnFigure(float posX, float posY, const sf::Texture* texture, E_FIGURE type, size_t rotation)
 {
 
-	float xx = posOfCenterX;
-	float yy = posOfCenterY;
+	float xx = posX;
+	float yy = posY;
 	switch (type)
 	{
 	case I:

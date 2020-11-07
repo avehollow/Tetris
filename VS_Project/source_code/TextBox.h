@@ -10,7 +10,7 @@ namespace gui
 		TextBox(float pos_x, float pos_y, float size_x, float size_y, int depth = 0, const char* text = "");
 		~TextBox() = default;
 
-		inline sf::String getString()const;
+		const sf::String& getString()const;
 
 		// Inherited via gui__
 		virtual void onRecreateWindow() override;
@@ -30,8 +30,11 @@ namespace gui
 		void setFont(const sf::Font&);
 		void setTexture(const sf::Texture&);
 		void setStyle(sf::Uint32 style);
+		const sf::Vector2f& getPosition() const;
+		const sf::Vector2f& getSize() const;
 		// 0 or 1
 		void setBoxStyle(int style);
+		const sf::Text& getText()const;
 
 	private:
 		bool isActive;
@@ -76,8 +79,23 @@ namespace gui
 		);
 	}
 
-	inline sf::String TextBox::getString() const
+	inline const sf::String& TextBox::getString() const
 	{
 		return tx.getString();
+	}
+
+	inline const sf::Vector2f& TextBox::getPosition()const
+	{
+		return (style == 1 ? text_box_2.getPosition() : text_box.getPosition());
+	}
+
+	inline const sf::Vector2f& TextBox::getSize()const
+	{
+		return (style == 1 ? text_box_2.getSize() : text_box.getSize());
+	}
+
+	inline const sf::Text& TextBox::getText()const
+	{
+		return tx;
 	}
 }

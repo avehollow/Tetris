@@ -18,6 +18,9 @@ void Tetromino::ini(int width, int height)
 	//window->setView(view);
 
 	tetris_row.resize(height + 4, -1);
+	for (auto& k : tetris_row)
+		k = -1;
+	
 	rand_gen.seed(rd());
 
 	
@@ -101,6 +104,7 @@ void Tetromino::ini(int width, int height)
 		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
 		rand_gen() % 4);
 
+	update_placeholder();
 	bGameOver = false;
 	curr_hdl_fun = &Tetromino::standard_input;
 	curr_upd_fun = &Tetromino::tick;
@@ -153,7 +157,6 @@ void Tetromino::onCreate()
 		, background_score.getPosition().y - cube_size - 3);
 
 
-
 	LEFT_WALL = xx;
 	RIGHT_WALL = xx + (WIDTH - 1) * cube_size;
 	FLOOR_EDGE = yy + (HEIGHT - 1) * cube_size;
@@ -162,9 +165,20 @@ void Tetromino::onCreate()
 	update_score(0);
 
 	figure.onCreate(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
-	for (auto& f : nextFigures)
-		f.onCreate(cube_size, sf::Vector2f(0,0));
-	
+
+	for (int i = 0; i < 3; i++)
+	{
+		nextFigures[i].ini(cube_size, sf::Vector2f(0, 0));
+
+		nextFigures[i].spawnFigure(
+			background_next.getPosition().x,
+			background_next.getPosition().y + cube_size * (4 * i + 1),
+			nextFigures[i].getTexture(),
+			nextFigures[i].type,
+			nextFigures[i].rotation);
+	}
+	place_holder.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
+	update_placeholder();
 }
 
 void Tetromino::update_score(size_t pointsToAdd)
@@ -177,16 +191,6 @@ void Tetromino::update_score(size_t pointsToAdd)
 		background_score.getPosition().x + background_score.getSize().x / 2 - txNumScore.getGlobalBounds().width / 2,
 		background_score.getPosition().y + background_score.getSize().y / 2 - txNumScore.getGlobalBounds().height / 2
 	);
-
-	//if (shift_interval > sf::milliseconds(300))
-	//{
-	//	// zrobiæ zale¿noœæ od spadniêtych klocków !
-	//	shift_interval = sf::milliseconds(1000 - (score / (SCORE_FACTOR * 0.15)));
-	//}
-	//else
-	//{
-
-	//}
 }
 
 
@@ -202,8 +206,8 @@ void Tetromino::check_tetris()
 		
 		if (yes == WIDTH)
 		{
-			for (int x = 0; x < WIDTH; x++)
-				collisions[(WIDTH * y) + x] = 0;
+	/*		for (int x = 0; x < WIDTH; x++)
+				collisions[(WIDTH * y) + x] = 0;*/
 
 			tetris_row[y] = y;
 			curr_upd_fun = &Tetromino::play_anim_tetris;
@@ -216,11 +220,15 @@ void Tetromino::check_tetris()
 
 void Tetromino::play_anim_tetris(const float& tt)
 {
+
 	static int at = 0;
 	for (auto& y : tetris_row)
 	{
 		if (y != -1)
 		{
+			collisions[(WIDTH * y) + at] = 0;
+			collisions[(WIDTH * y) + at+5] = 0;
+
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) + at].setFillColor(sf::Color::Transparent);
 			// AVE LOOK problem with unusual size of tetromino
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) - (at+1)].setFillColor(sf::Color::Transparent);
@@ -292,6 +300,8 @@ void Tetromino::shift_tetris(const float& tt)
 		curr_upd_fun = &Tetromino::tick;
 		curr_hdl_fun = &Tetromino::standard_input;
 	}
+	update_placeholder();
+	
 }
 
 
@@ -337,11 +347,13 @@ void Tetromino::tick(const float& tt)
 		}
 
 		if (shift_interval > sf::milliseconds(200))
-			shift_interval -= sf::milliseconds(10);
+			shift_interval -= sf::milliseconds(5);
 		else
 		{ 
 			std::cout << "200!!!\n";
 		}
+
+		update_score(100);
 		spawn_figure();
 		check_tetris();
 	}

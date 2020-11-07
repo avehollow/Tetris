@@ -151,18 +151,17 @@ void GAME::update_hightscore()
 		}
 	}
 
+	std::get<1>(h[10]) = score;
+
 	std::string nick = txb_Nick->getString();
 	for (int i = 0, size = nick.size(); i < size && i < 20; i++)
-	{
 		std::get<0>(h[10])[i] = nick[i];
-	}
+	
 	
 	nick = txDate.getString();
 	for (int i = 0, size = nick.size(); i < size && i < 20; i++)
-	{
 		std::get<2>(h[10])[i] = nick[i];
-	}
-	std::get<1>(h[10]) = score;
+	
 
 	std::sort(
 		h.begin(),
@@ -196,6 +195,31 @@ void GAME::onCreate()
 
 	background_pause.setSize(sf::Vector2f(window->getSize().x / 3, window->getSize().y));
 	background_pause.setPosition(window->getSize().x / 2 - background_pause.getSize().x / 2, window->getSize().y / 2 - background_pause.getSize().y / 2);
+
+	background_gameover.setSize(sf::Vector2f(window->getSize().x / 2, window->getSize().y / 2));
+	background_gameover.setPosition(window->getSize().x / 2 - background_gameover.getSize().x / 2, window->getSize().y / 2 - background_gameover.getSize().y / 2);
+
+	txGameOver.setCharacterSize(window->getSize().y * 0.12f);
+	txGameOver.setOrigin(txGameOver.getLocalBounds().left, txGameOver.getLocalBounds().top);
+	txGameOver.setPosition(
+		window->getSize().x / 2 - txGameOver.getGlobalBounds().width / 2,
+		background_gameover.getPosition().y - txGameOver.getGlobalBounds().height / 2
+	);
+
+	txScore.setCharacterSize(window->getSize().y * 0.03f);
+	txScore.setPosition(
+		window->getSize().x / 2 - txScore.getGlobalBounds().width / 2 + 100,
+		txb_Nick->getText().getPosition().y - txb_Nick->getText().getGlobalBounds().height / 2
+	);
+
+	txDate.setCharacterSize(window->getSize().y * 0.03f);
+	txDate.setPosition(
+		background_gameover.getPosition().x,
+		background_gameover.getPosition().y + background_gameover.getSize().y - txDate.getGlobalBounds().height - 5
+	);
+
+
+
 }
 
 void GAME::startUp()
@@ -245,13 +269,13 @@ void GAME::startUp()
 	//txb_Nick->setActiveColor();
 
 	b_Exit2 = window->GUI_.CreateButton(0, 0, 248, 86);
-	b_Exit2->setRelativePosition(gui::E_ANCHOR::A_CENTER, 220, 180);
+	b_Exit2->setRelativePosition(gui::E_ANCHOR::A_TOP_RIGHT, 500, background_game.getPosition().y + background_game.getSize().y - 90);
 	b_Exit2->setTexture(AM->texture[AM_::E_TEXTURE::T_BEXIT]);
 	b_Exit2->setHoveOverColor(sf::Color::White);
 	b_Exit2->setFillColor(sf::Color(180, 180, 180));
 	
 	b_PlayAgain = window->GUI_.CreateButton(0, 0, 248, 86);
-	b_PlayAgain->setRelativePosition(gui::E_ANCHOR::A_CENTER, -70, 180);
+	b_PlayAgain->setRelativePosition(gui::E_ANCHOR::A_TOP_RIGHT, 250, background_game.getPosition().y + background_game.getSize().y - 90);
 	b_PlayAgain->setTexture(AM->texture[AM_::E_TEXTURE::T_BPLAY]);
 	b_PlayAgain->setHoveOverColor(sf::Color::White);
 	b_PlayAgain->setFillColor(sf::Color(180, 180, 180));
@@ -260,28 +284,28 @@ void GAME::startUp()
 
 	txGameOver.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	txGameOver.setString("Game Over");
-	txGameOver.setCharacterSize(120);
+	txGameOver.setCharacterSize(window->getSize().y * 0.12f);
 	txGameOver.setFillColor(sf::Color(243, 208, 212));
+	txGameOver.setOrigin(txGameOver.getLocalBounds().left, txGameOver.getLocalBounds().top);
 	txGameOver.setPosition(
 		window->getSize().x / 2 - txGameOver.getGlobalBounds().width / 2,
 		background_gameover.getPosition().y - txGameOver.getGlobalBounds().height / 2
 	);
 	txGameOver.setOutlineColor(sf::Color::Black);
 	txGameOver.setOutlineThickness(2);
-	txGameOver.setOrigin(txGameOver.getLocalBounds().left, txGameOver.getLocalBounds().top);
 
 	txScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	txScore.setString(" your score :" + std::to_string(score));
-	txScore.setCharacterSize(30);
+	txScore.setCharacterSize(window->getSize().y * 0.03f);
 	txScore.setFillColor(sf::Color(243, 208, 212));
 	txScore.setPosition(
 		window->getSize().x / 2 - txScore.getGlobalBounds().width / 2 + 100,
-		window->getSize().y / 2 - 100 
+		txb_Nick->getText().getPosition().y - txb_Nick->getText().getGlobalBounds().height / 2
 	);
 	
 	txDate.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	txDate.setString((__DATE__));
-	txDate.setCharacterSize(30);
+	txDate.setCharacterSize(window->getSize().y * 0.03f);
 	txDate.setFillColor(sf::Color(243, 208, 212));
 	txDate.setPosition(
 		background_gameover.getPosition().x,

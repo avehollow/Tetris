@@ -57,9 +57,9 @@ void MAINMENU::render()const
 	{
 		window->draw(highScoreBg);
 		window->draw(txHighScore);
-		window->draw(d);
-		window->draw(n);
-		window->draw(s);
+		window->draw(date);
+		window->draw(name);
+		window->draw(score);
 	}
 	
 }
@@ -77,15 +77,24 @@ void MAINMENU::hide()
 void MAINMENU::onCreate()
 {
 	highScoreBg.setSize(sf::Vector2f(window->getSize().x, window->getSize().y / 2));
+	highScoreBg.setPosition(0, window->getSize().y / 2 - highScoreBg.getSize().y / 2);
+
 	txHighScore.setCharacterSize(window->getSize().y * 0.10f);
 	txHighScore.setPosition(window->getSize().x / 2 - txHighScore.getGlobalBounds().width / 2, highScoreBg.getPosition().y - txHighScore.getGlobalBounds().height / 2);
 	txHighScore.setOrigin(txHighScore.getLocalBounds().left, txHighScore.getLocalBounds().top);
 
-	d.setCharacterSize(window->getSize().y * 0.03f);
-	d.setOrigin(d.getLocalBounds().left, d.getLocalBounds().top);
-	d.setPosition(50, highScoreBg.getPosition().y);
-}
+	date.setCharacterSize(window->getSize().y * 0.03f);
+	date.setOrigin(date.getLocalBounds().left, date.getLocalBounds().top);
+	date.setPosition(window->getSize().x * 0.05f, window->getSize().y / 2 - date.getGlobalBounds().height / 2);
 
+	name.setCharacterSize(window->getSize().y * 0.03f);
+	name.setOrigin(name.getLocalBounds().left, name.getLocalBounds().top);
+	name.setPosition(window->getSize().x * 0.30f, window->getSize().y / 2 - name.getGlobalBounds().height / 2);
+	
+	score.setCharacterSize(window->getSize().y * 0.03f);
+	score.setOrigin(score.getLocalBounds().left, score.getLocalBounds().top);
+	score.setPosition(window->getSize().x * 0.55f, window->getSize().y / 2 - score.getGlobalBounds().height / 2);
+}
 void MAINMENU::startUp()
 {
 	window->addOnCreate(this);
@@ -134,23 +143,25 @@ void MAINMENU::startUp()
 	txHighScore.setOrigin(txHighScore.getLocalBounds().left, txHighScore.getLocalBounds().top);
 	txHighScore.setPosition(window->getSize().x / 2 - txHighScore.getGlobalBounds().width / 2, highScoreBg.getPosition().y - txHighScore.getGlobalBounds().height / 2);
 	
-	d.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	d.setString("");
-	d.setCharacterSize(window->getSize().y * 0.03f);
-	d.setOrigin(d.getLocalBounds().left, d.getLocalBounds().top);
-	d.setPosition(50, highScoreBg.getPosition().y);
-
-	s.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	s.setString("");
-	s.setCharacterSize(window->getSize().y * 0.03f);
-	s.setOrigin(s.getLocalBounds().left, s.getLocalBounds().top);
-	s.setPosition(700, highScoreBg.getPosition().y);
+	date.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	date.setString("");
+	date.setCharacterSize(window->getSize().y * 0.03f);
+	date.setOrigin(date.getLocalBounds().left, date.getLocalBounds().top);
+	date.setPosition(window->getSize().x * 0.05f, highScoreBg.getPosition().y + txHighScore.getGlobalBounds().height / 2);
 	
-	n.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	n.setString("");
-	n.setCharacterSize(window->getSize().y * 0.03f);
-	n.setOrigin(n.getLocalBounds().left, n.getLocalBounds().top);
-	n.setPosition(300, highScoreBg.getPosition().y);
+
+	name.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	name.setString("");
+	name.setCharacterSize(window->getSize().y * 0.03f);
+	name.setOrigin(name.getLocalBounds().left, name.getLocalBounds().top);
+	name.setPosition(window->getSize().x * 0.25f, date.getPosition().y);
+
+	score.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	score.setString("");
+	score.setCharacterSize(window->getSize().y * 0.03f);
+	score.setOrigin(score.getLocalBounds().left, score.getLocalBounds().top);
+	score.setPosition(window->getSize().x * 0.50f, date.getPosition().y);
+	
 	
 	bHighScore = false;
 
@@ -186,29 +197,32 @@ void MAINMENU::load_high_score()
 	if (!out.is_open())
 		return;
 	
-	std::string a("");
-	std::string b("");
-	std::string c("");
+	std::string n("");
+	std::string s("");
+	std::string d("");
 	for (size_t i = 0; i < 10; i++)
 	{
 		int size = 0;
 		out.read((char*)&size, sizeof(int));
 		out.read((char*)std::get<0>(h[i]).data(), sizeof(char) * size);
-																		a.append(std::get<0>(h[i]).data());
+																		n.append(std::get<0>(h[i]).data());
 													
 		out.read((char*)&std::get<1>(h[i]), sizeof(int));
-																		b.append(std::to_string(int(std::get<1>(h[i]))));
+																		s.append(std::to_string(int(std::get<1>(h[i]))));
 																	
 		out.read((char*)&size, sizeof size);
 		out.read((char*)std::get<2>(h[i]).data(), sizeof(char) * size);
-																		c.append(std::get<2>(h[i]).data());
-																		a.append("\n");
-																		b.append("\n");
-																		c.append("\n");
+																		d.append(std::to_string(i+1) + ". ");
+																		d.append(std::get<2>(h[i]).data());
+																		n.append("\n");
+																		s.append("\n");
+																		d.append("\n");
 	}
-	d.setString(c);
-	n.setString(a);
-	s.setString(b);
+	name.setString(n);
+	score.setString(s);
+	date.setString(d);
 
-
+	name.setPosition(window->getSize().x * 0.25f, window->getSize().y / 2 - name.getGlobalBounds().height / 2);
+	score.setPosition(window->getSize().x * 0.50f, window->getSize().y / 2 - score.getGlobalBounds().height / 2);
+	date.setPosition(window->getSize().x * 0.05f, window->getSize().y / 2 - date.getGlobalBounds().height / 2);
 }

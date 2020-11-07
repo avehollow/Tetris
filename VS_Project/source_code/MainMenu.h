@@ -29,9 +29,10 @@ private:
     gui::Button* b_Back;
 
     sf::Text txHighScore;
-    sf::Text d;
-    sf::Text n;
-    sf::Text s;
+    sf::Text date;
+    sf::Text name;
+    sf::Text score;
+
     sf::RectangleShape highScoreBg;
     bool bHighScore;
 private:
