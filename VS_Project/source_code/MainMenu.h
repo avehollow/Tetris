@@ -25,9 +25,19 @@ private:
     gui::Button* b_NewGame;
     gui::Button* b_Options;
     gui::Button* b_Exit;
+    gui::Button* b_HighScore;
+    gui::Button* b_Back;
 
-
+    sf::Text txHighScore;
+    sf::Text d;
+    sf::Text n;
+    sf::Text s;
+    sf::RectangleShape highScoreBg;
+    bool bHighScore;
+private:
     void show_gui(bool show);
+    void show_high_score(bool show);
+    void load_high_score();
     virtual void onCreate() override;
 };
 

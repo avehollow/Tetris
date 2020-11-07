@@ -3,7 +3,7 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "Options.h"
-#include <span>
+
 GAME game;
 
 extern OPTIONS options;
@@ -36,11 +36,13 @@ ISTATE* GAME::handleInput(const sf::Event& event)
 		{
 			tetromino.ini();
 			show_gameover_menu(false);
+			update_hightscore();
 		}
 		if (b_Exit2->Pressed())
 		{
 			state = nullptr;
 			show_gameover_menu(false);
+			update_hightscore();
 		}
 	}
 	else
@@ -120,74 +122,68 @@ void GAME::show_gameover_menu(bool show)
 
 void GAME::update_hightscore()
 {
+
 	std::fstream out;
 	std::vector<std::tuple<std::array<char, 20>, int, std::array<char, 20>>> h;
 	h.resize(11);
 
-	out.open("x@Ew.java", std::ios::binary | std::ios::in);
-
-	for (size_t i = 0; i < 10; i++)
+	for (auto& k : h)
 	{
-		int size = 0;
-		out.read((char*)&size, sizeof(int));
-		out.read((char*)std::get<0>(h[i]).data(), sizeof(char) * size);
-		out.read((char*)&std::get<1>(h[i]), sizeof(int));
-		out.read((char*)&size, sizeof size);
-		out.read((char*)std::get<2>(h[i]).data(), sizeof(char) * size);
+		for (size_t i = 0; i < 20; i++)
+		{
+			std::get<0>(k)[i] = 0;
+			std::get<2>(k)[i] = 0;
+		}
+		std::get<1>(k) = 0;
+	};
+
+	out.open("x@Ew.java", std::ios::binary | std::ios::in);
+	if (out.is_open())
+	{
+		for (size_t i = 0; !out.eof() && (i < 10); i++)
+		{
+			int size = 0;
+			out.read((char*)&size, sizeof(int));
+			out.read((char*)std::get<0>(h[i]).data(), sizeof(char) * size);
+			out.read((char*)&std::get<1>(h[i]), sizeof(int));
+			out.read((char*)&size, sizeof size);
+			out.read((char*)std::get<2>(h[i]).data(), sizeof(char) * size);
+		}
 	}
 
 	std::string nick = txb_Nick->getString();
-	for (size_t i = 0, int size = nick.size(); i < size && i < 20; i++)
+	for (int i = 0, size = nick.size(); i < size && i < 20; i++)
 	{
 		std::get<0>(h[10])[i] = nick[i];
 	}
-	std::span<const char, 20> date{ txDate.getString().toAnsiString()};
-	int i = 0;
-	for (auto& tx : date)
+	
+	nick = txDate.getString();
+	for (int i = 0, size = nick.size(); i < size && i < 20; i++)
 	{
-		std::get<2>(h[11])[i++] = tx;
-		// work?
+		std::get<2>(h[10])[i] = nick[i];
 	}
+	std::get<1>(h[10]) = score;
+
 	std::sort(
 		h.begin(),
 		h.end(),
-		[](
-			auto const& lhs,
-			auto const& rhs)
-		{ return std::get<1>(lhs) > std::get<1>(rhs); }
+		[]( auto const& lhs, auto const& rhs) { return std::get<1>(lhs) > std::get<1>(rhs); }
 	);
-
-
 	out.close();
-
 
 	out.open("x@Ew.java", std::ios::binary | std::ios::out);
 
-
-
-
-
 	for (size_t i = 0; i < 10; i++)
 	{
-		int size = names[i].size();
+		int size = std::get<0>(h[i]).size();
 		out.write((const char*)&size, sizeof(int));
-		out.write(names[i].data(), sizeof(char) * names[i].size());
-		out.write((const char*)&score[i], sizeof(int));
-		size = sizeof(__DATE__);
-		out.write((char*)&size, sizeof size);
-		out.write(__DATE__, sizeof(__DATE__));
+		out.write((const char*)std::get<0>(h[i]).data(), sizeof(char) * size);
+		out.write((const char*)&std::get<1>(h[i]), sizeof(int));
+		size = std::get<2>(h[i]).size();
+		out.write((const char*)&size, sizeof size);
+		out.write((const char*)std::get<2>(h[i]).data(), sizeof(char) * size);
 	}
 	out.close();
-	for (size_t i = 0; i < 10; i++)
-	{
-		printf("%15s %-20s %5d %15s \n", " ", names[i].data(), score[i], __DATE__);
-	}
-
-
-	
-
-
-
 }
 
 
@@ -240,7 +236,7 @@ void GAME::startUp()
 	background_gameover.setPosition(window->getSize().x / 2 - background_gameover.getSize().x / 2, window->getSize().y / 2 - background_gameover.getSize().y / 2);
 	background_gameover.setFillColor(sf::Color(30, 30, 30, 200));
 
-	txb_Nick = window->GUI_.CreateTextBox(0,0, 200, 40, 1, "Enter your name");
+	txb_Nick = window->GUI_.CreateTextBox(0,0, 350, 40, 1, "Enter your name");
 	txb_Nick->setRelativePosition(gui::E_ANCHOR::A_CENTER, -450, -100);
 	txb_Nick->setBoxStyle(1);
 	txb_Nick->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
@@ -272,13 +268,14 @@ void GAME::startUp()
 	);
 	txGameOver.setOutlineColor(sf::Color::Black);
 	txGameOver.setOutlineThickness(2);
+	txGameOver.setOrigin(txGameOver.getLocalBounds().left, txGameOver.getLocalBounds().top);
 
 	txScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	txScore.setString(" your score :" + std::to_string(score));
 	txScore.setCharacterSize(30);
 	txScore.setFillColor(sf::Color(243, 208, 212));
 	txScore.setPosition(
-		window->getSize().x / 2 - txScore.getGlobalBounds().width / 2,
+		window->getSize().x / 2 - txScore.getGlobalBounds().width / 2 + 100,
 		window->getSize().y / 2 - 100 
 	);
 	

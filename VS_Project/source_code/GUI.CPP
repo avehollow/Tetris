@@ -38,6 +38,13 @@ namespace gui
 		}
 	}
 
+	void GUI::add(void* const elem_of_gui)
+	{
+		gui__* ptr = reinterpret_cast<gui__*>(elem_of_gui);
+		gui.push_back(ptr);
+		sort();
+	}
+
 
 
 

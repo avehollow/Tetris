@@ -32,6 +32,7 @@ namespace gui
 		inline void handleEvent(const sf::Event& event)const;
 
 		void erase(void* const elem_of_gui);
+		void add(void* const elem_of_gui);
 
 		inline void draw() const;
 		inline void clear();
@@ -61,6 +62,7 @@ namespace gui
 	public:
 		int getDepth()const { return depth; }
 		void visible(bool isVisible) { is_visible = isVisible; }
+		void disable(bool isDisable) { is_disable = isDisable; }
 		//void setDepth(int depth) { this->depth = depth; } do prawid³owego dzia³ania trzeba jeszcze wywo³aæ funkcjê sort z klasy GUI
 
 		virtual ~gui__() = default;
@@ -69,6 +71,7 @@ namespace gui
 		static bool handled_event;
 		int depth = 0;
 		bool is_visible = true;
+		bool is_disable = false;
 
 		virtual void onRecreateWindow() = 0;
 		virtual bool handleEvent(const sf::Event& event) = 0;
@@ -145,7 +148,7 @@ inline void gui::GUI::handleEvent(const sf::Event& event) const
 	gui__::handled_event = false;
 	for (auto& g : gui)
 	{
-		if (g->is_visible && g->handleEvent(event))
+		if (g->is_visible && !g->is_disable && g->handleEvent(event))
 			gui__::handled_event = true;
 	}
 }
