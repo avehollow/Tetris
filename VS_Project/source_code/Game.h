@@ -28,6 +28,11 @@ public:
     virtual void startUp() override;
 
 private:
+    ISTATE* standard_input(const sf::Event& event);
+    ISTATE* pause_input(const sf::Event& event);
+    ISTATE* gameover_input(const sf::Event& event);
+
+private:
     Tetromino tetromino;
 
     sf::RectangleShape background_pause;
@@ -56,5 +61,8 @@ private:
     void update_hightscore();
 
     virtual void onCreate() override;
+
+    void (GAME::* curr_upd_fun)(const float& tt);
+    ISTATE* (GAME::* curr_hdl_fun)(const sf::Event& event);
 };
 

@@ -60,6 +60,7 @@ void MAINMENU::render()const
 		window->draw(date);
 		window->draw(name);
 		window->draw(score);
+		window->draw(pos);
 	}
 	
 }
@@ -83,9 +84,13 @@ void MAINMENU::onCreate()
 	txHighScore.setPosition(window->getSize().x / 2 - txHighScore.getGlobalBounds().width / 2, highScoreBg.getPosition().y - txHighScore.getGlobalBounds().height / 2);
 	txHighScore.setOrigin(txHighScore.getLocalBounds().left, txHighScore.getLocalBounds().top);
 
+	pos.setCharacterSize(window->getSize().y * 0.03f);
+	pos.setOrigin(pos.getLocalBounds().left, pos.getLocalBounds().top);
+	pos.setPosition(window->getSize().x * 0.02f, window->getSize().y / 2 - pos.getGlobalBounds().height / 2);
+
 	date.setCharacterSize(window->getSize().y * 0.03f);
 	date.setOrigin(date.getLocalBounds().left, date.getLocalBounds().top);
-	date.setPosition(window->getSize().x * 0.05f, window->getSize().y / 2 - date.getGlobalBounds().height / 2);
+	date.setPosition(window->getSize().x * 0.08f, window->getSize().y / 2 - date.getGlobalBounds().height / 2);
 
 	name.setCharacterSize(window->getSize().y * 0.03f);
 	name.setOrigin(name.getLocalBounds().left, name.getLocalBounds().top);
@@ -94,6 +99,7 @@ void MAINMENU::onCreate()
 	score.setCharacterSize(window->getSize().y * 0.03f);
 	score.setOrigin(score.getLocalBounds().left, score.getLocalBounds().top);
 	score.setPosition(window->getSize().x * 0.55f, window->getSize().y / 2 - score.getGlobalBounds().height / 2);
+	
 }
 void MAINMENU::startUp()
 {
@@ -135,36 +141,48 @@ void MAINMENU::startUp()
 	b_Back->setTexture(AM->texture[AM_::E_TEXTURE::T_BBACK]);
 	b_Back->setHoveOverColor(sf::Color::White);
 	b_Back->setFillColor(sf::Color(180, 180, 180));
-	b_Back->visible(false);
+	//b_Back->visible(false);
+	window->GUI_.erase(b_Back);
 
 	txHighScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	txHighScore.setString("HightScore");
+	txHighScore.setFillColor(sf::Color(178, 34, 34, 255));
 	txHighScore.setCharacterSize(window->getSize().y * 0.10f);
 	txHighScore.setOrigin(txHighScore.getLocalBounds().left, txHighScore.getLocalBounds().top);
 	txHighScore.setPosition(window->getSize().x / 2 - txHighScore.getGlobalBounds().width / 2, highScoreBg.getPosition().y - txHighScore.getGlobalBounds().height / 2);
 	
+	pos.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	pos.setString("");
+	pos.setFillColor(sf::Color(178, 34, 34, 255));
+	pos.setCharacterSize(window->getSize().y * 0.03f);
+	pos.setOrigin(pos.getLocalBounds().left, pos.getLocalBounds().top);
+	pos.setPosition(window->getSize().x * 0.02f, date.getPosition().y);
+
 	date.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	date.setString("");
 	date.setCharacterSize(window->getSize().y * 0.03f);
 	date.setOrigin(date.getLocalBounds().left, date.getLocalBounds().top);
-	date.setPosition(window->getSize().x * 0.05f, highScoreBg.getPosition().y + txHighScore.getGlobalBounds().height / 2);
+	date.setPosition(window->getSize().x * 0.08f, highScoreBg.getPosition().y + txHighScore.getGlobalBounds().height / 2);
 	
 
 	name.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	name.setString("");
+	name.setFillColor(sf::Color(178, 34, 34, 255));
 	name.setCharacterSize(window->getSize().y * 0.03f);
 	name.setOrigin(name.getLocalBounds().left, name.getLocalBounds().top);
-	name.setPosition(window->getSize().x * 0.25f, date.getPosition().y);
+	name.setPosition(window->getSize().x * 0.30f, date.getPosition().y);
 
 	score.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	score.setString("");
 	score.setCharacterSize(window->getSize().y * 0.03f);
 	score.setOrigin(score.getLocalBounds().left, score.getLocalBounds().top);
-	score.setPosition(window->getSize().x * 0.50f, date.getPosition().y);
+	score.setPosition(window->getSize().x * 0.55f, date.getPosition().y);	
+	
 	
 	
 	bHighScore = false;
-
+	window->GUI_.clear();
+	show_gui(true);
 }
 
 MAINMENU::~MAINMENU()
@@ -175,15 +193,38 @@ MAINMENU::~MAINMENU()
 
 void MAINMENU::show_gui(bool show)
 {
-	b_NewGame->visible(show);
-	b_Options->visible(show);
-	b_Exit->visible(show);
-	b_HighScore->visible(show);
+	//b_NewGame->visible(show);
+	//b_Options->visible(show);
+	//b_Exit->visible(show);
+	//b_HighScore->visible(show);
+	if (show)
+	{
+		window->GUI_.add(b_NewGame);
+		window->GUI_.add(b_Options);
+		window->GUI_.add(b_Exit);
+		window->GUI_.add(b_HighScore);
+	}
+	else
+	{
+		window->GUI_.erase(b_NewGame);
+		window->GUI_.erase(b_Options);
+		window->GUI_.erase(b_Exit);
+		window->GUI_.erase(b_HighScore);
+	}
+
 }
 
 void MAINMENU::show_high_score(bool show)
 {
-	b_Back->visible(show);
+	if (show)
+	{
+		window->GUI_.add(b_Back);
+	}
+	else
+	{
+		window->GUI_.erase(b_Back);
+	}
+	//b_Back->visible(show);
 	show_gui(!show);
 }
 
@@ -200,6 +241,7 @@ void MAINMENU::load_high_score()
 	std::string n("");
 	std::string s("");
 	std::string d("");
+	std::string p("");
 	for (size_t i = 0; i < 10; i++)
 	{
 		int size = 0;
@@ -212,7 +254,7 @@ void MAINMENU::load_high_score()
 																	
 		out.read((char*)&size, sizeof size);
 		out.read((char*)std::get<2>(h[i]).data(), sizeof(char) * size);
-																		d.append(std::to_string(i+1) + ". ");
+																		p.append(std::to_string(i+1) + ".\n");
 																		d.append(std::get<2>(h[i]).data());
 																		n.append("\n");
 																		s.append("\n");
@@ -221,8 +263,10 @@ void MAINMENU::load_high_score()
 	name.setString(n);
 	score.setString(s);
 	date.setString(d);
+	pos.setString(p);
 
+	pos.setPosition(window->getSize().x * 0.02f, window->getSize().y / 2 - pos.getGlobalBounds().height / 2);
+	date.setPosition(window->getSize().x * 0.08f, window->getSize().y / 2 - date.getGlobalBounds().height / 2);
 	name.setPosition(window->getSize().x * 0.25f, window->getSize().y / 2 - name.getGlobalBounds().height / 2);
 	score.setPosition(window->getSize().x * 0.50f, window->getSize().y / 2 - score.getGlobalBounds().height / 2);
-	date.setPosition(window->getSize().x * 0.05f, window->getSize().y / 2 - date.getGlobalBounds().height / 2);
 }

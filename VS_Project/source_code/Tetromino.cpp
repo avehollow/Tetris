@@ -106,6 +106,7 @@ void Tetromino::ini(int width, int height)
 
 	update_placeholder();
 	bGameOver = false;
+	
 	curr_hdl_fun = &Tetromino::standard_input;
 	curr_upd_fun = &Tetromino::tick;
 }

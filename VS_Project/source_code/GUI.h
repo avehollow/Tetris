@@ -28,7 +28,7 @@ namespace gui
 		GUI& operator=(GUI&) = delete;
 		GUI& operator=(GUI&&) = delete;
 
-		inline void onRecreateWindow()const;
+		void onRecreateWindow();
 		inline void handleEvent(const sf::Event& event)const;
 
 		void erase(void* const elem_of_gui);
@@ -135,20 +135,14 @@ inline void gui::GUI::draw() const
 	}
 }
 
-inline void gui::GUI::onRecreateWindow()const
-{
-	for (auto& g : gui)
-	{
-		g->onRecreateWindow();
-	}
-}
 
 inline void gui::GUI::handleEvent(const sf::Event& event) const
 {
 	gui__::handled_event = false;
 	for (auto& g : gui)
 	{
-		if (g->is_visible && !g->is_disable && g->handleEvent(event))
+		//if (g->is_visible && !g->is_disable && g->handleEvent(event))
+		if (g->handleEvent(event))
 			gui__::handled_event = true;
 	}
 }

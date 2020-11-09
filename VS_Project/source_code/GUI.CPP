@@ -11,11 +11,11 @@ namespace gui
 	{
 		gui__::window = window;
 
-		gui.reserve(200);
-		buttons.reserve(100);
-		dropDownLists.reserve(10);
-		sliderLists.reserve(25);
-		textBoxs.reserve(50);
+		gui.reserve(50);
+		buttons.reserve(20);
+		dropDownLists.reserve(3);
+		sliderLists.reserve(5);
+		textBoxs.reserve(5);
 	}
 
 	GUI::~GUI()
@@ -147,4 +147,23 @@ void gui::GUI::bad_way()
 	for (auto& x : textBoxs)
 		gui.emplace_back(dynamic_cast<gui__*>(&x));
 
+}
+
+void gui::GUI::onRecreateWindow()
+{
+	//for (auto& g : gui)
+	//{
+	//	g->onRecreateWindow();
+	//}
+	for (auto& x : buttons)
+		x.onRecreateWindow();
+
+	for (auto& x : dropDownLists)
+		x.onRecreateWindow();
+
+	for (auto& x : sliderLists)
+		x.onRecreateWindow();
+
+	for (auto& x : textBoxs)
+		x.onRecreateWindow();
 }

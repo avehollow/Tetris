@@ -108,14 +108,27 @@ void OPTIONS::startUp()
 	}
 
 	show_gui(false);
+	window->GUI_.clear();
 }
 
 
 void OPTIONS::show_gui(bool show)
 {
-	b_Back->visible(show);
-	b_Applay->visible(show);
-	ddl_vm->visible(show);
+	//b_Back->visible(show);
+	//b_Applay->visible(show);
+	//ddl_vm->visible(show);
+	if (show)
+	{
+		window->GUI_.add(b_Back);
+		window->GUI_.add(b_Applay);
+		window->GUI_.add(ddl_vm);
+	}
+	else
+	{
+		window->GUI_.erase(b_Back);
+		window->GUI_.erase(b_Applay);
+		window->GUI_.erase(ddl_vm);
+	}
 }
 
 

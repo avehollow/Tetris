@@ -10,66 +10,71 @@ extern OPTIONS options;
 
 ISTATE* GAME::handleInput(const sf::Event& event)
 {
-	ISTATE* state = this;
-	
-	if (bPause)
-	{
-		if (b_Back->Pressed() || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape))
-		{
-			bPause = false;
-			show_pause_menu(false);
-			tetromino.pause();
-		}
-		else if (b_Options->Pressed())
-		{
-			state = &options;
-		}
-		else if (b_Exit->Pressed())
-		{
-			state = nullptr;
-			//bPause = false;
-		}
-	}
-	else if (bGameOver)
-	{
-		if (b_PlayAgain->Pressed())
-		{
-			tetromino.ini();
-			show_gameover_menu(false);
-			update_hightscore();
-		}
-		if (b_Exit2->Pressed())
-		{
-			state = nullptr;
-			show_gameover_menu(false);
-			update_hightscore();
-		}
-	}
-	else
-	{
-		if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
-		{
-			bPause = !bPause;
-			show_pause_menu(bPause);
-		}
-		tetromino.handleInput(event);
-	}
-		
-	
-	return state;
+	//ISTATE* state = this;
+	//
+	//if (bPause)
+	//{
+	//	if (b_Back->Pressed() || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape))
+	//	{
+	//		bPause = false;
+	//		show_pause_menu(false);
+	//		tetromino.pause();
+	//	}
+	//	else if (b_Options->Pressed())
+	//	{
+	//		state = &options;
+	//	}
+	//	else if (b_Exit->Pressed())
+	//	{
+	//		state = nullptr;
+	//		//bPause = false;
+	//	}
+	//}
+	//else if (bGameOver)
+	//{
+	//	if (b_PlayAgain->Pressed())
+	//	{
+	//		setToPlay();
+	//		update_hightscore();
+	//	}
+	//	if (b_Exit2->Pressed())
+	//	{
+	//		state = nullptr;
+	//		show_gameover_menu(false);
+	//		update_hightscore();
+	//	}
+	//}
+	//else
+	//{
+	//	if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+	//	{
+	//		bPause = !bPause;
+	//		show_pause_menu(bPause);
+	//	}
+	//	tetromino.handleInput(event);
+	//}
+	//	
+	//
+	//return state;
+
+	return (this->*curr_hdl_fun)(event);
 }
 
 
 void GAME::update(const float& tt)
 {
-	if (!bPause)
+	if (!bPause && !bGameOver)
 	{
+
 		bGameOver = score = tetromino.update(tt);
 		if (bGameOver)
+		{
 			show_gameover_menu(true);
+			curr_hdl_fun = &GAME::gameover_input;
+		}
 		
 	}
-	else
+	else 
 	{
 		tetromino.pause();
 	}
@@ -78,6 +83,7 @@ void GAME::update(const float& tt)
 
 void GAME::render()const
 {
+
 	window->draw(background_game);
 
 	tetromino.draw(window);
@@ -107,17 +113,44 @@ void GAME::hide()
 
 void GAME::show_pause_menu(bool show)
 {
-	b_Back->visible(show);
+	/*b_Back->visible(show);
 	b_Options->visible(show);
-	b_Exit->visible(show);
-}
+	b_Exit->visible(show);*/
+	if (show)
+	{
+		window->GUI_.add(b_Back);
+		window->GUI_.add(b_Options);
+		window->GUI_.add(b_Exit);
+		curr_hdl_fun = &GAME::pause_input;
+	}
+	else
+	{
+		window->GUI_.erase(b_Back);
+		window->GUI_.erase(b_Options);
+		window->GUI_.erase(b_Exit);
+		curr_hdl_fun = &GAME::standard_input;
+	}
+}	
+
 
 void GAME::show_gameover_menu(bool show)
 {
-	b_Exit2->visible(show);
-	b_PlayAgain->visible(show);
-	txb_Nick->visible(show);
-	txScore.setString(" your score :" + std::to_string(score));
+	//b_Exit2->visible(show);
+	//b_PlayAgain->visible(show);
+	//txb_Nick->visible(show);
+	if (show)
+	{
+		window->GUI_.add(b_PlayAgain);
+		window->GUI_.add(b_Exit2);
+		window->GUI_.add(txb_Nick);
+		txScore.setString(" your score :" + std::to_string(score));
+	}
+	else
+	{
+		window->GUI_.erase(b_PlayAgain);
+		window->GUI_.erase(b_Exit2);
+		window->GUI_.erase(txb_Nick);
+	}
 }
 
 void GAME::update_hightscore()
@@ -269,13 +302,19 @@ void GAME::startUp()
 	//txb_Nick->setActiveColor();
 
 	b_Exit2 = window->GUI_.CreateButton(0, 0, 248, 86);
-	b_Exit2->setRelativePosition(gui::E_ANCHOR::A_TOP_RIGHT, 500, background_game.getPosition().y + background_game.getSize().y - 90);
+	b_Exit2->setRelativePosition(
+		gui::E_ANCHOR::A_TOP_LEFT,
+		background_gameover.getPosition().x + background_gameover.getSize().x - 250, 
+		background_gameover.getPosition().y + background_gameover.getSize().y - 90);
 	b_Exit2->setTexture(AM->texture[AM_::E_TEXTURE::T_BEXIT]);
 	b_Exit2->setHoveOverColor(sf::Color::White);
 	b_Exit2->setFillColor(sf::Color(180, 180, 180));
 	
 	b_PlayAgain = window->GUI_.CreateButton(0, 0, 248, 86);
-	b_PlayAgain->setRelativePosition(gui::E_ANCHOR::A_TOP_RIGHT, 250, background_game.getPosition().y + background_game.getSize().y - 90);
+	b_PlayAgain->setRelativePosition(
+		gui::E_ANCHOR::A_TOP_LEFT, 
+		background_gameover.getPosition().x + background_gameover.getSize().x - 500, 
+		background_gameover.getPosition().y + background_gameover.getSize().y - 90);
 	b_PlayAgain->setTexture(AM->texture[AM_::E_TEXTURE::T_BPLAY]);
 	b_PlayAgain->setHoveOverColor(sf::Color::White);
 	b_PlayAgain->setFillColor(sf::Color(180, 180, 180));
@@ -311,13 +350,70 @@ void GAME::startUp()
 		background_gameover.getPosition().x,
 		background_gameover.getPosition().y + background_gameover.getSize().y - txDate.getGlobalBounds().height - 5
 	);
+
+	curr_hdl_fun = &GAME::standard_input;
+	window->GUI_.clear();
+}
+
+ISTATE* GAME::standard_input(const sf::Event& event)
+{
+	ISTATE* state = this;
+	
+	if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+	{
+		bPause = !bPause;
+		show_pause_menu(bPause);
+	}
+	tetromino.handleInput(event);
+	
+
+	return state;
+}
+
+ISTATE* GAME::pause_input(const sf::Event& event)
+{
+	ISTATE* state = this;
+	if (b_Back->Pressed() || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape))
+	{
+		bPause = false;
+		show_pause_menu(false);
+		tetromino.pause();
+	}
+	else if (b_Options->Pressed())
+	{
+		state = &options;
+	}
+	else if (b_Exit->Pressed())
+	{
+		state = nullptr;
+	}
+	return state;
+}
+
+ISTATE* GAME::gameover_input(const sf::Event& event)
+{
+	ISTATE* state = this;
+	if (b_PlayAgain->Pressed())
+	{
+		setToPlay();
+		update_hightscore();
+	}
+	else if (b_Exit2->Pressed())
+	{
+		state = nullptr;
+		show_gameover_menu(false);
+		update_hightscore();
+	}
+	return state;
 }
 
 void GAME::setToPlay()
 {
 	bGameOver = false;
 	bPause = false;
+	show_gameover_menu(false);
 	tetromino.ini();
+	curr_hdl_fun = &GAME::standard_input;
 }
 
 

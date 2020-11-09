@@ -32,6 +32,7 @@ private:
     sf::Text date;
     sf::Text name;
     sf::Text score;
+    sf::Text pos;
 
     sf::RectangleShape highScoreBg;
     bool bHighScore;
