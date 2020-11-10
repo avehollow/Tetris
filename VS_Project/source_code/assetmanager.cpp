@@ -83,6 +83,9 @@ AM_::AM_()
 	
 	texture.emplace_back(sf::Texture());
 	texture.back().loadFromFile("data/texture/place_holder.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/bhighscore.png");
 }
 
 AM_::~AM_()

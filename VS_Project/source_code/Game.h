@@ -28,11 +28,6 @@ public:
     virtual void startUp() override;
 
 private:
-    ISTATE* standard_input(const sf::Event& event);
-    ISTATE* pause_input(const sf::Event& event);
-    ISTATE* gameover_input(const sf::Event& event);
-
-private:
     Tetromino tetromino;
 
     sf::RectangleShape background_pause;
@@ -55,14 +50,47 @@ private:
     bool bPause;
     bool bGameOver;
     int score;
+
+    void (GAME::* curr_ren_fun)()const;
+    void (GAME::* curr_upd_fun)(const float& tt);
+    ISTATE* (GAME::* curr_hdl_fun)(const sf::Event& event);
+
+private:
+    ISTATE* standard_input(const sf::Event& event);
+    ISTATE* pause_input(const sf::Event& event);
+    ISTATE* gameover_input(const sf::Event& event);
+
+    void standard_render()const;
+    void pause_render()const;
+    void gameover_render()const;
+
+    void set_pausemode();
+    void set_standardmode();
+    void set_gameovermode();
+
     void show_pause_menu(bool show);
     void show_gameover_menu(bool show);
 
     void update_hightscore();
-
+    std::string get_date()const;
     virtual void onCreate() override;
-
-    void (GAME::* curr_upd_fun)(const float& tt);
-    ISTATE* (GAME::* curr_hdl_fun)(const sf::Event& event);
 };
+
+
+inline void GAME::set_pausemode()
+{
+    curr_hdl_fun = &GAME::pause_input;
+    curr_ren_fun = &GAME::pause_render;
+}
+inline void GAME::set_standardmode()
+{
+    curr_hdl_fun = &GAME::standard_input;
+    curr_ren_fun = &GAME::standard_render;
+}
+inline void GAME::set_gameovermode()
+{
+    curr_hdl_fun = &GAME::gameover_input;
+    curr_ren_fun = &GAME::gameover_render;
+}
+
 

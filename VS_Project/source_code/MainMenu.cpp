@@ -130,9 +130,9 @@ void MAINMENU::startUp()
 	highScoreBg.setFillColor(sf::Color(30, 30, 30, 200));
 	highScoreBg.setPosition(0, window->getSize().y / 2 - highScoreBg.getSize().y / 2);
 
-	b_HighScore = window->GUI_.CreateButton(0, 0, 318, 86);
+	b_HighScore = window->GUI_.CreateButton(0, 0, 400, 87);
 	b_HighScore->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_LEFT, 10, 126);
-	b_HighScore->setTexture(AM->texture[AM_::E_TEXTURE::T_BNEWGAME]);
+	b_HighScore->setTexture(AM->texture[AM_::E_TEXTURE::T_BHIGHSCORE]);
 	b_HighScore->setHoveOverColor(sf::Color::White);
 	b_HighScore->setFillColor(sf::Color(180, 180, 180));
 	

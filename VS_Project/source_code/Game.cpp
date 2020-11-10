@@ -10,53 +10,6 @@ extern OPTIONS options;
 
 ISTATE* GAME::handleInput(const sf::Event& event)
 {
-	//ISTATE* state = this;
-	//
-	//if (bPause)
-	//{
-	//	if (b_Back->Pressed() || (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape))
-	//	{
-	//		bPause = false;
-	//		show_pause_menu(false);
-	//		tetromino.pause();
-	//	}
-	//	else if (b_Options->Pressed())
-	//	{
-	//		state = &options;
-	//	}
-	//	else if (b_Exit->Pressed())
-	//	{
-	//		state = nullptr;
-	//		//bPause = false;
-	//	}
-	//}
-	//else if (bGameOver)
-	//{
-	//	if (b_PlayAgain->Pressed())
-	//	{
-	//		setToPlay();
-	//		update_hightscore();
-	//	}
-	//	if (b_Exit2->Pressed())
-	//	{
-	//		state = nullptr;
-	//		show_gameover_menu(false);
-	//		update_hightscore();
-	//	}
-	//}
-	//else
-	//{
-	//	if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
-	//	{
-	//		bPause = !bPause;
-	//		show_pause_menu(bPause);
-	//	}
-	//	tetromino.handleInput(event);
-	//}
-	//	
-	//
-	//return state;
-
 	return (this->*curr_hdl_fun)(event);
 }
 
@@ -70,7 +23,7 @@ void GAME::update(const float& tt)
 		if (bGameOver)
 		{
 			show_gameover_menu(true);
-			curr_hdl_fun = &GAME::gameover_input;
+			set_gameovermode();
 		}
 		
 	}
@@ -84,21 +37,27 @@ void GAME::update(const float& tt)
 void GAME::render()const
 {
 
+	//window->draw(background_game);
+
+	//tetromino.draw(window);
+
+	//if (bPause)
+	//{
+	//	window->draw(background_pause);
+	//}
+	//else if (bGameOver)
+	//{
+	//	window->draw(background_gameover);
+	//	window->draw(txGameOver);
+	//	window->draw(txScore);
+	//	window->draw(txDate);
+	//}
+
 	window->draw(background_game);
 
 	tetromino.draw(window);
 
-	if (bPause)
-	{
-		window->draw(background_pause);
-	}
-	else if (bGameOver)
-	{
-		window->draw(background_gameover);
-		window->draw(txGameOver);
-		window->draw(txScore);
-		window->draw(txDate);
-	}
+	(this->*curr_ren_fun)();
 }
 
 void GAME::show()
@@ -121,14 +80,14 @@ void GAME::show_pause_menu(bool show)
 		window->GUI_.add(b_Back);
 		window->GUI_.add(b_Options);
 		window->GUI_.add(b_Exit);
-		curr_hdl_fun = &GAME::pause_input;
+		set_pausemode();
 	}
 	else
 	{
 		window->GUI_.erase(b_Back);
 		window->GUI_.erase(b_Options);
 		window->GUI_.erase(b_Exit);
-		curr_hdl_fun = &GAME::standard_input;
+		set_standardmode();
 	}
 }	
 
@@ -216,6 +175,57 @@ void GAME::update_hightscore()
 		out.write((const char*)std::get<2>(h[i]).data(), sizeof(char) * size);
 	}
 	out.close();
+}
+
+std::string GAME::get_date() const
+{
+	std::time_t t = std::time(0);   // get time now
+	std::tm now;;
+	localtime_s(&now, &t);
+	std::string date;
+	switch (now.tm_mon + 1)
+	{
+	case 1:
+		date.append("Jan");
+		break;
+	case 2:
+		date.append("Feb");
+		break;
+	case 3:
+		date.append("Mar");
+		break;
+	case 4:
+		date.append("Apr");
+		break;
+	case 5:
+		date.append("May");
+		break;
+	case 6:
+		date.append("Jun");
+		break;
+	case 7:
+		date.append("Jul");
+		break;
+	case 8:
+		date.append("Aug");
+		break;
+	case 9:
+		date.append("Sep");
+		break;
+	case 10:
+		date.append("Oct");
+		break;
+	case 11:
+		date.append("Nov");
+		break;
+	case 12:
+		date.append("Dec");
+		break;
+	default:
+		break;
+	}
+	date.append(" " + std::to_string(now.tm_mday) + " " + std::to_string(now.tm_year + 1900));
+	return date;
 }
 
 
@@ -343,7 +353,7 @@ void GAME::startUp()
 	);
 	
 	txDate.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	txDate.setString((__DATE__));
+	txDate.setString(get_date());
 	txDate.setCharacterSize(window->getSize().y * 0.03f);
 	txDate.setFillColor(sf::Color(243, 208, 212));
 	txDate.setPosition(
@@ -351,7 +361,7 @@ void GAME::startUp()
 		background_gameover.getPosition().y + background_gameover.getSize().y - txDate.getGlobalBounds().height - 5
 	);
 
-	curr_hdl_fun = &GAME::standard_input;
+	set_standardmode();
 	window->GUI_.clear();
 }
 
@@ -407,13 +417,30 @@ ISTATE* GAME::gameover_input(const sf::Event& event)
 	return state;
 }
 
+void GAME::standard_render() const
+{
+}
+
+void GAME::pause_render() const
+{
+	window->draw(background_pause);
+}
+
+void GAME::gameover_render() const
+{
+	window->draw(background_gameover);
+	window->draw(txGameOver);
+	window->draw(txScore);
+	window->draw(txDate);
+}
+
 void GAME::setToPlay()
 {
 	bGameOver = false;
 	bPause = false;
 	show_gameover_menu(false);
 	tetromino.ini();
-	curr_hdl_fun = &GAME::standard_input;
+	set_standardmode();
 }
 
 

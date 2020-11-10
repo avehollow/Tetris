@@ -74,10 +74,9 @@ void Tetromino::ini(int width, int height)
 	
 	txNumScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 
-	this->onCreate();
 
 	figure.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
-	place_holder.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
+	//place_holder.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 	place_holder.setTexture(&AM->texture[AM_::E_TEXTURE::T_CUBE_PLACEHOLDER]);
 
 	place_holder.squares[0].setFillColor(sf::Color(place_holder.squares[0].getFillColor().r, place_holder.squares[0].getFillColor().g, place_holder.squares[0].getFillColor().b, 140));
@@ -104,7 +103,8 @@ void Tetromino::ini(int width, int height)
 		E_FIGURE(rand_gen() % NUMBER_OF_FIGURES),
 		rand_gen() % 4);
 
-	update_placeholder();
+	this->onCreate();
+	//update_placeholder();
 	bGameOver = false;
 	
 	curr_hdl_fun = &Tetromino::standard_input;

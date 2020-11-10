@@ -58,7 +58,7 @@ void Figure::be_Z_(float pos_x, float pos_y,const sf::Texture* texture)
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
-	move(0, 0);
+	
 	type = E_FIGURE::Z;
 }
 
@@ -74,7 +74,7 @@ void Figure::be_L_(float pos_x, float pos_y,const sf::Texture* texture)
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
-	move(0, 0);
+	
 	type = E_FIGURE::L;
 }
 
@@ -112,7 +112,7 @@ void Figure::be_T_(float pos_x, float pos_y,const sf::Texture* texture)
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
-	move(0, 0);
+
 	type = E_FIGURE::T;
 }
 
@@ -129,7 +129,7 @@ void Figure::be_ZM_(float pos_x, float pos_y,const sf::Texture* texture)
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
-	move(0, 0);
+
 	type = E_FIGURE::ZM;
 }
 
@@ -145,7 +145,7 @@ void Figure::be_LM_(float pos_x, float pos_y,const sf::Texture* texture)
 
 	center_pos = squares[1].getPosition();
 	center_sprite.setPosition(center_pos);
-	move(0, 0);
+	
 	type = E_FIGURE::LM;
 }
 
@@ -161,7 +161,7 @@ void Figure::be_O_(float pos_x, float pos_y,const sf::Texture* texture)
 
 	center_pos = sf::Vector2f(squares[2].getPosition().x - (cube_size / 2), squares[2].getPosition().y - (cube_size / 2));
 	center_sprite.setPosition(center_pos);
-	move(0, 0);
+	
 	type = E_FIGURE::O;
 }
 
@@ -265,4 +265,5 @@ void Figure::spawnFigure(float posX, float posY, const sf::Texture* texture, E_F
 		rotate();
 	
 	this->rotation = rotation;
+	this->move(0, 0);
 }
