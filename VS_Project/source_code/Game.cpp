@@ -228,8 +228,6 @@ std::string GAME::get_date() const
 	return date;
 }
 
-
-
 void GAME::onCreate()
 {
 	tetromino.onCreate();

@@ -50,9 +50,9 @@ private:
 	std::mt19937 rand_gen;
 
 
-	sf::Clock shift_clock;
-	sf::Time  shift_interval;
-	sf::Time  shift_time;
+	//sf::Clock shift_clock;
+	//sf::Time  shift_interval;
+	//sf::Time  shift_time;
 
 	std::vector<int> tetris_row;
 
@@ -78,6 +78,8 @@ private:
 	void (Tetromino::*curr_hdl_fun)(const sf::Event& event);
 
 	int numT = 0;
+	float test_shift_time;
+	float test_shift_interval;
 };
 
 
@@ -114,6 +116,8 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 
 inline void Tetromino::pause()
 {
-	shift_clock.restart();
-	shift_time = sf::seconds(0);
+	//shift_clock.restart();
+	//shift_time = sf::seconds(0);
+
+	test_shift_time = 0;
 }

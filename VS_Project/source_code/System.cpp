@@ -23,7 +23,13 @@ System::System()
 
 	std::srand(time(NULL));
 
-	FPS = 120;
+#ifdef _XP
+	FPS = 60;
+#else
+	FPS = 60;
+	// AVE LOOK not necessary for <60 fps
+	//timeBeginPeriod(1);
+#endif
 	
 	r_fps.setPosition(wnd->getSize().x * 0.90f, wnd->getSize().y * 0.0f);
 	u_fps.setPosition(wnd->getSize().x * 0.90f, wnd->getSize().y * 0.025f);
@@ -34,15 +40,18 @@ System::System()
 	r_fps.setFillColor(sf::Color(255, 255, 255, 70));
 	u_fps.setFillColor(sf::Color(255, 255, 255, 70));
 
-	// AVE LOOK not necessary for <60 fps
-	timeBeginPeriod(1);
 }
 
 System::~System()
 {
 	WORLD::free();
+#ifdef _XP
+
+#else
 	// AVE LOOK not necessary for <60 fps
-	timeEndPeriod(1);
+	//timeEndPeriod(1);
+#endif
+
 }
 
 
@@ -65,6 +74,7 @@ void System::HandleInput()
 void System::Update(const long long& teta_time)
 {
 	float tt = teta_time / (float)_1s_;
+	//std::cout << tt << std::endl;
 	menu_.update(tt);
 }
 
