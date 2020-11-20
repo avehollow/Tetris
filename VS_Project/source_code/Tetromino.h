@@ -1,7 +1,7 @@
 #pragma once
 #include "Figure.h"
 #include "WORLD.h"
-
+#include "ScreenAnimationManager.h"
 
 class Tetromino: public WORLD
 {
@@ -31,6 +31,7 @@ private:
 	bool collision_with_edges(int dir_x, int dir_y, const Figure* figure);
 	bool collision_with_cubes(int dir_x, int dir_y, const Figure* figure);
 
+	void load_anim();
 private:
 	Figure figure;
 	Figure place_holder;
@@ -80,6 +81,9 @@ private:
 	int numT = 0;
 	float test_shift_time;
 	float test_shift_interval;
+
+
+	ScreenAnimationManager SAM;
 };
 
 
@@ -112,6 +116,8 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 	
 	for (auto& f : nextFigures)
 		f.draw(window);
+
+	SAM.render();
 }
 
 inline void Tetromino::pause()
@@ -120,4 +126,5 @@ inline void Tetromino::pause()
 	//shift_time = sf::seconds(0);
 
 	test_shift_time = 0;
+	SAM.update(false);
 }

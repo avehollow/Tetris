@@ -25,7 +25,6 @@ void GAME::update(const float& tt)
 			show_gameover_menu(true);
 			set_gameovermode();
 		}
-		
 	}
 	else 
 	{

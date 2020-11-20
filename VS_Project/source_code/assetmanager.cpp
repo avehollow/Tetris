@@ -86,6 +86,18 @@ AM_::AM_()
 
 	texture.emplace_back(sf::Texture());
 	texture.back().loadFromFile("data/texture/bhighscore.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/fire1.png");
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/poof.png");
+	
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/conffeti.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/fireworks.png");
 }
 
 AM_::~AM_()

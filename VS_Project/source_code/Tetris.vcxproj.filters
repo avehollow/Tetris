@@ -29,6 +29,9 @@
     <Filter Include="State">
       <UniqueIdentifier>{b771401c-0891-4560-a18d-85d9ea36017e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Flipbook">
+      <UniqueIdentifier>{7a33c658-82aa-4feb-9c57-f0e21358cb6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="System.cpp">
@@ -79,6 +82,9 @@
     <ClCompile Include="Figure.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="WORLD.cpp" />
+    <ClCompile Include="ScreenAnimationManager.cpp">
+      <Filter>Flipbook</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System.h">
@@ -129,5 +135,8 @@
     <ClInclude Include="Figure.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="WORLD.h" />
+    <ClInclude Include="ScreenAnimationManager.h">
+      <Filter>Flipbook</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

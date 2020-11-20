@@ -4,15 +4,18 @@
 // > 100
 #define SCORE_FACTOR 300
 
+using namespace sf_literals;
+
+
 void Tetromino::handleInput(const sf::Event& event)
 {
 	(this->*curr_hdl_fun)(event);
 }
 
-
 void Tetromino::ini(int width, int height)
 {
-	
+	SAM.ini((sf::RenderWindow*)window);
+	load_anim();
 	view = window->getDefaultView();
 	view.zoom(1.5);
 	//window->setView(view);
@@ -216,6 +219,16 @@ void Tetromino::check_tetris()
 			curr_upd_fun = &Tetromino::play_anim_tetris;
 			curr_hdl_fun = &Tetromino::disable_input;
 			numT++;
+
+			//SAM.play("conffeti",
+			//	{
+			//		background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)) - 512 / 2,
+			//		background_tetromino.getPosition().y + y * cube_size - 512
+			//	}
+			//	, false
+			//	, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
+			//);
+
 		}
 			yes = 0;
 	}
@@ -223,7 +236,6 @@ void Tetromino::check_tetris()
 
 void Tetromino::play_anim_tetris(const float& tt)
 {
-
 	static int at = 0;
 	for (auto& y : tetris_row)
 	{
@@ -236,6 +248,23 @@ void Tetromino::play_anim_tetris(const float& tt)
 			// AVE LOOK problem with unusual size of tetromino
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) - (at+1)].setFillColor(sf::Color::Transparent);
 			update_score((at + 2) * SCORE_FACTOR);
+
+			if (!(at % 2))
+			{
+
+				// Skaluje siê dobrze 
+				// le wylicza pozycje poniewa¿ na sztywno wpisane jest - 512 / 2 i -512
+				// Przê³odwaæ play tak aby mog³a ustawiaæ czêstotliwoœæ
+				SAM.play("conffeti",
+					{
+						background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)) - 512 / 2,
+						background_tetromino.getPosition().y + y * cube_size - 512
+					}
+					, false
+					, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
+				);
+			}
+
 		}
 	}
 	if (at++; at == WIDTH / 2)
@@ -395,7 +424,7 @@ void Tetromino::standard_input(const sf::Event& event)
 		{
 			figure.move(0, 1);
 			update_score(SCORE_FACTOR * 0.01);
-			pause();
+			test_shift_time = 0;
 		}
 		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::M)
 		{
@@ -436,7 +465,7 @@ void Tetromino::standard_input(const sf::Event& event)
 				figure.center_pos = center_before_rotation;
 			}
 			figure.move(0, 0);
-			pause();
+			test_shift_time = 0;
 		}
 		//x = 0;
 		update_placeholder();
@@ -464,6 +493,7 @@ int Tetromino::update(const float& tt)
 		(this->*curr_upd_fun)(tt);
 		test_shift_time -= test_shift_interval;
 	}
+	SAM.update();
 
 	if (bGameOver)
 		return score;
@@ -565,7 +595,7 @@ bool Tetromino::wall_kick()
 			}
 		}
 	}
-	pause();
+	test_shift_time = 0;
 	return true;
 }
 
@@ -619,6 +649,20 @@ bool Tetromino::collision_with_cubes(int dir_x, int dir_y, const Figure* figure)
 	}
 
 	return false;
+}
+
+void Tetromino::load_anim()
+{
+	SAM.loadAnimation(
+		"conffeti",
+		{ 8, 8, 64 },
+		{ 512, 512 },
+		AM->texture[AM_::E_TEXTURE::T_CONFFETI],
+		30ms,
+		1,
+		{ 0,0 },
+		ScreenAnimationManager::E_MODE::SINGLE,
+		0s);
 }
 
 bool Tetromino::elo()
