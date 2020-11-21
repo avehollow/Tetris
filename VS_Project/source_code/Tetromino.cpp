@@ -219,18 +219,22 @@ void Tetromino::check_tetris()
 			curr_upd_fun = &Tetromino::play_anim_tetris;
 			curr_hdl_fun = &Tetromino::disable_input;
 			numT++;
-
-			//SAM.play("conffeti",
-			//	{
-			//		background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)) - 512 / 2,
-			//		background_tetromino.getPosition().y + y * cube_size - 512
-			//	}
-			//	, false
-			//	, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
-			//);
-
+			which_anim = rand_gen() % 2;
 		}
 			yes = 0;
+	}
+
+	if (numT == 4)
+	{
+
+		464SAM.play("fire",
+			{
+				0,0
+			}
+			, sf::seconds(0.025f + test_shift_interval * 0.015f)
+			, false
+			, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
+		);
 	}
 }
 
@@ -249,20 +253,67 @@ void Tetromino::play_anim_tetris(const float& tt)
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) - (at+1)].setFillColor(sf::Color::Transparent);
 			update_score((at + 2) * SCORE_FACTOR);
 
-			if (!(at % 2))
+			if (numT == 1)
+			{
+				SAM.play("poof",
+					{
+						background_tetromino.getPosition().x + (5 - at) * cube_size,
+						background_tetromino.getPosition().y + (y - 4) * cube_size
+					}
+					, sf::seconds(0.025f + test_shift_interval * 0.015f)
+					, false
+					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
+				);
+
+
+				SAM.play("poof",
+					{
+						background_tetromino.getPosition().x + (5 + at) * cube_size,
+						background_tetromino.getPosition().y + (y - 4) * cube_size
+					}
+					, sf::seconds(0.025f + test_shift_interval * 0.015f)
+					, false
+					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
+				);
+			}
+
+		
+
+			if (!(at % 2) && numT != 1)
 			{
 
 				// Skaluje siê dobrze 
 				// le wylicza pozycje poniewa¿ na sztywno wpisane jest - 512 / 2 i -512
 				// Przê³odwaæ play tak aby mog³a ustawiaæ czêstotliwoœæ
-				SAM.play("conffeti",
-					{
-						background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)) - 512 / 2,
-						background_tetromino.getPosition().y + y * cube_size - 512
-					}
-					, false
-					, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
-				);
+				switch (which_anim)
+				{
+				case 0:
+					SAM.play("conffeti",
+						{
+							background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)),
+							background_tetromino.getPosition().y + (y - 4) * cube_size
+						}
+						, sf::seconds(0.030f + test_shift_interval * 0.015f)
+						, false
+						, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
+					);
+					break;
+
+				case 1:
+					SAM.play("fireworks",
+						{
+							background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)),
+							background_tetromino.getPosition().y + (y - 4) * cube_size
+						}
+						, sf::seconds(0.030f + test_shift_interval * 0.015f)
+						, false
+						, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
+					);
+					break;
+				default:
+					break;
+				}
+		
 			}
 
 		}
@@ -382,6 +433,7 @@ void Tetromino::tick(const float& tt)
 		{ 
 			std::cout << "200!!!\n";
 		}*/
+		// AVE LOOK za szybko na > 0.05f moze 0.10f?
 		if (test_shift_interval > 0.05f)
 			test_shift_interval -= 0.0075f;
 		else
@@ -662,6 +714,39 @@ void Tetromino::load_anim()
 		1,
 		{ 0,0 },
 		ScreenAnimationManager::E_MODE::SINGLE,
+		0s);
+
+	SAM.loadAnimation(
+		"poof",
+		{ 6, 5, 30 },
+		{ 256, 256 },
+		AM->texture[AM_::E_TEXTURE::T_POOF],
+		30ms,
+		1,
+		{ 0,0 },
+		ScreenAnimationManager::E_MODE::SINGLE,
+		0s);
+
+	SAM.loadAnimation(
+		"fireworks",
+		{ 6, 5, 30 },
+		{ 256, 256 },
+		AM->texture[AM_::E_TEXTURE::T_FIREWORKS],
+		30ms,
+		1,
+		{ 0,0 },
+		ScreenAnimationManager::E_MODE::SINGLE,
+		0s);
+	
+	SAM.loadAnimation(
+		"fire",
+		{ 8, 8, 64 },
+		{ 128, 128 },
+		AM->texture[AM_::E_TEXTURE::T_FIREWORKS],
+		30ms,
+		1,
+		{ 0,0 },
+		ScreenAnimationManager::E_MODE::ENDLESS,
 		0s);
 }
 

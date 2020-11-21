@@ -82,8 +82,6 @@ void System::Render()
 {
 	menu_.render();
 
-
-
 	wnd->GUI_.draw();
 
 	wnd->draw(r_fps);

@@ -14,6 +14,13 @@ ScreenAnimationManager::ScreenAnimationManager(sf::RenderWindow* window)
 	curr_anim.reserve(35);
 }
 
+Flipbook& ScreenAnimationManager::operator[](const char* name)
+{
+	return anim[name];
+}
+
+
+
 void ScreenAnimationManager::ini(sf::RenderWindow* window)
 {
 	wnd = window;
@@ -46,18 +53,25 @@ void ScreenAnimationManager::eraseAnimation(const char* name)
 	}
 }
 
-void ScreenAnimationManager::play(const char* name, sf::Vector2f pos, bool reverse, const sf::Vector2f& scale)
+void ScreenAnimationManager::play(const char* name,const sf::Vector2f& pos, bool reverse, const sf::Vector2f& scale)
 {
 	std::map<const char*, Flipbook>::iterator it = anim.find(name);
 	if (it != anim.end())
 	{
 		curr_anim.push_back(it->second);
-		curr_anim.back().restart(reverse);
-		curr_anim.back().sprite.setPosition(pos.x, pos.y);
-		curr_anim.back().sprite.setScale(scale);
+		auto& fb = curr_anim.back();
+		fb.restart(reverse);
+		fb.sprite.setScale(scale);
+		fb.sprite.setPosition(pos.x - fb.sprite.getGlobalBounds().width / 2.0f, pos.y - fb.sprite.getGlobalBounds().height / 2.0f);
 		
 	}
 	std::sort(curr_anim.begin(), curr_anim.end(), [](const Flipbook& lhs, const Flipbook& rhs) { return lhs.getDepth() < rhs.getDepth(); });
+}
+
+void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos, const sf::Time& frequency, bool reverse, const sf::Vector2f& scale)
+{
+	this->play(name, pos, reverse, scale);
+	curr_anim.back().freq_time = frequency;
 }
 
 void ScreenAnimationManager::stop(const char* name)

@@ -37,6 +37,8 @@ public:
 	ScreenAnimationManager();
 	ScreenAnimationManager(sf::RenderWindow* window);
 
+	class Flipbook& operator[](const char* name);
+
 	void ini(sf::RenderWindow* window);
 	void loadAnimation(
 		const char* name,
@@ -52,7 +54,14 @@ public:
 	void eraseAnimation(const char* name);
 	void play(
 		const char* name, 
-		sf::Vector2f pos, 
+		const sf::Vector2f& pos, 
+		bool reverse = false,
+		const sf::Vector2f& scale = sf::Vector2f(1, 1)
+	);
+	void play(
+		const char* name, 
+		const sf::Vector2f& pos, 
+		const sf::Time& frequency,
 		bool reverse = false,
 		const sf::Vector2f& scale = sf::Vector2f(1, 1)
 	);
@@ -60,6 +69,7 @@ public:
 	void update(bool isUpdate = true);
 	void render()const;
 	void clear();
+	Flipbook& back() { return curr_anim.back(); };
 private:
 	sf::Clock clock;
 	sf::RenderWindow* wnd;
@@ -71,6 +81,7 @@ class Flipbook
 {
 	friend class ScreenAnimationManager;
 public:
+	Flipbook() {};
 	Flipbook(
 		const char* name,
 		const sf::Vector2f& position,
@@ -90,9 +101,11 @@ public:
 	void update(const sf::Time& tt);
 	void render(sf::RenderWindow* const window)const;
 	void restart(bool reverse = false);
-	bool finished()const { return bFinished; }
-	int getDepth()const { return depth; }
-	const char* getName()const { return name; }
+	bool finished()const;
+	void setPosition(float x, float y);
+	int getDepth()const;
+	const char* getName()const;
+	const sf::Sprite& getSprite()const;
 private:
 	const char* name;
 	sf::Sprite sprite;
@@ -111,3 +124,23 @@ private:
 	int reverse;
 };
 
+inline bool Flipbook::finished()const 
+{
+	return bFinished;
+}
+inline void Flipbook::setPosition(float x, float y)
+{
+	sprite.setPosition(x, y);
+}
+inline int Flipbook::getDepth()const
+{
+	return depth; 
+}
+inline const char* Flipbook::getName()const
+{
+	return name; 
+}
+inline const sf::Sprite& Flipbook::getSprite()const 
+{
+	return sprite;
+}

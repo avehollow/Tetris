@@ -81,7 +81,7 @@ private:
 	int numT = 0;
 	float test_shift_time;
 	float test_shift_interval;
-
+	int which_anim;
 
 	ScreenAnimationManager SAM;
 };
