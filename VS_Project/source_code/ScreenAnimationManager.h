@@ -37,7 +37,7 @@ public:
 	ScreenAnimationManager();
 	ScreenAnimationManager(sf::RenderWindow* window);
 
-	class Flipbook& operator[](const char* name);
+	class Flipbook& operator[](const char* name) { return anim[name]; };
 
 	void ini(sf::RenderWindow* window);
 	void loadAnimation(
@@ -52,6 +52,10 @@ public:
 		const sf::Time& lifeTime = sf::milliseconds(0)
 	);
 	void eraseAnimation(const char* name);
+	void play(
+		const char* name,
+		const sf::Vector2f& pos
+	);
 	void play(
 		const char* name, 
 		const sf::Vector2f& pos, 
@@ -69,7 +73,6 @@ public:
 	void update(bool isUpdate = true);
 	void render()const;
 	void clear();
-	Flipbook& back() { return curr_anim.back(); };
 private:
 	sf::Clock clock;
 	sf::RenderWindow* wnd;

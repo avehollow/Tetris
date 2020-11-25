@@ -224,17 +224,34 @@ void Tetromino::check_tetris()
 			yes = 0;
 	}
 
-	if (numT == 4)
+	32523if (test_shift_interval > 0.05f)
 	{
+		auto& anim = SAM["fire1"].getSprite();
+		for (int i = -1; i <= window->getSize().x / (anim.getGlobalBounds().width * 1.2f) + 1 ; i++)
+		{
 
-		464SAM.play("fire",
-			{
-				0,0
-			}
-			, sf::seconds(0.025f + test_shift_interval * 0.015f)
-			, false
-			, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
-		);
+			SAM.play("fire2",
+				{
+					i * (anim.getGlobalBounds().width * 1.2f) + anim.getGlobalBounds().width * 1.2f / 2.0f ,
+					window->getSize().y - (anim.getGlobalBounds().height * 1.2f) / 2.0f
+				}
+				, sf::seconds(0.025f + test_shift_interval * 0.015f)
+				, i % 4 == 0 ? -1 : 1
+				, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
+			);
+
+
+			SAM.play("fire1",
+				{
+					(i+1) * anim.getGlobalBounds().width * 1.6f,
+					window->getSize().y - (anim.getGlobalBounds().height * 1.6f) / 2.0f
+				}
+				, sf::seconds(0.030f + test_shift_interval * 0.015f)
+				, i%3 == 0 ? -1:1
+				, { (1.6f / 1920.0f) * window->getSize().x, (1.6f / 1080.0f) * window->getSize().y }
+			);
+
+		}
 	}
 }
 
@@ -733,18 +750,30 @@ void Tetromino::load_anim()
 		{ 256, 256 },
 		AM->texture[AM_::E_TEXTURE::T_FIREWORKS],
 		30ms,
-		1,
+		2,
 		{ 0,0 },
 		ScreenAnimationManager::E_MODE::SINGLE,
 		0s);
-	
+
 	SAM.loadAnimation(
-		"fire",
+		"fire1",
 		{ 8, 8, 64 },
 		{ 128, 128 },
-		AM->texture[AM_::E_TEXTURE::T_FIREWORKS],
+		AM->texture[AM_::E_TEXTURE::T_FIRE1],
 		30ms,
-		1,
+		3,
+		{ 0,0 },
+		ScreenAnimationManager::E_MODE::ENDLESS,
+		0s);
+
+	
+	SAM.loadAnimation(
+		"fire2",
+		{ 8, 8, 64 },
+		{ 128, 128 },
+		AM->texture[AM_::E_TEXTURE::T_FIRE1],
+		30ms,
+		4,
 		{ 0,0 },
 		ScreenAnimationManager::E_MODE::ENDLESS,
 		0s);
