@@ -47,7 +47,7 @@ public:
 		const sf::Texture& texture,
 		const sf::Time& frequency,
 		int depth = 0,
-		sf::Vector2i startFramePos = { 0 , 0 },
+		sf::Vector2i startFramePos = { 0 , 0},
 		const E_MODE& mode = E_MODE::ENDLESS,
 		const sf::Time& lifeTime = sf::milliseconds(0)
 	);
@@ -73,12 +73,14 @@ public:
 	void update(bool isUpdate = true);
 	void render()const;
 	void clear();
+	void OnCreate();
 private:
 	sf::Clock clock;
 	sf::RenderWindow* wnd;
 	std::map<const char*,class Flipbook> anim;
 	std::vector<class Flipbook> curr_anim;
 };
+
 
 class Flipbook
 {
@@ -93,7 +95,7 @@ public:
 		const sf::Texture& texture,
 		const sf::Time& frequency,
 		int depth = 0,
-		sf::Vector2i start_pos = { 0 , 0 },
+		sf::Vector2i start_pos = { 0 , 0},
 		const ScreenAnimationManager::E_MODE& mode = ScreenAnimationManager::E_MODE::ENDLESS,
 		const sf::Time& life_time = sf::milliseconds(0)
 	);
@@ -109,6 +111,9 @@ public:
 	int getDepth()const;
 	const char* getName()const;
 	const sf::Sprite& getSprite()const;
+
+	void OnCreate(const sf::RenderWindow* const window);
+
 private:
 	const char* name;
 	sf::Sprite sprite;
@@ -125,6 +130,11 @@ private:
 	int depth;
 	bool bFinished;
 	int reverse;
+
+
+	float ppX;
+	float ppY;
+
 };
 
 inline bool Flipbook::finished()const 
@@ -147,3 +157,12 @@ inline const sf::Sprite& Flipbook::getSprite()const
 {
 	return sprite;
 }
+
+inline void Flipbook::OnCreate(const sf::RenderWindow* const window)
+{
+	sprite.setPosition(ppX * window->getSize().x, ppY * window->getSize().y);
+}
+
+
+
+

@@ -31,6 +31,7 @@ private:
 	bool collision_with_edges(int dir_x, int dir_y, const Figure* figure);
 	bool collision_with_cubes(int dir_x, int dir_y, const Figure* figure);
 
+	void play_anim_fire();
 	void load_anim();
 private:
 	Figure figure;

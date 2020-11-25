@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Tetromino.h"
 
+
 // > 100
 #define SCORE_FACTOR 300
 
@@ -15,6 +16,7 @@ void Tetromino::handleInput(const sf::Event& event)
 void Tetromino::ini(int width, int height)
 {
 	SAM.ini((sf::RenderWindow*)window);
+
 	load_anim();
 	view = window->getDefaultView();
 	view.zoom(1.5);
@@ -185,6 +187,8 @@ void Tetromino::onCreate()
 	}
 	place_holder.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 	update_placeholder();
+
+	SAM.OnCreate();
 }
 
 void Tetromino::update_score(size_t pointsToAdd)
@@ -222,36 +226,6 @@ void Tetromino::check_tetris()
 			which_anim = rand_gen() % 2;
 		}
 			yes = 0;
-	}
-
-	32523if (test_shift_interval > 0.05f)
-	{
-		auto& anim = SAM["fire1"].getSprite();
-		for (int i = -1; i <= window->getSize().x / (anim.getGlobalBounds().width * 1.2f) + 1 ; i++)
-		{
-
-			SAM.play("fire2",
-				{
-					i * (anim.getGlobalBounds().width * 1.2f) + anim.getGlobalBounds().width * 1.2f / 2.0f ,
-					window->getSize().y - (anim.getGlobalBounds().height * 1.2f) / 2.0f
-				}
-				, sf::seconds(0.025f + test_shift_interval * 0.015f)
-				, i % 4 == 0 ? -1 : 1
-				, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
-			);
-
-
-			SAM.play("fire1",
-				{
-					(i+1) * anim.getGlobalBounds().width * 1.6f,
-					window->getSize().y - (anim.getGlobalBounds().height * 1.6f) / 2.0f
-				}
-				, sf::seconds(0.030f + test_shift_interval * 0.015f)
-				, i%3 == 0 ? -1:1
-				, { (1.6f / 1920.0f) * window->getSize().x, (1.6f / 1080.0f) * window->getSize().y }
-			);
-
-		}
 	}
 }
 
@@ -293,15 +267,9 @@ void Tetromino::play_anim_tetris(const float& tt)
 					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
 				);
 			}
-
-		
-
-			if (!(at % 2) && numT != 1)
+			else if(!(at%2))
 			{
 
-				// Skaluje siÍ dobrze 
-				// èle wylicza pozycje poniewaø na sztywno wpisane jest - 512 / 2 i -512
-				// PrzÍ≥odwaÊ play tak aby mog≥a ustawiaÊ czÍstotliwoúÊ
 				switch (which_anim)
 				{
 				case 0:
@@ -451,12 +419,16 @@ void Tetromino::tick(const float& tt)
 			std::cout << "200!!!\n";
 		}*/
 		// AVE LOOK za szybko na > 0.05f moze 0.10f?
-		if (test_shift_interval > 0.05f)
+		if (test_shift_interval > 0.10f)
 			test_shift_interval -= 0.0075f;
 		else
 		{ 
 			std::cout << "200!!!\n";
 		}
+
+		if (test_shift_interval > 0.30f)
+			this->play_anim_fire();
+		
 
 		update_score(100);
 		spawn_figure();
@@ -720,6 +692,48 @@ bool Tetromino::collision_with_cubes(int dir_x, int dir_y, const Figure* figure)
 	return false;
 }
 
+void Tetromino::play_anim_fire()
+{
+	auto& anim = SAM["fire1"].getSprite();
+	sf::Vector2f scale1
+	{
+		 (1.2f / 1920.0f) * window->getSize().x,
+		 (1.2f / 1080.0f) * window->getSize().y
+	};
+
+	sf::Vector2f scale2
+	{
+		 (1.6f / 1920.0f) * window->getSize().x,
+		 (1.6f / 1080.0f) * window->getSize().y
+	};
+	
+	for (int i = -1; i <= window->getSize().x / (anim.getGlobalBounds().width * scale1.x) + 1; i++)
+	{
+
+		SAM.play("fire2",
+			{
+				i * (anim.getGlobalBounds().width * scale1.x) + anim.getGlobalBounds().width * scale1.x / 2.0f ,
+				window->getSize().y - (anim.getGlobalBounds().height * scale1.y) / 2.0f
+			}
+			, sf::seconds(0.020f + test_shift_interval * 0.015f)
+			, i % 4 == 0 ? -1 : 1
+			, scale1
+		);
+
+
+		SAM.play("fire1",
+			{
+				(i + 1) * anim.getGlobalBounds().width * scale2.x,
+				window->getSize().y - (anim.getGlobalBounds().height * scale2.y) / 2.0f
+			}
+			, sf::seconds(0.025f + test_shift_interval * 0.015f)
+			, i % 3 == 0 ? -1 : 1
+			, scale2
+		);
+
+	}
+}
+
 void Tetromino::load_anim()
 {
 	SAM.loadAnimation(
@@ -760,7 +774,7 @@ void Tetromino::load_anim()
 		{ 8, 8, 64 },
 		{ 128, 128 },
 		AM->texture[AM_::E_TEXTURE::T_FIRE1],
-		30ms,
+		25ms,
 		3,
 		{ 0,0 },
 		ScreenAnimationManager::E_MODE::ENDLESS,
@@ -772,7 +786,7 @@ void Tetromino::load_anim()
 		{ 8, 8, 64 },
 		{ 128, 128 },
 		AM->texture[AM_::E_TEXTURE::T_FIRE1],
-		30ms,
+		20ms,
 		4,
 		{ 0,0 },
 		ScreenAnimationManager::E_MODE::ENDLESS,

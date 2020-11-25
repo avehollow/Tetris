@@ -20,6 +20,8 @@ ScreenAnimationManager::ScreenAnimationManager(sf::RenderWindow* window)
 void ScreenAnimationManager::ini(sf::RenderWindow* window)
 {
 	wnd = window;
+	curr_anim.clear();
+	anim.clear();
 	curr_anim.reserve(35);
 	clock.restart();
 }
@@ -84,6 +86,15 @@ void ScreenAnimationManager::clear()
 	curr_anim.clear();
 }
 
+void ScreenAnimationManager::OnCreate()
+{
+	for (auto& a : curr_anim)
+	{
+		a.OnCreate(wnd);
+	}
+}
+
+
 
 void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos)
 {
@@ -103,6 +114,9 @@ void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos, con
 	fb.sprite.setScale(scale);
 	fb.sprite.setPosition(pos.x - fb.sprite.getGlobalBounds().width / 2.0f, pos.y - fb.sprite.getGlobalBounds().height / 2.0f);
 	fb.freq_time = frequency;
+
+	fb.ppX = fb.getSprite().getPosition().x / wnd->getSize().x;
+	fb.ppY = fb.getSprite().getPosition().y / wnd->getSize().y;
 	
 	std::sort(curr_anim.begin(), curr_anim.end(), [](const Flipbook& lhs, const Flipbook& rhs) { return lhs.getDepth() < rhs.getDepth(); });
 }
@@ -147,7 +161,7 @@ Flipbook::Flipbook(
 	, size_of_frame(sizeOfFrame)
 	, mode(mode)
 	, start_pos(start_pos)
-	, curr_frame({ 0, 0, 0 })
+	, curr_frame({ 0, 0, 0})
 	, freq_time(frequency)
 	, curr_freq_time(sf::milliseconds(0))
 	, life_time(life_time)
@@ -160,8 +174,8 @@ Flipbook::Flipbook(
 	sprite.setPosition(position);
 	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect(
-		start_pos.x + sizeOfFrame.x,
-		start_pos.y + sizeOfFrame.y,
+		start_pos.x,
+		start_pos.y,
 		sizeOfFrame.x, 
 		sizeOfFrame.y));
 
@@ -275,7 +289,12 @@ void Flipbook::restart(bool reverse)
 	curr_freq_time = sf::milliseconds(0);
 	curr_life_time = sf::milliseconds(0);
 	bFinished = false;
-	sprite.setTextureRect(sf::IntRect({ 0,0 }, size_of_frame));
+	sprite.setTextureRect(sf::IntRect(
+		start_pos.x,
+		start_pos.y,
+		size_of_frame.x,
+		size_of_frame.y));
+
 	sprite.setScale({ 1.0f,1.0f });
 	this->reverse = 1;
 	if (reverse)
@@ -283,6 +302,6 @@ void Flipbook::restart(bool reverse)
 		this->reverse = -1;
 		start_pos.x = (number_of_frames.x - 1) * size_of_frame.x;
 		start_pos.y = (number_of_frames.y - 1) * size_of_frame.y;
-		sprite.setTextureRect(sf::IntRect(start_pos, size_of_frame));
+		sprite.setTextureRect(sf::IntRect(sf::Vector2i(start_pos.x, start_pos.y), size_of_frame));
 	}
 }
