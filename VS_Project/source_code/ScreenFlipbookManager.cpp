@@ -1,32 +1,32 @@
 #include "pch.h"
-#include "ScreenAnimationManager.h"
+#include "ScreenFlipbookManager.h"
 
 
-ScreenAnimationManager::ScreenAnimationManager()
-	: ScreenAnimationManager(nullptr)
+ScreenFlipbookManager::ScreenFlipbookManager()
+	: ScreenFlipbookManager(nullptr)
 {
 }
 
-ScreenAnimationManager::ScreenAnimationManager(sf::RenderWindow* window)
+ScreenFlipbookManager::ScreenFlipbookManager(sf::RenderWindow* window)
 	: wnd(window)
 {
-	curr_anim.reserve(35);
+	f_current.reserve(35);
 	clock.restart();
 }
 
 
 
 
-void ScreenAnimationManager::ini(sf::RenderWindow* window)
+void ScreenFlipbookManager::ini(sf::RenderWindow* window)
 {
 	wnd = window;
-	curr_anim.clear();
-	anim.clear();
-	curr_anim.reserve(35);
+	f_current.clear();
+	f_templates.clear();
+	f_current.reserve(35);
 	clock.restart();
 }
 
-void ScreenAnimationManager::loadAnimation(
+void ScreenFlipbookManager::loadAnimation(
 	const char* name, 
 	const sf::Vector3i& numAndMaxFrames,
 	const sf::Vector2i& sizeOfFrame,
@@ -37,58 +37,58 @@ void ScreenAnimationManager::loadAnimation(
 	const E_MODE& mode,
 	const sf::Time& lifeTime)
 {
-	anim.emplace(name, Flipbook(name, {0,0}, numAndMaxFrames, sizeOfFrame, texture, frequency, depth, startFramePos, mode, lifeTime));
+	f_templates.emplace(name, Flipbook(name, {0,0}, numAndMaxFrames, sizeOfFrame, texture, frequency, depth, startFramePos, mode, lifeTime));
 }
 
 
 
-void ScreenAnimationManager::eraseAnimation(const char* name)
+void ScreenFlipbookManager::eraseAnimation(const char* name)
 {
-	std::map<const char*, Flipbook>::iterator it = anim.find(name);
-	if (it != anim.end())
+	std::map<const char*, Flipbook>::iterator it = f_templates.find(name);
+	if (it != f_templates.end())
 	{
-		anim.erase(it);
+		f_templates.erase(it);
 	}
 }
 
 
-void ScreenAnimationManager::stop(const char* name)
+void ScreenFlipbookManager::stop(const char* name)
 {
 	std::string n(name);
-	auto iitt = std::find_if(curr_anim.begin(), curr_anim.end(), [&](const Flipbook& a) { return  n.compare(a.getName()) == 0; });
-	if (iitt != curr_anim.end())
-		curr_anim.erase(iitt);
+	auto iitt = std::find_if(f_current.begin(), f_current.end(), [&](const Flipbook& a) { return  n.compare(a.getName()) == 0; });
+	if (iitt != f_current.end())
+		f_current.erase(iitt);
 }
 
-void ScreenAnimationManager::update(bool isUpdate)
+void ScreenFlipbookManager::update(bool isUpdate)
 {
 	sf::Time t = clock.restart();
 	if (isUpdate)
 	{
-		auto begin = curr_anim.begin();
-		for (int i = curr_anim.size() - 1; i >= 0; i--)
+		auto begin = f_current.begin();
+		for (int i = f_current.size() - 1; i >= 0; i--)
 		{
-			curr_anim[i].update(t);
-			if (curr_anim[i].bFinished)
-				curr_anim.erase(begin + i);
+			f_current[i].update(t);
+			if (f_current[i].bFinished)
+				f_current.erase(begin + i);
 		}
 	}
 }
 
-void ScreenAnimationManager::render() const
+void ScreenFlipbookManager::render() const
 {
-	for (auto& anim : curr_anim)
+	for (auto& anim : f_current)
 		anim.render(wnd);
 }
 
-void ScreenAnimationManager::clear()
+void ScreenFlipbookManager::clear()
 {
-	curr_anim.clear();
+	f_current.clear();
 }
 
-void ScreenAnimationManager::OnCreate()
+void ScreenFlipbookManager::OnCreate()
 {
-	for (auto& a : curr_anim)
+	for (auto& a : f_current)
 	{
 		a.OnCreate(wnd);
 	}
@@ -96,20 +96,20 @@ void ScreenAnimationManager::OnCreate()
 
 
 
-void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos)
+void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos)
 {
-	this->play(name, pos, anim[name].freq_time, anim[name].reverse, anim[name].getSprite().getScale());
+	this->play(name, pos, f_templates[name].freq_time, f_templates[name].reverse, f_templates[name].getSprite().getScale());
 }
 
-void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos, bool reverse, const sf::Vector2f& scale)
+void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, bool reverse, const sf::Vector2f& scale)
 {
-	this->play(name, pos, anim[name].freq_time, reverse, scale);
+	this->play(name, pos, f_templates[name].freq_time, reverse, scale);
 }
 
-void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos, const sf::Time& frequency, bool reverse, const sf::Vector2f& scale)
+void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, const sf::Time& frequency, bool reverse, const sf::Vector2f& scale)
 {
-	curr_anim.push_back(anim[name]);
-	auto& fb = curr_anim.back();
+	f_current.push_back(f_templates[name]);
+	auto& fb = f_current.back();
 	fb.restart(reverse);
 	fb.sprite.setScale(scale);
 	fb.sprite.setPosition(pos.x - fb.sprite.getGlobalBounds().width / 2.0f, pos.y - fb.sprite.getGlobalBounds().height / 2.0f);
@@ -118,7 +118,7 @@ void ScreenAnimationManager::play(const char* name, const sf::Vector2f& pos, con
 	fb.ppX = fb.getSprite().getPosition().x / wnd->getSize().x;
 	fb.ppY = fb.getSprite().getPosition().y / wnd->getSize().y;
 	
-	std::sort(curr_anim.begin(), curr_anim.end(), [](const Flipbook& lhs, const Flipbook& rhs) { return lhs.getDepth() < rhs.getDepth(); });
+	std::sort(f_current.begin(), f_current.end(), [](const Flipbook& lhs, const Flipbook& rhs) { return lhs.getDepth() < rhs.getDepth(); });
 }
 
 
@@ -153,7 +153,7 @@ Flipbook::Flipbook(
 	const sf::Time& frequency,
 	int depth,
 	sf::Vector2i start_pos,
-	const ScreenAnimationManager::E_MODE& mode,
+	const ScreenFlipbookManager::E_MODE& mode,
 	const sf::Time& life_time
 )
 	: name(name)
@@ -247,7 +247,7 @@ void Flipbook::update(const sf::Time& tt)
 		// AVE LOOK dla 0s wyswietli co najmniej 1 klatke (umiescic switch poza ifem )
 		switch (mode)
 		{
-		case ScreenAnimationManager::SINGLE:
+		case ScreenFlipbookManager::SINGLE:
 			if ((curr_frame.x == number_of_frames.x) && (curr_frame.y == number_of_frames.y ) || (curr_frame.z == number_of_frames.z))
 			{
 				bFinished = true;
@@ -255,7 +255,7 @@ void Flipbook::update(const sf::Time& tt)
 				curr_frame.z++;
 			
 			break;
-		case ScreenAnimationManager::TIME:
+		case ScreenFlipbookManager::TIME:
 			if (curr_life_time >= life_time)
 				bFinished = true;
 

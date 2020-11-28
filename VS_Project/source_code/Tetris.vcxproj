@@ -307,7 +307,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xp|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PDA.cpp" />
-    <ClCompile Include="ScreenAnimationManager.cpp" />
+    <ClCompile Include="ScreenFlipbookManager.cpp" />
     <ClCompile Include="SliderList.cpp" />
     <ClCompile Include="STATE.cpp" />
     <ClCompile Include="System.cpp" />
@@ -327,7 +327,7 @@
     <ClInclude Include="Options.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PDA.h" />
-    <ClInclude Include="ScreenAnimationManager.h" />
+    <ClInclude Include="ScreenFlipbookManager.h" />
     <ClInclude Include="SliderList.h" />
     <ClInclude Include="STATE.h" />
     <ClInclude Include="SYMBOLS.H" />

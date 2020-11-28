@@ -1,7 +1,7 @@
 #pragma once
 #include "Figure.h"
 #include "WORLD.h"
-#include "ScreenAnimationManager.h"
+#include "ScreenFlipbookManager.h"
 
 class Tetromino: public WORLD
 {
@@ -84,7 +84,7 @@ private:
 	float test_shift_interval;
 	int which_anim;
 
-	ScreenAnimationManager SAM;
+	ScreenFlipbookManager SAM;
 };
 
 

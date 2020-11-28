@@ -23,7 +23,7 @@ namespace sf_literals
 	};
 }
 
-class ScreenAnimationManager
+class ScreenFlipbookManager
 {
 public:
 
@@ -34,10 +34,10 @@ public:
 		TIME = 2
 	};
 
-	ScreenAnimationManager();
-	ScreenAnimationManager(sf::RenderWindow* window);
+	ScreenFlipbookManager();
+	ScreenFlipbookManager(sf::RenderWindow* window);
 
-	class Flipbook& operator[](const char* name) { return anim[name]; };
+	class Flipbook& operator[](const char* name) { return f_templates[name]; };
 
 	void ini(sf::RenderWindow* window);
 	void loadAnimation(
@@ -51,7 +51,6 @@ public:
 		const E_MODE& mode = E_MODE::ENDLESS,
 		const sf::Time& lifeTime = sf::milliseconds(0)
 	);
-	void eraseAnimation(const char* name);
 	void play(
 		const char* name,
 		const sf::Vector2f& pos
@@ -69,6 +68,8 @@ public:
 		bool reverse = false,
 		const sf::Vector2f& scale = sf::Vector2f(1, 1)
 	);
+
+	void eraseAnimation(const char* name);
 	void stop(const char* name);
 	void update(bool isUpdate = true);
 	void render()const;
@@ -77,14 +78,14 @@ public:
 private:
 	sf::Clock clock;
 	sf::RenderWindow* wnd;
-	std::map<const char*,class Flipbook> anim;
-	std::vector<class Flipbook> curr_anim;
+	std::map<const char*,class Flipbook> f_templates;
+	std::vector<class Flipbook> f_current;
 };
 
 
 class Flipbook
 {
-	friend class ScreenAnimationManager;
+	friend class ScreenFlipbookManager;
 public:
 	Flipbook() {};
 	Flipbook(
@@ -96,7 +97,7 @@ public:
 		const sf::Time& frequency,
 		int depth = 0,
 		sf::Vector2i start_pos = { 0 , 0},
-		const ScreenAnimationManager::E_MODE& mode = ScreenAnimationManager::E_MODE::ENDLESS,
+		const ScreenFlipbookManager::E_MODE& mode = ScreenFlipbookManager::E_MODE::ENDLESS,
 		const sf::Time& life_time = sf::milliseconds(0)
 	);
 	Flipbook(const Flipbook& other);
@@ -121,7 +122,7 @@ private:
 	sf::Vector2i size_of_frame;
 	sf::Vector3i curr_frame;
 	sf::Vector2i start_pos;
-	ScreenAnimationManager::E_MODE mode;
+	ScreenFlipbookManager::E_MODE mode;
 	sf::Time freq_time;
 	sf::Time curr_freq_time;
 	sf::Time life_time;

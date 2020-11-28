@@ -744,7 +744,7 @@ void Tetromino::load_anim()
 		30ms,
 		1,
 		{ 0,0 },
-		ScreenAnimationManager::E_MODE::SINGLE,
+		ScreenFlipbookManager::E_MODE::SINGLE,
 		0s);
 
 	SAM.loadAnimation(
@@ -755,7 +755,7 @@ void Tetromino::load_anim()
 		30ms,
 		1,
 		{ 0,0 },
-		ScreenAnimationManager::E_MODE::SINGLE,
+		ScreenFlipbookManager::E_MODE::SINGLE,
 		0s);
 
 	SAM.loadAnimation(
@@ -766,7 +766,7 @@ void Tetromino::load_anim()
 		30ms,
 		2,
 		{ 0,0 },
-		ScreenAnimationManager::E_MODE::SINGLE,
+		ScreenFlipbookManager::E_MODE::SINGLE,
 		0s);
 
 	SAM.loadAnimation(
@@ -777,7 +777,7 @@ void Tetromino::load_anim()
 		25ms,
 		3,
 		{ 0,0 },
-		ScreenAnimationManager::E_MODE::ENDLESS,
+		ScreenFlipbookManager::E_MODE::ENDLESS,
 		0s);
 
 	
@@ -789,7 +789,7 @@ void Tetromino::load_anim()
 		20ms,
 		4,
 		{ 0,0 },
-		ScreenAnimationManager::E_MODE::ENDLESS,
+		ScreenFlipbookManager::E_MODE::ENDLESS,
 		0s);
 }
 

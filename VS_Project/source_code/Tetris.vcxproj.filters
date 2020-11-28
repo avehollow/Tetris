@@ -82,7 +82,7 @@
     <ClCompile Include="Figure.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="WORLD.cpp" />
-    <ClCompile Include="ScreenAnimationManager.cpp">
+    <ClCompile Include="ScreenFlipbookManager.cpp">
       <Filter>Flipbook</Filter>
     </ClCompile>
   </ItemGroup>
@@ -135,7 +135,7 @@
     <ClInclude Include="Figure.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="WORLD.h" />
-    <ClInclude Include="ScreenAnimationManager.h">
+    <ClInclude Include="ScreenFlipbookManager.h">
       <Filter>Flipbook</Filter>
     </ClInclude>
   </ItemGroup>
