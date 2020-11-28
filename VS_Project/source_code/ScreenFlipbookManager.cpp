@@ -10,7 +10,7 @@ ScreenFlipbookManager::ScreenFlipbookManager()
 ScreenFlipbookManager::ScreenFlipbookManager(sf::RenderWindow* window)
 	: wnd(window)
 {
-	f_current.reserve(35);
+	f_current.reserve(70);
 	clock.restart();
 }
 
@@ -22,7 +22,7 @@ void ScreenFlipbookManager::ini(sf::RenderWindow* window)
 	wnd = window;
 	f_current.clear();
 	f_templates.clear();
-	f_current.reserve(35);
+	f_current.reserve(70);
 	clock.restart();
 }
 
@@ -65,12 +65,11 @@ void ScreenFlipbookManager::update(bool isUpdate)
 	sf::Time t = clock.restart();
 	if (isUpdate)
 	{
-		auto begin = f_current.begin();
 		for (int i = f_current.size() - 1; i >= 0; i--)
 		{
 			f_current[i].update(t);
 			if (f_current[i].bFinished)
-				f_current.erase(begin + i);
+				f_current.erase(f_current.begin() + i);
 		}
 	}
 }
@@ -96,20 +95,21 @@ void ScreenFlipbookManager::OnCreate()
 
 
 
-void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos)
+Flipbook* ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos)
 {
-	this->play(name, pos, f_templates[name].freq_time, f_templates[name].reverse, f_templates[name].getSprite().getScale());
+	return this->play(name, pos, f_templates[name].freq_time, f_templates[name].reverse, f_templates[name].getSprite().getScale());
 }
 
-void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, bool reverse, const sf::Vector2f& scale)
+Flipbook* ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, bool reverse, const sf::Vector2f& scale)
 {
-	this->play(name, pos, f_templates[name].freq_time, reverse, scale);
+	return this->play(name, pos, f_templates[name].freq_time, reverse, scale);
 }
 
-void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, const sf::Time& frequency, bool reverse, const sf::Vector2f& scale)
+Flipbook* ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, const sf::Time& frequency, bool reverse, const sf::Vector2f& scale)
 {
 	f_current.push_back(f_templates[name]);
 	auto& fb = f_current.back();
+	fb.id = 1;
 	fb.restart(reverse);
 	fb.sprite.setScale(scale);
 	fb.sprite.setPosition(pos.x - fb.sprite.getGlobalBounds().width / 2.0f, pos.y - fb.sprite.getGlobalBounds().height / 2.0f);
@@ -117,8 +117,17 @@ void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, cons
 
 	fb.ppX = fb.getSprite().getPosition().x / wnd->getSize().x;
 	fb.ppY = fb.getSprite().getPosition().y / wnd->getSize().y;
+
+	fb.psX = fb.getSprite().getScale().x / wnd->getSize().x;
+	fb.psY = fb.getSprite().getScale().y / wnd->getSize().y;
 	
 	std::sort(f_current.begin(), f_current.end(), [](const Flipbook& lhs, const Flipbook& rhs) { return lhs.getDepth() < rhs.getDepth(); });
+
+	//Flipbook* pf = nullptr;
+	auto it = std::find_if(f_current.begin(), f_current.end(), [](const Flipbook& fb) {return fb.getId() == 1; });
+	it->id = 0;
+	
+	return it._Ptr;
 }
 
 
@@ -156,7 +165,8 @@ Flipbook::Flipbook(
 	const ScreenFlipbookManager::E_MODE& mode,
 	const sf::Time& life_time
 )
-	: name(name)
+	: id(-1)
+	, name(name)
 	, number_of_frames(numAndMaxFrames)
 	, size_of_frame(sizeOfFrame)
 	, mode(mode)
@@ -183,7 +193,8 @@ Flipbook::Flipbook(
 }
 
 Flipbook::Flipbook(const Flipbook& other)
-	: name(other.name)
+	: id(other.id)
+	, name(other.name)
 	, number_of_frames(other.number_of_frames)
 	, size_of_frame(other.size_of_frame)
 	, mode(other.mode)
@@ -205,6 +216,7 @@ Flipbook::Flipbook(const Flipbook& other)
 
 Flipbook& Flipbook::operator=(const Flipbook& other) 
 {
+	id = other.id;
 	name = other.name;
 	number_of_frames = other.number_of_frames;
 	size_of_frame = other.size_of_frame;

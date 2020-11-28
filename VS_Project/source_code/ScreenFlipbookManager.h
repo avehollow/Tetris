@@ -51,17 +51,18 @@ public:
 		const E_MODE& mode = E_MODE::ENDLESS,
 		const sf::Time& lifeTime = sf::milliseconds(0)
 	);
-	void play(
+	// return type Flipbook* is not very good idea 
+	class Flipbook* play(
 		const char* name,
 		const sf::Vector2f& pos
 	);
-	void play(
+	class Flipbook* play(
 		const char* name, 
 		const sf::Vector2f& pos, 
 		bool reverse = false,
 		const sf::Vector2f& scale = sf::Vector2f(1, 1)
 	);
-	void play(
+	class Flipbook* play(
 		const char* name, 
 		const sf::Vector2f& pos, 
 		const sf::Time& frequency,
@@ -109,6 +110,7 @@ public:
 	void restart(bool reverse = false);
 	bool finished()const;
 	void setPosition(float x, float y);
+	int getId()const;
 	int getDepth()const;
 	const char* getName()const;
 	const sf::Sprite& getSprite()const;
@@ -116,6 +118,7 @@ public:
 	void OnCreate(const sf::RenderWindow* const window);
 
 private:
+	int id;
 	const char* name;
 	sf::Sprite sprite;
 	sf::Vector3i number_of_frames;
@@ -136,6 +139,9 @@ private:
 	float ppX;
 	float ppY;
 
+	double psX;
+	double psY;
+
 };
 
 inline bool Flipbook::finished()const 
@@ -146,6 +152,10 @@ inline void Flipbook::setPosition(float x, float y)
 {
 	sprite.setPosition(x, y);
 }
+inline int Flipbook::getId()const
+{
+	return id;
+}
 inline int Flipbook::getDepth()const
 {
 	return depth; 
@@ -154,14 +164,15 @@ inline const char* Flipbook::getName()const
 {
 	return name; 
 }
-inline const sf::Sprite& Flipbook::getSprite()const 
+inline const sf::Sprite& Flipbook::getSprite()const
 {
 	return sprite;
 }
 
 inline void Flipbook::OnCreate(const sf::RenderWindow* const window)
 {
-	sprite.setPosition(ppX * window->getSize().x, ppY * window->getSize().y);
+	sprite.setPosition(ppX * window->getSize().x , ppY * window->getSize().y );
+	sprite.setScale(psX * window->getSize().x, psY * window->getSize().y);
 }
 
 

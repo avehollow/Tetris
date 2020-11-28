@@ -272,6 +272,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 
 				switch (which_anim)
 				{
+
 				case 0:
 					SAM.play("conffeti",
 						{
@@ -709,17 +710,17 @@ void Tetromino::play_anim_fire()
 	
 	for (int i = -1; i <= window->getSize().x / (anim.getGlobalBounds().width * scale1.x) + 1; i++)
 	{
-
-		SAM.play("fire2",
+		Flipbook* fb;
+		fb = SAM.play("fire2",
 			{
-				i * (anim.getGlobalBounds().width * scale1.x) + anim.getGlobalBounds().width * scale1.x / 2.0f ,
-				window->getSize().y - (anim.getGlobalBounds().height * scale1.y) / 2.0f
+					i* (anim.getGlobalBounds().width * scale1.x) + anim.getGlobalBounds().width * scale1.x / 2.0f,
+					window->getSize().y - (anim.getGlobalBounds().height * scale1.y) / 2.0f
 			}
 			, sf::seconds(0.020f + test_shift_interval * 0.015f)
 			, i % 4 == 0 ? -1 : 1
 			, scale1
 		);
-
+	
 
 		SAM.play("fire1",
 			{
