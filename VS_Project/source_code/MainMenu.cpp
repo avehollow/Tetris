@@ -105,6 +105,7 @@ void MAINMENU::startUp()
 {
 	window->addOnCreate(this);
 	options.startUp();
+
 	game.startUp();
 	
 	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
@@ -197,9 +198,9 @@ void MAINMENU::show_gui(bool show)
 	//b_Options->visible(show);
 	//b_Exit->visible(show);
 	//b_HighScore->visible(show);
-	ShowCursor(show);
 	if (show)
 	{
+		while (ShowCursor(TRUE) < 0);
 		window->GUI_.add(b_NewGame);
 		window->GUI_.add(b_Options);
 		window->GUI_.add(b_Exit);
@@ -207,6 +208,7 @@ void MAINMENU::show_gui(bool show)
 	}
 	else
 	{
+		while (ShowCursor(FALSE) >= 0);
 		window->GUI_.erase(b_NewGame);
 		window->GUI_.erase(b_Options);
 		window->GUI_.erase(b_Exit);

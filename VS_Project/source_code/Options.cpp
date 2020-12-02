@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Options.h"
 #include "DropDownList.h"
-
+#include "Resource.h"
 
 OPTIONS options;
 
@@ -31,6 +31,27 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 #else
 		window->create(vm[ddl_vm->curr_value], "Tetris");
 #endif // FS
+
+		
+		HCURSOR hCursor = LoadCursor(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_CURSOR));
+		if (hCursor != NULL)
+		{
+			SetClassLong(
+				window->getSystemHandle(),							
+				GCL_HCURSOR,									   
+				(LONG)hCursor										
+			);
+		}
+		
+		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_ICON));
+		if (hIcon != NULL)
+		{
+			SetClassLong(
+				window->getSystemHandle(),						
+				GCL_HICON,										
+				(LONG)hIcon										
+			);
+		}
 
 	}
 
@@ -119,16 +140,19 @@ void OPTIONS::show_gui(bool show)
 	//ddl_vm->visible(show);
 	if (show)
 	{
+		while (ShowCursor(TRUE) < 0);
 		window->GUI_.add(b_Back);
 		window->GUI_.add(b_Applay);
 		window->GUI_.add(ddl_vm);
 	}
 	else
 	{
+		while (ShowCursor(FALSE) >= 0);
 		window->GUI_.erase(b_Back);
 		window->GUI_.erase(b_Applay);
 		window->GUI_.erase(ddl_vm);
 	}
+	
 }
 
 
