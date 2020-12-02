@@ -52,7 +52,7 @@ namespace gui
 		std::vector<TextBox> textBoxs;
 
 		inline void sort();
-		inline void bad_way();
+		inline void update_gui();
 	};
 
 
@@ -61,7 +61,6 @@ namespace gui
 		friend class GUI;
 	public:
 		int getDepth()const { return depth; }
-		void visible(bool isVisible) { is_visible = isVisible; }
 		void disable(bool isDisable) { is_disable = isDisable; }
 		//void setDepth(int depth) { this->depth = depth; } do prawid³owego dzia³ania trzeba jeszcze wywo³aæ funkcjê sort z klasy GUI
 
@@ -70,7 +69,6 @@ namespace gui
 		static sf::RenderWindow* window;
 		static bool handled_event;
 		int depth = 0;
-		bool is_visible = true;
 		bool is_disable = false;
 
 		virtual void onRecreateWindow() = 0;
@@ -128,10 +126,7 @@ inline void gui::GUI::draw() const
 {
 	for (int i = gui.size() - 1; i >= 0; i--)
 	{
-		if (gui[i]->is_visible)
-		{
-			gui__::window->draw(*gui[i]);
-		}
+		gui__::window->draw(*gui[i]);
 	}
 }
 
@@ -141,7 +136,6 @@ inline void gui::GUI::handleEvent(const sf::Event& event) const
 	gui__::handled_event = false;
 	for (auto& g : gui)
 	{
-		//if (g->is_visible && !g->is_disable && g->handleEvent(event))
 		if (g->handleEvent(event))
 			gui__::handled_event = true;
 	}

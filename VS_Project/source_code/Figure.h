@@ -46,7 +46,6 @@ private:
 	sf::Vector2f center_pos;
 	sf::Vector2f tetromino_pos;
 	float cube_size;
-	// AVE LOOK zamieniæ na bool?
 	E_FIGURE type;
 	short rotation;
 

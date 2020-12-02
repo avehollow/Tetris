@@ -7,13 +7,13 @@ OPTIONS options;
 
 OPTIONS::OPTIONS()
 {
-	//puts("CTOR OPTIONS");
+	
 }
 
 
 OPTIONS::~OPTIONS()
 {
-	//puts("Destruktor ~OPTIONS");
+
 }
 
 ISTATE* OPTIONS::handleInput(const sf::Event& event)
@@ -135,9 +135,6 @@ void OPTIONS::startUp()
 
 void OPTIONS::show_gui(bool show)
 {
-	//b_Back->visible(show);
-	//b_Applay->visible(show);
-	//ddl_vm->visible(show);
 	if (show)
 	{
 		while (ShowCursor(TRUE) < 0);
@@ -152,7 +149,6 @@ void OPTIONS::show_gui(bool show)
 		window->GUI_.erase(b_Applay);
 		window->GUI_.erase(ddl_vm);
 	}
-	
 }
 
 

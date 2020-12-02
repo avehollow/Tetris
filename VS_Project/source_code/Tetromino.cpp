@@ -19,24 +19,16 @@ void Tetromino::ini(int width, int height)
 	bFireFlipbook = false;
 
 	load_anim();
-	view = window->getDefaultView();
-	view.zoom(1.5);
-	//window->setView(view);
 
 	tetris_row.resize(height + 4, -1);
 	for (auto& k : tetris_row)
 		k = -1;
-	
+
 	rand_gen.seed(rd());
 
-	
-	//shift_interval = sf::milliseconds(1000);
-	//shift_time = sf::milliseconds(0);
+	shift_interval = 1;
+	shift_time = 0;
 
-	test_shift_interval = 1;
-	test_shift_time = 0;
-
-	//shift_clock.restart();
 	score = 0;
 
 	// AVE LOOK how to calculate element size
@@ -217,9 +209,6 @@ void Tetromino::check_tetris()
 		
 		if (yes == WIDTH)
 		{
-	/*		for (int x = 0; x < WIDTH; x++)
-				collisions[(WIDTH * y) + x] = 0;*/
-
 			tetris_row[y] = y;
 			curr_upd_fun = &Tetromino::play_anim_tetris;
 			curr_hdl_fun = &Tetromino::disable_input;
@@ -252,7 +241,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 						background_tetromino.getPosition().x + (5 - at) * cube_size,
 						background_tetromino.getPosition().y + (y - 4) * cube_size
 					}
-					, sf::seconds(0.030f + test_shift_interval * 0.012f)
+					, sf::seconds(0.030f + shift_interval * 0.012f)
 					, false
 					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
 				);
@@ -263,7 +252,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 						background_tetromino.getPosition().x + (5 + at) * cube_size,
 						background_tetromino.getPosition().y + (y - 4) * cube_size
 					}
-					, sf::seconds(0.030f + test_shift_interval * 0.012f)
+					, sf::seconds(0.030f + shift_interval * 0.012f)
 					, false
 					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
 				);
@@ -280,7 +269,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 							background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)),
 							background_tetromino.getPosition().y + (y - 4) * cube_size
 						}
-						, sf::seconds(0.030f + test_shift_interval * 0.012f)
+						, sf::seconds(0.030f + shift_interval * 0.012f)
 						, false
 						, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
 					);
@@ -292,7 +281,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 							background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)),
 							background_tetromino.getPosition().y + (y - 4) * cube_size
 						}
-						, sf::seconds(0.030f + test_shift_interval * 0.015f)
+						, sf::seconds(0.030f + shift_interval * 0.015f)
 						, false
 						, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
 					);
@@ -384,15 +373,15 @@ void Tetromino::tick(const float& tt)
 	{
 		place_figure();
 
-		if (test_shift_interval > 0.20f)
-			test_shift_interval -= 0.0055f;
+		if (shift_interval > 0.20f)
+			shift_interval -= 0.0055f;
 		else
 		{ 
 
 			std::cout << "200!!!\n";
 		}
 
-		if (!bFireFlipbook && test_shift_interval > 0.40f)
+		if (!bFireFlipbook && shift_interval > 0.40f)
 		{
 			play_anim_fire();
 			bFireFlipbook = true;
@@ -437,13 +426,7 @@ void Tetromino::place_figure()
 
 void Tetromino::standard_input(const sf::Event& event)
 {
-	//static float f = 1.f / 30.f;
-	//static float x = 0.f;
-	//static sf::Clock c;
-	//x += c.restart().asSeconds();
-	//if (x >= f)
-	//{
-
+	//AVE LOOK Do not work for different fps
 
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && !collision_with_edges(-1, 0, &figure) && !collision_with_cubes(-1, 0, &figure))
 		{
@@ -470,13 +453,8 @@ void Tetromino::standard_input(const sf::Event& event)
 		{
 			figure.move(0, 1);
 			update_score(SCORE_FACTOR * 0.01);
-			test_shift_time = 0;
+			shift_time = 0;
 		}
-		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::M)
-		{
-			xyz = !xyz;
-		}
-
 		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
 		{
 			////
@@ -510,12 +488,14 @@ void Tetromino::standard_input(const sf::Event& event)
 				figure.squares[3].setPosition(square4_before_rotation);
 				figure.center_pos = center_before_rotation;
 			}
+			else
+			{
+
+				//shift_time = 0;
+			}
 			figure.move(0, 0);
-			test_shift_time = 0;
 		}
-		//x = 0;
 		update_placeholder();
-	//}
 }
 
 void Tetromino::disable_input(const sf::Event& event)
@@ -526,18 +506,11 @@ void Tetromino::disable_input(const sf::Event& event)
 
 int Tetromino::update(const float& tt)
 {
-	//shift_time += shift_clock.restart();
-	//if (shift_time >= shift_interval)
-	//{
-	//	(this->*curr_upd_fun)(tt);
-	//	shift_time -= shift_interval;
-	//}
-
-	test_shift_time += tt;
-	if (test_shift_time >= test_shift_interval)
+	shift_time += tt;
+	if (shift_time >= shift_interval)
 	{
 		(this->*curr_upd_fun)(tt);
-		test_shift_time -= test_shift_interval;
+		shift_time -= shift_interval;
 	}
 	SAM.update();
 
@@ -641,7 +614,6 @@ bool Tetromino::wall_kick()
 			}
 		}
 	}
-	test_shift_time = 0;
 	return true;
 }
 

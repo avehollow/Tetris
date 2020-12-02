@@ -36,7 +36,6 @@ PDA<T>::~PDA()
 template<typename T>
 inline void PDA<T>::handleInput(const sf::Event& event)
 {
-
 	T* nstate = states_.top()->handleInput(event);
 	if (nstate == states_.top())
 	{

@@ -25,7 +25,7 @@ void Figure::move(int dirx, int diry)
 		indices[i].x = (squares[i].getPosition().x - tetromino_pos.x ) / cube_size;
 		indices[i].y = (squares[i].getPosition().y - tetromino_pos.y ) / cube_size;
 	}
-	//std::cout << "X: " << indices[0].x << "  Y: " << indices[0].y << "\n";
+
 	center_pos.x += cube_size * dirx;
 	center_pos.y += cube_size * diry;
 	center_sprite.setPosition(center_pos);
@@ -87,11 +87,6 @@ void Figure::be_I_(float pos_x, float pos_y,const sf::Texture* texture)
 	squares[1].setPosition(pos_x + cube_size, pos_y + cube_size);
 	squares[2].setPosition(pos_x + 2*cube_size, pos_y + cube_size);
 	squares[3].setPosition(pos_x + 3*cube_size, pos_y + cube_size);
-
-	//squares[0].setPosition(pos_x, pos_y);
-	//squares[1].setPosition(pos_x + cube_size, pos_y);
-	//squares[2].setPosition(pos_x + 2*cube_size, pos_y);
-	//squares[3].setPosition(pos_x + 3*cube_size, pos_y);
 
 	center_pos = sf::Vector2f(squares[2].getPosition().x - (cube_size / 2), squares[2].getPosition().y - (cube_size / 2));
 	center_sprite.setPosition(center_pos);

@@ -19,7 +19,6 @@ private:
 	void Render();
 
 private:
-	sf::Image icon;
 	sf::Text r_fps;
 	sf::Text u_fps;
 	sf::Event event_;

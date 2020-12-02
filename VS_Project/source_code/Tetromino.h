@@ -36,6 +36,8 @@ private:
 	void play_anim_fire();
 	void load_anim();
 private:
+	ScreenFlipbookManager SAM;
+
 	Figure figure;
 	Figure place_holder;
 
@@ -43,6 +45,8 @@ private:
 	
 	sf::RectangleShape tetromino[200];
 	int collisions[240];
+
+
 	sf::RectangleShape background_tetromino;
 	sf::RectangleShape background_score;
 	sf::RectangleShape background_next;
@@ -53,14 +57,9 @@ private:
 	std::random_device rd;
 	std::mt19937 rand_gen;
 
-
-	//sf::Clock shift_clock;
-	//sf::Time  shift_interval;
-	//sf::Time  shift_time;
-
 	std::vector<int> tetris_row;
 
-	size_t score;
+	std::size_t score;
 	int LEFT_WALL;
 	int RIGHT_WALL;
 	int FLOOR_EDGE;
@@ -74,19 +73,16 @@ private:
 	int cube_size;
 
 	bool bGameOver;
-	bool xyz = false;
-	sf::View view;
 	bool elo();
 
 	void (Tetromino::*curr_upd_fun)(const float& tt);
 	void (Tetromino::*curr_hdl_fun)(const sf::Event& event);
 
 	int numT = 0;
-	float test_shift_time;
-	float test_shift_interval;
+	float shift_time;
+	float shift_interval;
 	int which_anim;
 
-	ScreenFlipbookManager SAM;
 	bool bFireFlipbook;
 };
 
@@ -99,16 +95,7 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 		for (size_t x = 0; x < WIDTH; x++)
 			window->draw(tetromino[(WIDTH * y) + x]);
 
-	sf::RectangleShape s;
-	s.setSize(sf::Vector2f(cube_size, cube_size));
-	s.setFillColor(sf::Color(200, 200, 0));
 
-	for (size_t y = 1; y <= 4; y++)
-		for (size_t x = 0; x < WIDTH; x++)
-		{
-			s.setPosition(background_tetromino.getPosition().x + x *cube_size, background_tetromino.getPosition().y - y * cube_size);
-			window->draw(s);
-		}
 	place_holder.draw(window);
 	figure.draw(window);
 
@@ -126,9 +113,6 @@ inline void Tetromino::draw(GameWindow* __restrict const window) const
 
 inline void Tetromino::pause()
 {
-	//shift_clock.restart();
-	//shift_time = sf::seconds(0);
-
-	test_shift_time = 0;
+	shift_time = 0;
 	SAM.update(false);
 }

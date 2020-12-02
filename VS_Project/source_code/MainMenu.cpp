@@ -10,7 +10,7 @@ extern OPTIONS options;
 
 MAINMENU::MAINMENU()
 {
-	//puts("CTOR MAINMENU");	
+	
 }
 
 ISTATE* MAINMENU::handleInput(const sf::Event& event)
@@ -142,7 +142,6 @@ void MAINMENU::startUp()
 	b_Back->setTexture(AM->texture[AM_::E_TEXTURE::T_BBACK]);
 	b_Back->setHoveOverColor(sf::Color::White);
 	b_Back->setFillColor(sf::Color(180, 180, 180));
-	//b_Back->visible(false);
 	window->GUI_.erase(b_Back);
 
 	txHighScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
@@ -194,10 +193,6 @@ MAINMENU::~MAINMENU()
 
 void MAINMENU::show_gui(bool show)
 {
-	//b_NewGame->visible(show);
-	//b_Options->visible(show);
-	//b_Exit->visible(show);
-	//b_HighScore->visible(show);
 	if (show)
 	{
 		while (ShowCursor(TRUE) < 0);
@@ -220,14 +215,12 @@ void MAINMENU::show_gui(bool show)
 void MAINMENU::show_high_score(bool show)
 {
 	if (show)
-	{
 		window->GUI_.add(b_Back);
-	}
+	
 	else
-	{
 		window->GUI_.erase(b_Back);
-	}
-	//b_Back->visible(show);
+	
+	
 	show_gui(!show);
 }
 

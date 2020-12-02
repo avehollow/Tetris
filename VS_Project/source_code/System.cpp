@@ -18,7 +18,10 @@ System::System()
 	: menu_(&main_menu)
 {
 	WORLD::ini();
+
+
 	wnd = window;
+	main_menu.startUp();
 		
 
 	//HCURSOR hCursor = LoadCursorFromFileA("data/cursorBlude.cur");
@@ -46,12 +49,6 @@ System::System()
 		);  
 	}
 
-
-	//wnd->GUI_.reserve(50);
-	main_menu.startUp();
-
-	std::srand(time(NULL));
-
 #ifdef _XP
 	FPS = 60;
 #else
@@ -69,6 +66,7 @@ System::System()
 	r_fps.setFillColor(sf::Color(255, 255, 255, 70));
 	u_fps.setFillColor(sf::Color(255, 255, 255, 70));
 
+	std::srand(time(NULL));
 }
 
 System::~System()
@@ -86,7 +84,6 @@ System::~System()
 
 void System::HandleInput()
 {
-	
 	while (wnd->pollEvent(event_))
 	{
 		if (event_.type == sf::Event::Closed)
@@ -103,7 +100,6 @@ void System::HandleInput()
 void System::Update(const long long& teta_time)
 {
 	float tt = teta_time / (float)_1s_;
-	//std::cout << tt << std::endl;
 	menu_.update(tt);
 }
 
@@ -135,10 +131,6 @@ void System::Run()
 	LARGE_INTEGER end_time	= {0};
 	LARGE_INTEGER frequency = {0};
 	LARGE_INTEGER fps_time	= {0};
-
-	// AVE DELETE debug
-	LARGE_INTEGER t1	= {0};
-	LARGE_INTEGER t2	= {0};
 
 	
 	QueryPerformanceFrequency(&frequency);
@@ -185,13 +177,7 @@ void System::Run()
 		
 
 		if (FT.QuadPart > _0s_)
-		{
-			// AVE DELETE debug
-			//QueryPerformanceCounter(&t1);
 			std::this_thread::sleep_for(std::chrono::microseconds(FT.QuadPart));
-			//QueryPerformanceCounter(&t2);
-			//std::cout << FT.QuadPart - (((t2.QuadPart - t1.QuadPart) * _1s_) / frequency.QuadPart) << '\n';
-		}
-	
+		
 	} // Game Loop
 }

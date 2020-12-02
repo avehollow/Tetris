@@ -51,7 +51,7 @@ namespace gui
 	Button* GUI::CreateButton(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text)
 	{
 		buttons.emplace_back(pos_x, pos_y, size_x, size_y, depth, text);
-		bad_way();
+		update_gui();
 		sort();
 		return &buttons.back();
 	}
@@ -59,7 +59,7 @@ namespace gui
 	DropDownList* GUI::CreateDropDownList(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text, int max_show)
 	{		
 		dropDownLists.emplace_back(pos_x, pos_y, size_x, size_y, depth, text, max_show);
-		bad_way();
+		update_gui();
 		sort();
 		return &dropDownLists.back();
 	}
@@ -67,7 +67,7 @@ namespace gui
 	SliderList* GUI::CreateSliderList(float pos_x, float pos_y, float size_x, int depth, float radius, float size_y)
 	{
 		sliderLists.emplace_back(pos_x, pos_y, size_x, depth, radius, size_y);
-		bad_way();
+		update_gui();
 		sort();
 		return &sliderLists.back();
 	}
@@ -75,7 +75,7 @@ namespace gui
 	TextBox* GUI::CreateTextBox(float pos_x, float pos_y, float size_x, float size_y, int depth, const char* text)
 	{
 		textBoxs.emplace_back(pos_x, pos_y, size_x, size_y, depth, text);
-		bad_way();
+		update_gui();
 		sort();
 		return &textBoxs.back();
 	}
@@ -130,9 +130,9 @@ namespace gui
 
 	bool gui__::handled_event = false;
 	sf::RenderWindow* gui__::window = nullptr;
-}
+} // namespace gui
 
-void gui::GUI::bad_way()
+void gui::GUI::update_gui()
 {
 	gui.clear();
 	for (auto& x : buttons)
@@ -151,10 +151,6 @@ void gui::GUI::bad_way()
 
 void gui::GUI::onRecreateWindow()
 {
-	//for (auto& g : gui)
-	//{
-	//	g->onRecreateWindow();
-	//}
 	for (auto& x : buttons)
 		x.onRecreateWindow();
 

@@ -18,7 +18,6 @@ void GAME::update(const float& tt)
 {
 	if (!bPause && !bGameOver)
 	{
-
 		bGameOver = score = tetromino.update(tt);
 		if (bGameOver)
 		{
@@ -35,23 +34,6 @@ void GAME::update(const float& tt)
 
 void GAME::render()const
 {
-
-	//window->draw(background_game);
-
-	//tetromino.draw(window);
-
-	//if (bPause)
-	//{
-	//	window->draw(background_pause);
-	//}
-	//else if (bGameOver)
-	//{
-	//	window->draw(background_gameover);
-	//	window->draw(txGameOver);
-	//	window->draw(txScore);
-	//	window->draw(txDate);
-	//}
-
 	window->draw(background_game);
 
 	tetromino.draw(window);
@@ -71,12 +53,9 @@ void GAME::hide()
 
 void GAME::show_pause_menu(bool show)
 {
-	/*b_Back->visible(show);
-	b_Options->visible(show);
-	b_Exit->visible(show);*/
+	
 	if (show)
 	{
-		
 		while (ShowCursor(TRUE) < 0);
 		window->GUI_.add(b_Back);
 		window->GUI_.add(b_Options);
@@ -96,9 +75,6 @@ void GAME::show_pause_menu(bool show)
 
 void GAME::show_gameover_menu(bool show)
 {
-	//b_Exit2->visible(show);
-	//b_PlayAgain->visible(show);
-	//txb_Nick->visible(show);
 	if (show)
 	{
 		while (ShowCursor(show) < 0);
@@ -118,7 +94,6 @@ void GAME::show_gameover_menu(bool show)
 
 void GAME::update_hightscore()
 {
-
 	std::fstream out;
 	std::vector<std::tuple<std::array<char, 20>, int, std::array<char, 20>>> h;
 	h.resize(11);
@@ -263,8 +238,6 @@ void GAME::onCreate()
 		background_gameover.getPosition().y + background_gameover.getSize().y - txDate.getGlobalBounds().height - 5
 	);
 
-
-
 }
 
 void GAME::startUp()
@@ -311,7 +284,6 @@ void GAME::startUp()
 	txb_Nick->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
 	txb_Nick->setCharacterSize(25);
 	txb_Nick->setFillColor(sf::Color::White);
-	//txb_Nick->setActiveColor();
 
 	b_Exit2 = window->GUI_.CreateButton(0, 0, 248, 86);
 	b_Exit2->setRelativePosition(
@@ -378,7 +350,6 @@ ISTATE* GAME::standard_input(const sf::Event& event)
 	}
 	tetromino.handleInput(event);
 	
-
 	return state;
 }
 
