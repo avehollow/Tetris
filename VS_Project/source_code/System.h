@@ -19,10 +19,11 @@ private:
 	void Render();
 
 private:
+	sf::Image icon;
 	sf::Text r_fps;
 	sf::Text u_fps;
 	sf::Event event_;
-	PDA<ISTATE> menu_;
+	PDA<__interface ISTATE> menu_;
 	GameWindow* wnd;
 
 	float uFrame = 0;

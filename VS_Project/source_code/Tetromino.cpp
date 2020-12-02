@@ -16,6 +16,7 @@ void Tetromino::handleInput(const sf::Event& event)
 void Tetromino::ini(int width, int height)
 {
 	SAM.ini((sf::RenderWindow*)window);
+	bFireFlipbook = false;
 
 	load_anim();
 	view = window->getDefaultView();
@@ -251,7 +252,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 						background_tetromino.getPosition().x + (5 - at) * cube_size,
 						background_tetromino.getPosition().y + (y - 4) * cube_size
 					}
-					, sf::seconds(0.025f + test_shift_interval * 0.015f)
+					, sf::seconds(0.030f + test_shift_interval * 0.012f)
 					, false
 					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
 				);
@@ -262,7 +263,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 						background_tetromino.getPosition().x + (5 + at) * cube_size,
 						background_tetromino.getPosition().y + (y - 4) * cube_size
 					}
-					, sf::seconds(0.025f + test_shift_interval * 0.015f)
+					, sf::seconds(0.030f + test_shift_interval * 0.012f)
 					, false
 					, { (1.2f / 1920.0f) * window->getSize().x, (1.2f / 1080.0f) * window->getSize().y }
 				);
@@ -279,7 +280,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 							background_tetromino.getPosition().x + rand_gen() % (WIDTH * (cube_size - 1)),
 							background_tetromino.getPosition().y + (y - 4) * cube_size
 						}
-						, sf::seconds(0.030f + test_shift_interval * 0.015f)
+						, sf::seconds(0.030f + test_shift_interval * 0.012f)
 						, false
 						, { (1.0f / 1920.0f) * window->getSize().x, (1.0f / 1080.0f) * window->getSize().y }
 					);
@@ -381,61 +382,57 @@ void Tetromino::tick(const float& tt)
 	}
 	else
 	{
-		sf::Vector2i c1 = figure.indices[0];
-		sf::Vector2i c2 = figure.indices[1];
-		sf::Vector2i c3 = figure.indices[2];
-		sf::Vector2i c4 = figure.indices[3];
+		place_figure();
 
-		if (!xyz)
+		if (test_shift_interval > 0.20f)
+			test_shift_interval -= 0.0055f;
+		else
+		{ 
+
+			std::cout << "200!!!\n";
+		}
+
+		if (!bFireFlipbook && test_shift_interval > 0.40f)
 		{
-			if (c1.y < 4 || c2.y < 4 || c3.y < 4 || c4.y < 4)
-			{
-				bGameOver = true;
-				return;
-			}
-			else
-			{
-				collisions[(WIDTH * c1.y) + c1.x] = 1;
-				collisions[(WIDTH * c2.y) + c2.x] = 1;
-				collisions[(WIDTH * c3.y) + c3.x] = 1;
-				collisions[(WIDTH * c4.y) + c4.x] = 1;
-
-				tetromino[(WIDTH * (c1.y - 4)) + c1.x].setTexture(figure.squares[0].getTexture());
-				tetromino[(WIDTH * (c2.y - 4)) + c2.x].setTexture(figure.squares[1].getTexture());
-				tetromino[(WIDTH * (c3.y - 4)) + c3.x].setTexture(figure.squares[2].getTexture());
-				tetromino[(WIDTH * (c4.y - 4)) + c4.x].setTexture(figure.squares[3].getTexture());
-
-				tetromino[(WIDTH * (c1.y - 4)) + c1.x].setFillColor(sf::Color::White);
-				tetromino[(WIDTH * (c2.y - 4)) + c2.x].setFillColor(sf::Color::White);
-				tetromino[(WIDTH * (c3.y - 4)) + c3.x].setFillColor(sf::Color::White);
-				tetromino[(WIDTH * (c4.y - 4)) + c4.x].setFillColor(sf::Color::White);
-			}
-
+			play_anim_fire();
+			bFireFlipbook = true;
 		}
-
-		/*if (shift_interval > sf::milliseconds(200))
-			shift_interval -= sf::milliseconds(5);
-		else
-		{ 
-			std::cout << "200!!!\n";
-		}*/
-		// AVE LOOK za szybko na > 0.05f moze 0.10f?
-		if (test_shift_interval > 0.10f)
-			test_shift_interval -= 0.0075f;
-		else
-		{ 
-			std::cout << "200!!!\n";
-		}
-
-		if (test_shift_interval > 0.30f)
-			this->play_anim_fire();
 		
-
 		update_score(100);
 		spawn_figure();
 		check_tetris();
 	}
-	update_placeholder();
+		update_placeholder();
+}
+
+void Tetromino::place_figure()
+{
+	sf::Vector2i c1 = figure.indices[0];
+	sf::Vector2i c2 = figure.indices[1];
+	sf::Vector2i c3 = figure.indices[2];
+	sf::Vector2i c4 = figure.indices[3];
+
+	if (c1.y < 4 || c2.y < 4 || c3.y < 4 || c4.y < 4)
+	{
+		bGameOver = true;
+	}
+	else
+	{
+		collisions[(WIDTH * c1.y) + c1.x] = 1;
+		collisions[(WIDTH * c2.y) + c2.x] = 1;
+		collisions[(WIDTH * c3.y) + c3.x] = 1;
+		collisions[(WIDTH * c4.y) + c4.x] = 1;
+
+		tetromino[(WIDTH * (c1.y - 4)) + c1.x].setTexture(figure.squares[0].getTexture());
+		tetromino[(WIDTH * (c2.y - 4)) + c2.x].setTexture(figure.squares[1].getTexture());
+		tetromino[(WIDTH * (c3.y - 4)) + c3.x].setTexture(figure.squares[2].getTexture());
+		tetromino[(WIDTH * (c4.y - 4)) + c4.x].setTexture(figure.squares[3].getTexture());
+
+		tetromino[(WIDTH * (c1.y - 4)) + c1.x].setFillColor(sf::Color::White);
+		tetromino[(WIDTH * (c2.y - 4)) + c2.x].setFillColor(sf::Color::White);
+		tetromino[(WIDTH * (c3.y - 4)) + c3.x].setFillColor(sf::Color::White);
+		tetromino[(WIDTH * (c4.y - 4)) + c4.x].setFillColor(sf::Color::White);
+	}
 }
 
 void Tetromino::standard_input(const sf::Event& event)
@@ -461,7 +458,14 @@ void Tetromino::standard_input(const sf::Event& event)
 		{
 			figure.move(0, -1);
 		}
+		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Z)
+		{
+			while (!collision_with_cubes(0, 1, &figure) && !collision_with_edges(0, 1, &figure))
+				figure.move(0, 1);
 
+			tick(0.0f);
+			update_score(500);
+		}
 		else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !collision_with_edges(0, 1, &figure) && !collision_with_cubes(0, 1, &figure))
 		{
 			figure.move(0, 1);
@@ -710,14 +714,13 @@ void Tetromino::play_anim_fire()
 	
 	for (int i = -1; i <= window->getSize().x / (anim.getGlobalBounds().width * scale1.x) + 1; i++)
 	{
-		Flipbook* fb;
-		fb = SAM.play("fire2",
+		SAM.play("fire2",
 			{
 					i* (anim.getGlobalBounds().width * scale1.x) + anim.getGlobalBounds().width * scale1.x / 2.0f,
 					window->getSize().y - (anim.getGlobalBounds().height * scale1.y) / 2.0f
 			}
-			, sf::seconds(0.020f + test_shift_interval * 0.015f)
-			, i % 4 == 0 ? -1 : 1
+			, 35ms
+			, i % 4 == 0 ? 0 : 1
 			, scale1
 		);
 	
@@ -727,8 +730,8 @@ void Tetromino::play_anim_fire()
 				(i + 1) * anim.getGlobalBounds().width * scale2.x,
 				window->getSize().y - (anim.getGlobalBounds().height * scale2.y) / 2.0f
 			}
-			, sf::seconds(0.025f + test_shift_interval * 0.015f)
-			, i % 3 == 0 ? -1 : 1
+			, 48ms
+			, i % 3 == 0 ? 0 : 1
 			, scale2
 		);
 

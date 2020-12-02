@@ -74,6 +74,7 @@ void GAME::show_pause_menu(bool show)
 	/*b_Back->visible(show);
 	b_Options->visible(show);
 	b_Exit->visible(show);*/
+	ShowCursor(show);
 	if (show)
 	{
 		window->GUI_.add(b_Back);
@@ -96,6 +97,7 @@ void GAME::show_gameover_menu(bool show)
 	//b_Exit2->visible(show);
 	//b_PlayAgain->visible(show);
 	//txb_Nick->visible(show);
+	ShowCursor(show);
 	if (show)
 	{
 		window->GUI_.add(b_PlayAgain);

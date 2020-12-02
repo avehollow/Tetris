@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System.h"
 #include "MainMenu.h"
+#include "Resource.h"
 
 //! 1s = 1'000'000'000 ns
 //! 1s = 1'000'000 us
@@ -18,6 +19,34 @@ System::System()
 {
 	WORLD::ini();
 	wnd = window;
+		
+
+	//HCURSOR hCursor = LoadCursorFromFileA("data/cursorBlude.cur");
+	HCURSOR hCursor = LoadCursor(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_CURSOR));
+	if (hCursor != NULL)
+	{
+		SetClassLong(
+			wnd->getSystemHandle(),								// window handle 
+			GCL_HCURSOR,									    // change cursor 
+			(LONG)hCursor										// new curso
+		); 
+	}
+	// Another way to load an icon (load as image)
+	// HANDLE a = LoadImageA(NULL, "data/icon.ico", IMAGE_ICON,128,128, LR_LOADFROMFILE);
+	
+	//GetModuleHandle(NULL); If this parameter is NULL, GetModuleHandle returns a handle to the file used to create the calling process (.exe file).
+	//HICON hIcon = LoadIcon(GetModuleHandle(NULL),  L"IDI_IKONA");
+	HICON hIcon = LoadIcon(GetModuleHandle(NULL),  MAKEINTRESOURCE(ID_ICON));
+	if (hIcon != NULL)
+	{
+		SetClassLong(
+			wnd->getSystemHandle(),								// window handle 
+			GCL_HICON,											// change icon 
+			(LONG)hIcon											// new icon
+		);  
+	}
+
+
 	//wnd->GUI_.reserve(50);
 	main_menu.startUp();
 

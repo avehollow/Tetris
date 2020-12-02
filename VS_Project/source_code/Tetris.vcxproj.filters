@@ -138,5 +138,13 @@
     <ClInclude Include="ScreenFlipbookManager.h">
       <Filter>Flipbook</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="re.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

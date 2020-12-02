@@ -20,6 +20,8 @@ private:
 	void shift_tetris(const float& tt);
 	void tick(const float& tt);
 
+	void place_figure();
+
 	void standard_input(const sf::Event& event);
 	void disable_input(const sf::Event& event);
 
@@ -85,6 +87,7 @@ private:
 	int which_anim;
 
 	ScreenFlipbookManager SAM;
+	bool bFireFlipbook;
 };
 
 

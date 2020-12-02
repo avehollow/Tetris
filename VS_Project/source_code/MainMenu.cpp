@@ -106,7 +106,7 @@ void MAINMENU::startUp()
 	window->addOnCreate(this);
 	options.startUp();
 	game.startUp();
-
+	
 	b_Exit = window->GUI_.CreateButton(0, 0, 247, 86);
 	b_Exit->setRelativePosition(gui::E_ANCHOR::A_CENTER_BOTTOM, -b_Exit->getSize().x / 2, 126);
 	b_Exit->setTexture(AM->texture[AM_::E_TEXTURE::T_BEXIT]);
@@ -197,6 +197,7 @@ void MAINMENU::show_gui(bool show)
 	//b_Options->visible(show);
 	//b_Exit->visible(show);
 	//b_HighScore->visible(show);
+	ShowCursor(show);
 	if (show)
 	{
 		window->GUI_.add(b_NewGame);

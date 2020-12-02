@@ -1,0 +1,19 @@
+// http://www.winprog.org/tutorial/resources.html
+
+// Resources are pre-defined bits of data stored in binary format inside your executable file
+// wszystkie kursory, ikony i inne rzeczy s¹ umieszczane w pliku exe!
+
+// nameID CURSOR path
+// nameID ICON path
+
+#include "Resource.h"
+
+//IDI_KURSOR CURSOR "data/cursorBlue.cur" //works
+//IDI_IKONA ICON "data/icon.ico" //works
+
+ID_CURSOR CURSOR "data/cursorBlue.cur" //works
+ID_ICON ICON "data/icon.ico"
+
+// IDI_ICON ICON "data/icon.ico" //works
+
+// the correct way is to use an ID(number) instead of a string. Resource.h file with #define

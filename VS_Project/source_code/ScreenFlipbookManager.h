@@ -51,18 +51,17 @@ public:
 		const E_MODE& mode = E_MODE::ENDLESS,
 		const sf::Time& lifeTime = sf::milliseconds(0)
 	);
-	// return type Flipbook* is not very good idea 
-	class Flipbook* play(
+	void play(
 		const char* name,
 		const sf::Vector2f& pos
 	);
-	class Flipbook* play(
+	void play(
 		const char* name, 
 		const sf::Vector2f& pos, 
 		bool reverse = false,
 		const sf::Vector2f& scale = sf::Vector2f(1, 1)
 	);
-	class Flipbook* play(
+	void play(
 		const char* name, 
 		const sf::Vector2f& pos, 
 		const sf::Time& frequency,
@@ -70,17 +69,19 @@ public:
 		const sf::Vector2f& scale = sf::Vector2f(1, 1)
 	);
 
+	class Flipbook* last_added()const;
 	void eraseAnimation(const char* name);
 	void stop(const char* name);
 	void update(bool isUpdate = true);
 	void render()const;
-	void clear();
+	void clear_current();
 	void OnCreate();
 private:
 	sf::Clock clock;
 	sf::RenderWindow* wnd;
 	std::map<const char*,class Flipbook> f_templates;
 	std::vector<class Flipbook> f_current;
+	std::size_t idx_of_last_added_flipbook;
 };
 
 
