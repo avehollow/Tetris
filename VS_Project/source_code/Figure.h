@@ -20,12 +20,16 @@ public:
 	Figure();
 	~Figure() = default;
 
-	void move(int dirx, int diry);
 	void ini(float cube_size, const sf::Vector2f& tetromino_pos);
-	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
-	void rotate();
 	void spawnFigure(float posX, float posY, const sf::Texture* texture, E_FIGURE type, size_t rotation);
 	void draw(GameWindow* __restrict const window) const;
+	
+	void move(int dirx, int diry);
+	void rotate();
+
+	void setPosition(const Figure& figure);
+	void onCreate(int size_cube, const sf::Vector2f& tetromino_pos);
+	
 	void setTexture(const sf::Texture* texture);
 	const sf::Texture* getTexture() const;
 	

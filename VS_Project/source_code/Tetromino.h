@@ -9,6 +9,7 @@ public:
 	Tetromino() = default;
 	~Tetromino() = default;
 
+	void startUp();
 	void handleInput(const sf::Event& event);
 	void ini(int width = 10, int height = 20);
 	void draw(GameWindow* __restrict const window) const ;
@@ -78,7 +79,7 @@ private:
 	void (Tetromino::*curr_upd_fun)(const float& tt);
 	void (Tetromino::*curr_hdl_fun)(const sf::Event& event);
 
-	int numT = 0;
+	int numTetris;
 	float shift_time;
 	float shift_interval;
 	int which_anim;

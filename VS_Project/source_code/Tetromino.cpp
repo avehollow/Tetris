@@ -8,6 +8,35 @@
 using namespace sf_literals;
 
 
+void Tetromino::startUp()
+{
+
+	//SAM.ini((sf::RenderWindow*)window);
+	load_anim();
+
+	background_tetromino.setFillColor(sf::Color(20, 20, 20, 200));
+	background_tetromino.setOutlineThickness(2);
+	background_tetromino.setOutlineColor(sf::Color::White);
+
+	background_score.setFillColor(sf::Color(20, 20, 20, 200));
+	background_score.setOutlineThickness(2);
+	background_score.setOutlineColor(sf::Color::White);
+
+	background_next.setFillColor(sf::Color(20, 20, 20, 200));
+	background_next.setOutlineThickness(2);
+	background_next.setOutlineColor(sf::Color::White);
+
+
+	txNext.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	txNext.setString("Next");
+
+	txScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	txScore.setString("Score");
+
+	txNumScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	rand_gen.seed(rd());
+}
+
 void Tetromino::handleInput(const sf::Event& event)
 {
 	(this->*curr_hdl_fun)(event);
@@ -15,21 +44,19 @@ void Tetromino::handleInput(const sf::Event& event)
 
 void Tetromino::ini(int width, int height)
 {
+
 	SAM.ini((sf::RenderWindow*)window);
-	bFireFlipbook = false;
-
-	load_anim();
-
 	tetris_row.resize(height + 4, -1);
 	for (auto& k : tetris_row)
 		k = -1;
 
-	rand_gen.seed(rd());
-
 	shift_interval = 1;
 	shift_time = 0;
-
+	numTetris = 0;
 	score = 0;
+	bGameOver = false;
+	bFireFlipbook = false;
+
 
 	// AVE LOOK how to calculate element size
 	cube_size = (CUBE_DIMENSIONS / 1080.0f) * window->getSize().y;
@@ -54,28 +81,6 @@ void Tetromino::ini(int width, int height)
 			collisions[(WIDTH * y) + x] = 0;
 		
 	
-
-	background_tetromino.setFillColor(sf::Color(20, 20, 20, 200));
-	background_tetromino.setOutlineThickness(2);
-	background_tetromino.setOutlineColor(sf::Color::White);
-	
-	background_score.setFillColor(sf::Color(20, 20, 20, 200));
-	background_score.setOutlineThickness(2);
-	background_score.setOutlineColor(sf::Color::White);	
-
-	background_next.setFillColor(sf::Color(20, 20, 20, 200));
-	background_next.setOutlineThickness(2);
-	background_next.setOutlineColor(sf::Color::White);
-
-
-	txNext.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	txNext.setString("Next");
-
-	txScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	txScore.setString("Score");
-	
-	txNumScore.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-
 
 	figure.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 	place_holder.setTexture(&AM->texture[AM_::E_TEXTURE::T_CUBE_PLACEHOLDER]);
@@ -105,7 +110,6 @@ void Tetromino::ini(int width, int height)
 		rand_gen() % 4);
 
 	this->onCreate();
-	bGameOver = false;
 	
 	curr_hdl_fun = &Tetromino::standard_input;
 	curr_upd_fun = &Tetromino::tick;
@@ -212,7 +216,7 @@ void Tetromino::check_tetris()
 			tetris_row[y] = y;
 			curr_upd_fun = &Tetromino::play_anim_tetris;
 			curr_hdl_fun = &Tetromino::disable_input;
-			numT++;
+			numTetris++;
 			which_anim = rand_gen() % 2;
 		}
 			yes = 0;
@@ -234,7 +238,7 @@ void Tetromino::play_anim_tetris(const float& tt)
 			tetromino[(WIDTH * (y - 4)) + (WIDTH/2) - (at+1)].setFillColor(sf::Color::Transparent);
 			update_score((at + 2) * SCORE_FACTOR);
 
-			if (numT == 1)
+			if (numTetris == 1)
 			{
 				SAM.play("poof",
 					{
@@ -351,7 +355,7 @@ void Tetromino::shift_tetris(const float& tt)
 		tetromino[x].setFillColor(sf::Color::Transparent);	
 
 
-	if (numT--; numT == 0)
+	if (numTetris--; numTetris == 0)
 	{
 		for (auto& y : tetris_row)
 			y = -1;
@@ -443,8 +447,7 @@ void Tetromino::standard_input(const sf::Event& event)
 		}
 		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Z)
 		{
-			while (!collision_with_cubes(0, 1, &figure) && !collision_with_edges(0, 1, &figure))
-				figure.move(0, 1);
+			figure.setPosition(place_holder);
 
 			tick(0.0f);
 			update_score(500);

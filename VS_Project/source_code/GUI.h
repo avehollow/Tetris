@@ -61,16 +61,11 @@ namespace gui
 		friend class GUI;
 	public:
 		int getDepth()const { return depth; }
-		void disable(bool isDisable) { is_disable = isDisable; }
 		//void setDepth(int depth) { this->depth = depth; } do prawid³owego dzia³ania trzeba jeszcze wywo³aæ funkcjê sort z klasy GUI
 
 		virtual ~gui__() = default;
-	protected:
-		static sf::RenderWindow* window;
-		static bool handled_event;
-		int depth = 0;
-		bool is_disable = false;
 
+	protected:
 		virtual void onRecreateWindow() = 0;
 		virtual bool handleEvent(const sf::Event& event) = 0;
 
@@ -80,6 +75,11 @@ namespace gui
 		inline void getDeltaMouse(int* dtX, int* dtY);
 
 		sf::Vector2f calc_rel_pos(E_ANCHOR anchor, float x, float y);
+
+	protected:
+		static sf::RenderWindow* window;
+		static bool handled_event;
+		int depth = 0;
 	};
 
 	

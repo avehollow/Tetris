@@ -34,13 +34,11 @@ void Figure::move(int dirx, int diry)
 
 void Figure::ini(float cube_size, const sf::Vector2f& tetromino_pos)
 {
-
 	this->cube_size = cube_size;
 	this->tetromino_pos = tetromino_pos;
 
 	for (auto& sq : squares)
 		sq.setSize(sf::Vector2f(cube_size, cube_size));
-	
 }
 
 
@@ -160,6 +158,14 @@ void Figure::be_O_(float pos_x, float pos_y,const sf::Texture* texture)
 	type = E_FIGURE::O;
 }
 
+
+void Figure::setPosition(const Figure& figure)
+{
+	for (size_t i = 0; i < 4; i++)
+		squares[i].setPosition(figure.squares[i].getPosition());
+
+	move(0, 0);
+}
 
 void Figure::onCreate(int size_cube, const sf::Vector2f& tetromino_pos)
 {

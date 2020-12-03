@@ -242,6 +242,7 @@ void GAME::onCreate()
 
 void GAME::startUp()
 {
+	tetromino.startUp();
 	bPause = false;
 	bGameOver = false;
 	window->addOnCreate(this);
