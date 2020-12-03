@@ -19,7 +19,8 @@ namespace gui
 
 		inline int getCurrentIndex()const;
 
-		void add(const char* text);
+		void add(const char* text);	
+		void add(std::string&& text);
 		void add(const std::initializer_list<const char*>& strings);
 
 		void setFillColor(const sf::Color&);
@@ -39,7 +40,7 @@ namespace gui
 		sf::CircleShape button;
 
 		sf::Text text;
-		std::vector<const char*> strings;
+		std::vector<std::string> strings;
 		sf::Color idle_color;
 		sf::Color hoveover_color;
 

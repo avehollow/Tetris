@@ -12,6 +12,7 @@ ScreenFlipbookManager::ScreenFlipbookManager(sf::RenderWindow* window)
 {
 	f_current.reserve(70);
 	clock.restart();
+	idx_of_last_added_flipbook = 0;
 }
 
 
@@ -22,7 +23,6 @@ void ScreenFlipbookManager::ini(sf::RenderWindow* window)
 	wnd = window;
 	f_current.clear();
 	f_templates.clear();
-	f_current.reserve(70);
 	clock.restart();
 }
 
@@ -32,8 +32,8 @@ void ScreenFlipbookManager::loadAnimation(
 	const sf::Vector2i& sizeOfFrame,
 	const sf::Texture& texture, 
 	const sf::Time& frequency,
-	int depth,
-	sf::Vector2i startFramePos ,
+	const int& depth,
+	const sf::Vector2i& startFramePos ,
 	const E_MODE& mode,
 	const sf::Time& lifeTime)
 {
@@ -42,18 +42,15 @@ void ScreenFlipbookManager::loadAnimation(
 
 
 
-Flipbook* ScreenFlipbookManager::last_added() const
+Flipbook* ScreenFlipbookManager::temporary_back() const
 {
-	Flipbook* pf = nullptr;
-	
 	auto it = std::find_if(f_current.begin(), f_current.end(), [this](const Flipbook& fb) { return fb.getId() == this->idx_of_last_added_flipbook; });
-	pf = (it != f_current.end() )?  it._Ptr : nullptr ;
-	return pf;
+	return (it != f_current.end() )?  it._Ptr : nullptr ;
 }
 
 void ScreenFlipbookManager::eraseAnimation(const char* name)
 {
-	std::map<const char*, Flipbook>::iterator it = f_templates.find(name);
+	std::unordered_map<const char*, Flipbook>::iterator it = f_templates.find(name);
 	if (it != f_templates.end())
 	{
 		f_templates.erase(it);
@@ -63,10 +60,12 @@ void ScreenFlipbookManager::eraseAnimation(const char* name)
 
 void ScreenFlipbookManager::stop(const char* name)
 {
-	std::string n(name);
-	auto iitt = std::find_if(f_current.begin(), f_current.end(), [&](const Flipbook& a) { return  n.compare(a.getName()) == 0; });
-	if (iitt != f_current.end())
-		f_current.erase(iitt);
+	auto it = std::find_if(f_current.begin(), f_current.end(), [&name](const Flipbook& a) { return  strcmp(name, a.getName()) == 0; });
+	while (it != f_current.end())
+	{
+		f_current.erase(it);
+		it = std::find_if(f_current.begin(), f_current.end(), [&name](const Flipbook& a) { return  strcmp(name, a.getName()) == 0; });
+	}
 }
 
 void ScreenFlipbookManager::update(bool isUpdate)
@@ -92,6 +91,7 @@ void ScreenFlipbookManager::render() const
 void ScreenFlipbookManager::clear_current()
 {
 	f_current.clear();
+	idx_of_last_added_flipbook = 0;
 }
 
 void ScreenFlipbookManager::OnCreate()
@@ -103,11 +103,6 @@ void ScreenFlipbookManager::OnCreate()
 }
 
 
-
-void ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos)
-{
-	this->play(name, pos, f_templates[name].freq_time, f_templates[name].reverse, f_templates[name].getSprite().getScale());
-}
 void  ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, bool reverse, const sf::Vector2f& scale)
 {
 	this->play(name, pos, f_templates[name].freq_time, reverse, scale);
@@ -155,6 +150,22 @@ void  ScreenFlipbookManager::play(const char* name, const sf::Vector2f& pos, con
 
 
 
+Flipbook::Flipbook()
+	: Flipbook(
+		"error", 
+		sf::Vector2f{ 0,0 }, 
+		sf::Vector3i{ 1,1,1 }, 
+		sf::Vector2i{ 90,80 },
+		sf::Texture(), 
+		sf::seconds(1), 
+		10, 
+		sf::Vector2i{0,0},
+		ScreenFlipbookManager::E_MODE::ENDLESS,
+		sf::seconds(0))
+{
+
+}
+
 Flipbook::Flipbook(
 	const char* name,
 	const sf::Vector2f& position,
@@ -162,8 +173,8 @@ Flipbook::Flipbook(
 	const sf::Vector2i& sizeOfFrame, 
 	const sf::Texture& texture, 
 	const sf::Time& frequency,
-	int depth,
-	sf::Vector2i start_pos,
+	const int& depth,
+	const sf::Vector2i& start_pos,
 	const ScreenFlipbookManager::E_MODE& mode,
 	const sf::Time& life_time
 )
@@ -191,34 +202,39 @@ Flipbook::Flipbook(
 		sizeOfFrame.x, 
 		sizeOfFrame.y));
 
+	ppX = 0;
+	ppY = 0;
+		
+	psX = 0;
+	psY = 0;
 
 }
 
-Flipbook::Flipbook(const Flipbook& other)
-	: id(other.id)
-	, name(other.name)
-	, number_of_frames(other.number_of_frames)
-	, size_of_frame(other.size_of_frame)
-	, mode(other.mode)
-	, start_pos(other.start_pos)
-	, curr_frame(other.curr_frame)
-	, freq_time(other.freq_time)
-	, curr_freq_time(other.curr_freq_time)
-	, life_time(other.life_time)
-	, curr_life_time(other.curr_life_time)
-	, depth(other.depth)
-	, bFinished(other.bFinished)
-	, reverse(other.reverse)
-	, ppX(other.ppX)
-	, ppY(other.ppY)
-	, psX(other.psX)
-	, psY(other.psY)
-{
-	sprite.setPosition(other.sprite.getPosition());
-	sprite.setTexture(*other.sprite.getTexture());
-	sprite.setTextureRect(other.sprite.getTextureRect());
-	sprite.setScale(other.sprite.getScale());
-}
+//Flipbook::Flipbook(const Flipbook& other)
+//	: id(other.id)
+//	, name(other.name)
+//	, number_of_frames(other.number_of_frames)
+//	, size_of_frame(other.size_of_frame)
+//	, mode(other.mode)
+//	, start_pos(other.start_pos)
+//	, curr_frame(other.curr_frame)
+//	, freq_time(other.freq_time)
+//	, curr_freq_time(other.curr_freq_time)
+//	, life_time(other.life_time)
+//	, curr_life_time(other.curr_life_time)
+//	, depth(other.depth)
+//	, bFinished(other.bFinished)
+//	, reverse(other.reverse)
+//	, ppX(other.ppX)
+//	, ppY(other.ppY)
+//	, psX(other.psX)
+//	, psY(other.psY)
+//{
+//	sprite.setPosition(other.sprite.getPosition());
+//	sprite.setTexture(*other.sprite.getTexture());
+//	sprite.setTextureRect(other.sprite.getTextureRect());
+//	sprite.setScale(other.sprite.getScale());
+//}
 
 Flipbook& Flipbook::operator=(const Flipbook& other) 
 {

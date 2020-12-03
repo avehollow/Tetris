@@ -214,14 +214,19 @@ void MAINMENU::show_gui(bool show)
 
 void MAINMENU::show_high_score(bool show)
 {
-	if (show)
-		window->GUI_.add(b_Back);
-	
-	else
-		window->GUI_.erase(b_Back);
-	
-	
 	show_gui(!show);
+
+	if (show)
+	{
+		while (ShowCursor(TRUE) < 0);
+		window->GUI_.add(b_Back);
+	}
+	else
+	{
+		window->GUI_.erase(b_Back);
+	}
+	
+	
 }
 
 void MAINMENU::load_high_score()

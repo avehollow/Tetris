@@ -13,6 +13,7 @@
 #include <array>
 #include <random>
 #include <chrono>
+#include <unordered_map>
 
 	#include <Windows.h>
 #ifndef _XP

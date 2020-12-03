@@ -10,8 +10,7 @@ using namespace sf_literals;
 
 void Tetromino::startUp()
 {
-
-	//SAM.ini((sf::RenderWindow*)window);
+	SAM.ini((sf::RenderWindow*)window);
 	load_anim();
 
 	background_tetromino.setFillColor(sf::Color(20, 20, 20, 200));
@@ -44,8 +43,7 @@ void Tetromino::handleInput(const sf::Event& event)
 
 void Tetromino::ini(int width, int height)
 {
-
-	SAM.ini((sf::RenderWindow*)window);
+	SAM.clear_current();
 	tetris_row.resize(height + 4, -1);
 	for (auto& k : tetris_row)
 		k = -1;
@@ -113,6 +111,7 @@ void Tetromino::ini(int width, int height)
 	
 	curr_hdl_fun = &Tetromino::standard_input;
 	curr_upd_fun = &Tetromino::tick;
+	
 }
 
 

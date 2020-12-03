@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Options.h"
 #include "DropDownList.h"
+#include "SliderList.h"
 #include "Resource.h"
 
 OPTIONS options;
@@ -101,6 +102,16 @@ void OPTIONS::startUp()
 	b_Applay->setHoveOverColor(sf::Color::White);
 	b_Applay->setFillColor(sf::Color(180, 180, 180));
 
+	sl_music = window->GUI_.CreateSliderList(0,0, 400);
+	sl_music->setRelativePosition(gui::E_ANCHOR::A_TOP_LEFT, 100, 300);
+	sl_music->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
+	sl_music->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);
+
+
+	for (int i = 1; i <= 100; i++)
+	{
+		sl_music->add(std::move(std::to_string(i)));
+	}
 
 	ddl_vm = window->GUI_.CreateDropDownList(0, 0, 300, 25, 1, "Resolution");
 	ddl_vm->setRelativePosition(gui::E_ANCHOR::A_CENTER_TOP, -150, 25);
@@ -141,6 +152,7 @@ void OPTIONS::show_gui(bool show)
 		window->GUI_.add(b_Back);
 		window->GUI_.add(b_Applay);
 		window->GUI_.add(ddl_vm);
+		window->GUI_.add(sl_music);
 	}
 	else
 	{
@@ -148,6 +160,7 @@ void OPTIONS::show_gui(bool show)
 		window->GUI_.erase(b_Back);
 		window->GUI_.erase(b_Applay);
 		window->GUI_.erase(ddl_vm);
+		window->GUI_.erase(sl_music);
 	}
 }
 

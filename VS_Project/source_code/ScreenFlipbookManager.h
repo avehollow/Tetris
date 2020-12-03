@@ -46,15 +46,12 @@ public:
 		const sf::Vector2i& sizeOfFrame,
 		const sf::Texture& texture,
 		const sf::Time& frequency,
-		int depth = 0,
-		sf::Vector2i startFramePos = { 0 , 0},
+		const int& depth = 0,
+		const sf::Vector2i& startFramePos = { 0 , 0},
 		const E_MODE& mode = E_MODE::ENDLESS,
 		const sf::Time& lifeTime = sf::milliseconds(0)
 	);
-	void play(
-		const char* name,
-		const sf::Vector2f& pos
-	);
+
 	void play(
 		const char* name, 
 		const sf::Vector2f& pos, 
@@ -69,7 +66,7 @@ public:
 		const sf::Vector2f& scale = sf::Vector2f(1, 1)
 	);
 
-	class Flipbook* last_added()const;
+	class Flipbook* temporary_back()const;
 	void eraseAnimation(const char* name);
 	void stop(const char* name);
 	void update(bool isUpdate = true);
@@ -79,7 +76,7 @@ public:
 private:
 	sf::Clock clock;
 	sf::RenderWindow* wnd;
-	std::map<const char*,class Flipbook> f_templates;
+	std::unordered_map<const char*,class Flipbook> f_templates;
 	std::vector<class Flipbook> f_current;
 	std::size_t idx_of_last_added_flipbook;
 };
@@ -89,7 +86,7 @@ class Flipbook
 {
 	friend class ScreenFlipbookManager;
 public:
-	Flipbook() {};
+	Flipbook();
 	Flipbook(
 		const char* name,
 		const sf::Vector2f& position,
@@ -97,20 +94,22 @@ public:
 		const sf::Vector2i& sizeOfFrame,
 		const sf::Texture& texture,
 		const sf::Time& frequency,
-		int depth = 0,
-		sf::Vector2i start_pos = { 0 , 0},
+		const int& depth = 0,
+		const sf::Vector2i& start_pos = { 0 , 0},
 		const ScreenFlipbookManager::E_MODE& mode = ScreenFlipbookManager::E_MODE::ENDLESS,
 		const sf::Time& life_time = sf::milliseconds(0)
 	);
-	Flipbook(const Flipbook& other);
+	//Flipbook(const Flipbook& other);
 	Flipbook& operator=(const Flipbook& other) ;
 	~Flipbook();
 
 	void update(const sf::Time& tt);
 	void render(sf::RenderWindow* const window)const;
+
 	void restart(bool reverse = false);
-	bool finished()const;
 	void setPosition(float x, float y);
+
+	bool finished()const;
 	int getId()const;
 	int getDepth()const;
 	const char* getName()const;
@@ -119,8 +118,6 @@ public:
 	void OnCreate(const sf::RenderWindow* const window);
 
 private:
-	int id;
-	const char* name;
 	sf::Sprite sprite;
 	sf::Vector3i number_of_frames;
 	sf::Vector2i size_of_frame;
@@ -132,10 +129,12 @@ private:
 	sf::Time life_time;
 	sf::Time curr_life_time;
 	
-	int depth;
+	const char* name;
 	bool bFinished;
-	int reverse;
 
+	int id;
+	int depth;
+	int reverse;
 
 	float ppX;
 	float ppY;

@@ -138,6 +138,13 @@ namespace gui
 		this->text.setPosition(this->text.getPosition().x, slider.getPosition().y - (this->text.getGlobalBounds().height / 2) - 1);
 	}
 
+	void SliderList::add(std::string&& text)
+	{
+		strings.push_back(std::forward<std::string&&>(text));
+		this->text.setString(strings[0]);
+		this->text.setPosition(this->text.getPosition().x, slider.getPosition().y - (this->text.getGlobalBounds().height / 2) - 1);
+	}
+
 	void SliderList::add(const std::initializer_list<const char*>& strings)
 	{
 		for (const auto& tx : strings)

@@ -49,7 +49,8 @@ public:
 		T_FIRE1,
 		T_POOF,
 		T_CONFFETI,
-		T_FIREWORKS
+		T_FIREWORKS,
+		T_ERROR
 	};
 };
 

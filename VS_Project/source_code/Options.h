@@ -6,6 +6,7 @@ namespace gui
 {
 	class Button;
 	class DropDownList;
+	class SliderList;
 }
 
 struct GraphicsSettings
@@ -41,6 +42,7 @@ private:
 	gui::Button* b_Applay;
 	gui::Button* b_Back;
 	gui::DropDownList* ddl_vm;
+	gui::SliderList* sl_music;
 
 	void show_gui(bool show);
 	virtual void onCreate() override;
