@@ -34,8 +34,16 @@ public:
 	virtual void startUp() override;
 
 private:
-	std::vector<sf::VideoMode> vm;
+	virtual void onCreate() override;
+	void show_gui(bool show);
 
+	void fill_key_triggers();
+	void set_text();
+	void draw_lines(const sf::RectangleShape& start, const sf::RectangleShape& end, sf::Vertex* vertex, const sf::Color& color = sf::Color::White, int type = 0, float thickness = 2.0f);
+	void erase_lines(sf::Vertex* vertex, std::size_t amount);
+
+private:
+	std::vector<sf::VideoMode> vm;
 	GraphicsSettings gs;
 	MovementSettings ms;
 
@@ -44,8 +52,32 @@ private:
 	gui::DropDownList* ddl_vm;
 	gui::SliderList* sl_music;
 
-	void show_gui(bool show);
-	virtual void onCreate() override;
+	sf::Sprite keyboard;
+
+	float ppX;
+	float ppY;
+
+	struct KeyTrigger
+	{
+		KeyTrigger(sf::RectangleShape r, std::string n)
+		{
+			rec = r;
+			name = n;
+		}
+		sf::RectangleShape rec;
+		std::string name;
+	};
+
+	std::vector<KeyTrigger> k;
+
+	sf::Text control_keys[6];
+	sf::Vertex lines[20];
+
+	sf::Text* ctx;
+	sf::RectangleShape* crs;
+	// z - szybkie
+	// 3 strzalki - poruszanie
+	// space - rotacja
 };
 
 

@@ -50,7 +50,8 @@ public:
 		T_POOF,
 		T_CONFFETI,
 		T_FIREWORKS,
-		T_ERROR
+		T_ERROR,
+		T_KEYBOARD
 	};
 };
 

@@ -13,6 +13,7 @@ public:
 	{
 		on_create.push_back(state);
 	};
+
 protected:
 	virtual void onCreate();
 	std::vector<__interface ISTATE*> on_create;

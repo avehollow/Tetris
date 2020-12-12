@@ -100,7 +100,10 @@ AM_::AM_()
 	texture.back().loadFromFile("data/texture/fireworks.png");
 	
 	texture.emplace_back(sf::Texture());
-	texture.back().loadFromFile("data/texture/error.png");
+	texture.back().loadFromFile("data/texture/error.png");	
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/keyboard.png");
 }
 
 AM_::~AM_()
