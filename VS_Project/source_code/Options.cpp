@@ -62,22 +62,66 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	{
 		sf::Vector2i vi = window->mapCoordsToPixel(sf::Vector2f(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y));
-		for (size_t i = 0, max = sizeof control_keys / sizeof(sf::Text); i < max; i++)
+		ctx->setFillColor(sf::Color::White);
+		for (size_t i = 0, max = sizeof control_keys / sizeof(sf::Text) - 1; i < max; i++)
 		{
-			if (control_keys[i].getGlobalBounds().contains(sf::Vector2f(vi)))
+			if (control_keys[i].text.getGlobalBounds().contains(sf::Vector2f(vi)))
 			{
-				ctx->setFillColor(sf::Color::White);
-				ctx = &control_keys[i];
+				ctx = &control_keys[i].text;
 				ctx->setFillColor(sf::Color::Magenta);
+				key_chosen = i+1; 
+				AM->sound[AM_::E_SOUND::S_CLICK_2].play();
 				break;
 			}
 		}
 
-		for (const auto& i : k)
+		if (key_chosen)
 		{
-			if(i.rec.getGlobalBounds().contains(sf::Vector2f(vi)))
+			for (auto& i : k)
 			{
+				if (i.rec.getGlobalBounds().contains(sf::Vector2f(vi)))
+				{
+					sf::RectangleShape b;
+					b.setPosition(ctx->getPosition());
+					b.setSize(sf::Vector2f(ctx->getGlobalBounds().width, ctx->getGlobalBounds().height));
 
+					for (size_t k = 0, max = sizeof control_keys / sizeof(ControlKey); k < max; k++)
+					{
+						if (control_keys[k].ptr == &i)
+						{
+							control_keys[k].ptr = nullptr;
+							erase_lines(lines + k * 8, 8);
+
+						}
+					}
+
+					switch (key_chosen - 1)
+					{
+					case 0:
+						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 1, 3.0f);
+						break;														
+					case 1:															
+						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color(0,255,0), 4, 3.0f);
+						break;														
+					case 2:															
+						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 3, 3.0f);
+						break;														
+					case 3:															
+						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
+						break;														
+					case 4:		
+						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
+
+						break;
+					default:
+						break;
+					}
+
+					control_keys[key_chosen - 1].ptr = &i;
+					AM->sound[AM_::E_SOUND::S_CLICK_1].play();
+					key_chosen = false;
+					break;
+				}
 			}
 		}
 	}
@@ -96,11 +140,12 @@ void OPTIONS::render() const
 	window->draw(keyboard);
 	for (auto& i : k)
 		window->draw(i.rec);
+
+	window->draw(lines, sizeof lines / sizeof(sf::Vertex), sf::Quads);
 	
 	for (size_t i = 0, max = sizeof control_keys / sizeof(sf::Text); i < max; i++)
-		window->draw(control_keys[i]);
+		window->draw(control_keys[i].text);
 	
-	window->draw(lines, sizeof lines / sizeof(sf::Vertex), sf::Quads);
 }
 
 
@@ -113,7 +158,9 @@ void OPTIONS::show()
 void OPTIONS::hide() 
 {
 	show_gui(false);
-	ctx = &control_keys[5];
+	ctx->setFillColor(sf::Color::White);
+	ctx = &control_keys[5].text;
+	key_chosen = false;
 }
 
 void OPTIONS::onCreate()
@@ -127,6 +174,29 @@ void OPTIONS::onCreate()
 	k.clear();
 	fill_key_triggers();
 	set_text();
+
+	sf::RectangleShape b;
+	b.setPosition(ctx->getPosition());
+	b.setSize(sf::Vector2f(ctx->getGlobalBounds().width, ctx->getGlobalBounds().height));
+
+		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 1, 3.0f);
+		break;
+	case 1:
+		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color(0, 255, 0), 4, 3.0f);
+		break;
+	case 2:
+		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 3, 3.0f);
+		break;
+	case 3:
+		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
+		break;
+	case 4:
+		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
+
+		break;
+	default:
+		break;
+	}
 	
 }
 
@@ -136,14 +206,67 @@ void OPTIONS::fill_key_triggers()
 
 	
 #define OutlineThickness -4
-	std::string tab[] = {
-		"1","2","3","4","5","6","7","8","9","0","-","+","Backspace",
-		"Q","W","E","R","T","Y","U","I","O","P","[","]","\\",
-		"A","S","D","F","G","H","J","K","L",";",",","Enter",
-		"Z","X","C","V","B","N","M",",",".","/","RShift",
-		"LCTRL", "LALT","SPACE","RALT", "RCTRL", "LEFT", "DOWN","UP","RIGHT",
-		"RShift" };
-
+	short tab[] = {
+		sf::Keyboard::Num1,
+		sf::Keyboard::Num2,
+		sf::Keyboard::Num3,
+		sf::Keyboard::Num4,
+		sf::Keyboard::Num5,
+		sf::Keyboard::Num6,
+		sf::Keyboard::Num7,
+		sf::Keyboard::Num8,
+		sf::Keyboard::Num9,
+		sf::Keyboard::Num0,
+		sf::Keyboard::Hyphen,
+		sf::Keyboard::Equal,
+		sf::Keyboard::Backspace,
+		sf::Keyboard::Q,
+		sf::Keyboard::W,
+		sf::Keyboard::E,
+		sf::Keyboard::R,
+		sf::Keyboard::T,
+		sf::Keyboard::Y,
+		sf::Keyboard::U,
+		sf::Keyboard::I,
+		sf::Keyboard::O,
+		sf::Keyboard::P,
+		sf::Keyboard::LBracket,
+		sf::Keyboard::RBracket,
+		sf::Keyboard::Backslash,
+		sf::Keyboard::A,
+		sf::Keyboard::S,
+		sf::Keyboard::D,
+		sf::Keyboard::F,
+		sf::Keyboard::G,
+		sf::Keyboard::H,
+		sf::Keyboard::J,
+		sf::Keyboard::K,
+		sf::Keyboard::L,
+		sf::Keyboard::Semicolon,
+		sf::Keyboard::Quote,
+		sf::Keyboard::Z,
+		sf::Keyboard::X,
+		sf::Keyboard::C,
+		sf::Keyboard::V,
+		sf::Keyboard::B,
+		sf::Keyboard::N,
+		sf::Keyboard::M,
+		sf::Keyboard::Z,
+		sf::Keyboard::Comma,
+		sf::Keyboard::Period,
+		sf::Keyboard::Slash,
+		sf::Keyboard::RShift,
+		sf::Keyboard::LControl,
+		sf::Keyboard::LAlt,
+		sf::Keyboard::Space,
+		sf::Keyboard::RAlt,
+		sf::Keyboard::RControl,
+		sf::Keyboard::Left,
+		sf::Keyboard::Down,
+		sf::Keyboard::Up,
+		sf::Keyboard::Right,
+		sf::Keyboard::RShift
+	};
 
 	for (std::size_t i = 0; i < 13; i++)
 	{
@@ -156,7 +279,7 @@ void OPTIONS::fill_key_triggers()
 
 	for (std::size_t i = 0; i < 13; i++)
 	{
-		k.emplace_back(sf::RectangleShape(sf::Vector2f(53 * ppX, 50 * ppY)), std::string(tab[i + 13]));
+		k.emplace_back(sf::RectangleShape(sf::Vector2f(53 * ppX, 50 * ppY)), tab[i + 13]);
 		k[13 + i].rec.setPosition(keyboard.getPosition().x + i * (59 * ppX) + (87 * ppX) - i * 0.8f, keyboard.getPosition().y + (92 * ppY));
 		k[13 + i].rec.setOutlineColor(sf::Color::Green);
 		k[13 + i].rec.setOutlineThickness(OutlineThickness);
@@ -165,7 +288,7 @@ void OPTIONS::fill_key_triggers()
 
 	for (std::size_t i = 0; i < 12; i++)
 	{
-		k.emplace_back(sf::RectangleShape(sf::Vector2f(53 * ppX, 50 * ppY)), std::string(tab[i + 26]));
+		k.emplace_back(sf::RectangleShape(sf::Vector2f(53 * ppX, 50 * ppY)), tab[i + 26]);
 		k[26 + i].rec.setPosition(keyboard.getPosition().x + i * (59 * ppX) + (99 * ppX) - i * 0.8f, keyboard.getPosition().y + (145 * ppY));
 		k[26 + i].rec.setOutlineColor(sf::Color::Green);
 		k[26 + i].rec.setOutlineThickness(OutlineThickness);
@@ -174,7 +297,7 @@ void OPTIONS::fill_key_triggers()
 
 	for (std::size_t i = 0; i < 11; i++)
 	{
-		k.emplace_back(sf::RectangleShape(sf::Vector2f(53 * ppX, 50 * ppY)), std::string(tab[i + 38]));
+		k.emplace_back(sf::RectangleShape(sf::Vector2f(53 * ppX, 50 * ppY)), tab[i + 38]);
 		k[38 + i].rec.setPosition(keyboard.getPosition().x + i * (59 * ppX) + (126 * ppX) - i * 0.8f, keyboard.getPosition().y + (200 * ppY));
 		k[38 + i].rec.setOutlineColor(sf::Color::Green);
 		k[38 + i].rec.setOutlineThickness(OutlineThickness);
@@ -182,61 +305,61 @@ void OPTIONS::fill_key_triggers()
 	}
 
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(115 * ppX, 57 * ppY)), std::string(tab[49]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(115 * ppX, 57 * ppY)), tab[49]);
 	k[49].rec.setPosition(keyboard.getPosition().x, keyboard.getPosition().y + (257 * ppY));
 	k[49].rec.setOutlineColor(sf::Color::Green);
 	k[49].rec.setOutlineThickness(OutlineThickness);
 	k[49].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(113 * ppX, 57 * ppY)), std::string(tab[50]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(113 * ppX, 57 * ppY)), tab[50]);
 	k[50].rec.setPosition(keyboard.getPosition().x + (123 * ppX), keyboard.getPosition().y + (257 * ppY));
 	k[50].rec.setOutlineColor(sf::Color::Green);
 	k[50].rec.setOutlineThickness(OutlineThickness);
 	k[50].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(280 * ppX, 57 * ppY)), std::string(tab[51]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(280 * ppX, 57 * ppY)), tab[51]);
 	k[51].rec.setPosition(keyboard.getPosition().x + (245 * ppX), keyboard.getPosition().y + (257 * ppY));
 	k[51].rec.setOutlineColor(sf::Color::Green);
 	k[51].rec.setOutlineThickness(OutlineThickness);
 	k[51].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(44 * ppX, 57 * ppY)), std::string(tab[52]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(44 * ppX, 57 * ppY)), tab[52]);
 	k[52].rec.setPosition(keyboard.getPosition().x + (536 * ppX), keyboard.getPosition().y + (257 * ppY));
 	k[52].rec.setOutlineColor(sf::Color::Green);
 	k[52].rec.setOutlineThickness(OutlineThickness);
 	k[52].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(44 * ppX, 57 * ppY)), std::string(tab[53]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(44 * ppX, 57 * ppY)), tab[53]);
 	k[53].rec.setPosition(keyboard.getPosition().x + (594 * ppX), keyboard.getPosition().y + (257 * ppY));
 	k[53].rec.setOutlineColor(sf::Color::Green);
 	k[53].rec.setOutlineThickness(OutlineThickness);
 	k[53].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(52 * ppX, 30 * ppY)), std::string(tab[54]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(52 * ppX, 30 * ppY)), tab[54]);
 	k[54].rec.setPosition(keyboard.getPosition().x + (653 * ppX), keyboard.getPosition().y + (285 * ppY));
 	k[54].rec.setOutlineColor(sf::Color::Green);
 	k[54].rec.setOutlineThickness(OutlineThickness);
 	k[54].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(55 * ppX, 30 * ppY)), std::string(tab[55]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(55 * ppX, 30 * ppY)), tab[55]);
 	k[55].rec.setPosition(keyboard.getPosition().x + (715 * ppX), keyboard.getPosition().y + (285 * ppY));
 	k[55].rec.setOutlineColor(sf::Color::Green);
 	k[55].rec.setOutlineThickness(OutlineThickness);
 	k[55].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(55 * ppX, 30 * ppY)), std::string(tab[56]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(55 * ppX, 30 * ppY)), tab[56]);
 	k[56].rec.setPosition(keyboard.getPosition().x + (715 * ppX), keyboard.getPosition().y + (257 * ppY));
 	k[56].rec.setOutlineColor(sf::Color::Green);
 	k[56].rec.setOutlineThickness(OutlineThickness);
 	k[56].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(55 * ppX, 30 * ppY)), std::string(tab[57]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(55 * ppX, 30 * ppY)), tab[57]);
 	k[57].rec.setPosition(keyboard.getPosition().x + (780 * ppX), keyboard.getPosition().y + (285 * ppY));
 	k[57].rec.setOutlineColor(sf::Color::Green);
 	k[57].rec.setOutlineThickness(OutlineThickness);
 	k[57].rec.setFillColor(sf::Color::Transparent);
 
-	k.emplace_back(sf::RectangleShape(sf::Vector2f(115 * ppX, 50 * ppY)), std::string(tab[58]));
+	k.emplace_back(sf::RectangleShape(sf::Vector2f(115 * ppX, 50 * ppY)), tab[58]);
 	k[58].rec.setPosition(keyboard.getPosition().x, keyboard.getPosition().y + (200 * ppY));
 	k[58].rec.setOutlineColor(sf::Color::Green);
 	k[58].rec.setOutlineThickness(OutlineThickness);
@@ -250,30 +373,42 @@ void OPTIONS::fill_key_triggers()
 
 void OPTIONS::set_text()
 {
-	control_keys[0].setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	control_keys[0].setString("flush");
-	control_keys[0].setCharacterSize(yy(30));
-	control_keys[0].setPosition(keyboard.getPosition().x - 2 * control_keys[0].getGlobalBounds().width, keyboard.getPosition().y);
+	control_keys[0].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	control_keys[0].text.setString("flush");
+	control_keys[0].text.setCharacterSize(yy(30));
+	control_keys[0].text.setPosition(keyboard.getPosition().x - 2 * control_keys[0].text.getGlobalBounds().width, keyboard.getPosition().y);
+	control_keys[0].ptr = nullptr;
 
-	control_keys[1].setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	control_keys[1].setString("rotate");
-	control_keys[1].setCharacterSize(yy(30));
-	control_keys[1].setPosition(keyboard.getPosition().x + 1.1f * control_keys[1].getGlobalBounds().width, keyboard.getPosition().y + 1.2f * keyboard.getGlobalBounds().height);
+	control_keys[1].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	control_keys[1].text.setString("rotate");
+	control_keys[1].text.setCharacterSize(yy(30));
+	control_keys[1].text.setPosition(keyboard.getPosition().x + 1.1f * control_keys[1].text.getGlobalBounds().width, keyboard.getPosition().y + 1.2f * keyboard.getGlobalBounds().height);
+	control_keys[1].ptr = nullptr;
 
-	control_keys[2].setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	control_keys[2].setString("fast drop");
-	control_keys[2].setCharacterSize(yy(30));
-	control_keys[2].setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width + xx(30), keyboard.getPosition().y + 0.5f * keyboard.getGlobalBounds().height);
+	control_keys[2].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	control_keys[2].text.setString("fast drop");
+	control_keys[2].text.setCharacterSize(yy(30));
+	control_keys[2].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width + xx(100), keyboard.getPosition().y + 0.5f * keyboard.getGlobalBounds().height);
+	control_keys[2].ptr = nullptr;
 
-	control_keys[3].setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	control_keys[3].setString("move left");
-	control_keys[3].setCharacterSize(yy(30));
-	control_keys[3].setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 2.0f * control_keys[3].getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
+	control_keys[3].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	control_keys[3].text.setString("move left");
+	control_keys[3].text.setCharacterSize(yy(30));
+	control_keys[3].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 2.0f * control_keys[3].text.getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
+	control_keys[3].ptr = nullptr;
 
-	control_keys[4].setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	control_keys[4].setString("move right");
-	control_keys[4].setCharacterSize(yy(30));
-	control_keys[4].setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 0.5f * control_keys[4].getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
+	control_keys[4].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	control_keys[4].text.setString("move right");
+	control_keys[4].text.setCharacterSize(yy(30));
+	control_keys[4].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 0.2f * control_keys[4].text.getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
+	control_keys[4].ptr = nullptr;
+
+	control_keys[5].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	control_keys[5].text.setString(" ");
+	control_keys[5].text.setCharacterSize(yy(30));
+	control_keys[5].text.setFillColor(sf::Color::Transparent);
+	control_keys[5].text.setPosition(0,0);
+	control_keys[5].ptr = nullptr;
 }
 
 void OPTIONS::draw_lines(const sf::RectangleShape& start, const sf::RectangleShape& end, sf::Vertex* vertex, const sf::Color& color, int type, float thickness)
@@ -461,7 +596,7 @@ void OPTIONS::draw_lines(const sf::RectangleShape& start, const sf::RectangleSha
 	vertex[5].position = v[3].position - offset;
 	vertex[6].position = v[3].position + offset;
 
-	for (size_t i = 0; i < 7; i++)
+	for (size_t i = 0; i <= 7; i++)
 		vertex[i].color = color;
 }
 
@@ -504,9 +639,8 @@ void OPTIONS::startUp()
 
 
 	for (int i = 1; i <= 100; i++)
-	{
 		sl_music->add(std::move(std::to_string(i)));
-	}
+	
 	
 
 	ddl_vm = window->GUI_.CreateDropDownList(0, 0, 300, 25, 1, "Resolution");
@@ -543,6 +677,11 @@ void OPTIONS::startUp()
 	keyboard.setPosition(window->getSize().x / 2 - keyboard.getGlobalBounds().width / 2, window->getSize().y / 2);
 	fill_key_triggers();
 	set_text();
+
+	ctx = &control_keys[5].text;
+
+	for (size_t i = 0; i < 5; i++)
+		ms.control_keys[i] = -1;
 }
 
 

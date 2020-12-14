@@ -15,7 +15,7 @@ struct GraphicsSettings
 };
 struct MovementSettings
 {
-
+	int control_keys[5];
 };
 
 class OPTIONS: public ISTATE, public WORLD
@@ -59,22 +59,33 @@ private:
 
 	struct KeyTrigger
 	{
-		KeyTrigger(sf::RectangleShape r, std::string n)
+		KeyTrigger(sf::RectangleShape r, short c)
 		{
 			rec = r;
-			name = n;
+			code = c;
 		}
 		sf::RectangleShape rec;
-		std::string name;
+		short code;
 	};
 
 	std::vector<KeyTrigger> k;
 
-	sf::Text control_keys[6];
-	sf::Vertex lines[20];
+	struct ControlKey
+	{
+		ControlKey()
+		{
+			ptr = nullptr;
+		}
+		sf::Text text;
+		KeyTrigger* ptr;
+	};
+	ControlKey control_keys[6];
+
+	sf::Vertex lines[40];
 
 	sf::Text* ctx;
 	sf::RectangleShape* crs;
+	int key_chosen;
 	// z - szybkie
 	// 3 strzalki - poruszanie
 	// space - rotacja
