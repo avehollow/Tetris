@@ -362,6 +362,9 @@ ISTATE* GAME::pause_input(const sf::Event& event)
 		bPause = false;
 		show_pause_menu(false);
 		tetromino.pause();
+		// settings movement and graphics as separate headers.
+
+		options.getMovementSettings();
 	}
 	else if (b_Options->Pressed())
 	{

@@ -15,7 +15,16 @@ struct GraphicsSettings
 };
 struct MovementSettings
 {
+	enum KEY_ACTION
+	{
+		FLUSH = 0,
+		ROTATE,
+		FAST_DROP,
+		MOVE_LEFT,
+		MOVE_RIGHT
+	};
 	int control_keys[5];
+
 };
 
 class OPTIONS: public ISTATE, public WORLD
@@ -33,17 +42,47 @@ public:
 	virtual void hide() override;
 	virtual void startUp() override;
 
+	const MovementSettings* getMovementSettings() const;
+
 private:
 	virtual void onCreate() override;
 	void show_gui(bool show);
 
 	void fill_key_triggers();
 	void set_text();
-	void draw_lines(const sf::RectangleShape& start, const sf::RectangleShape& end, sf::Vertex* vertex, const sf::Color& color = sf::Color::White, int type = 0, float thickness = 2.0f);
+	void linkControlKeys();
+	void linkABusing2lines(const sf::RectangleShape& A, const sf::RectangleShape& B, sf::Vertex* vertex, const sf::Color& color = sf::Color::White, int type = 0, float thickness = 2.0f);
 	void erase_lines(sf::Vertex* vertex, std::size_t amount);
 
 private:
+	struct KeyTrigger
+	{
+		KeyTrigger(sf::RectangleShape r, short c)
+		{
+			rec = r;
+			code = c;
+		}
+		sf::RectangleShape rec;
+		short code;
+	};
+
+	struct ControlKey
+	{
+		ControlKey()
+		{
+			ptr = nullptr;
+		}
+		sf::Text text;
+		KeyTrigger* ptr;
+	};
+
+private:
 	std::vector<sf::VideoMode> vm;
+	
+	sf::Vertex lines[40];
+	std::vector<KeyTrigger> k;
+	ControlKey control_keys[5];
+
 	GraphicsSettings gs;
 	MovementSettings ms;
 
@@ -57,34 +96,6 @@ private:
 	float ppX;
 	float ppY;
 
-	struct KeyTrigger
-	{
-		KeyTrigger(sf::RectangleShape r, short c)
-		{
-			rec = r;
-			code = c;
-		}
-		sf::RectangleShape rec;
-		short code;
-	};
-
-	std::vector<KeyTrigger> k;
-
-	struct ControlKey
-	{
-		ControlKey()
-		{
-			ptr = nullptr;
-		}
-		sf::Text text;
-		KeyTrigger* ptr;
-	};
-	ControlKey control_keys[6];
-
-	sf::Vertex lines[40];
-
-	sf::Text* ctx;
-	sf::RectangleShape* crs;
 	int key_chosen;
 	// z - szybkie
 	// 3 strzalki - poruszanie
@@ -92,3 +103,7 @@ private:
 };
 
 
+inline const MovementSettings* OPTIONS::getMovementSettings()const
+{
+	return &ms;
+}

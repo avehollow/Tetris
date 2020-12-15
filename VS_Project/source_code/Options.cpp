@@ -62,28 +62,29 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	{
 		sf::Vector2i vi = window->mapCoordsToPixel(sf::Vector2f(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y));
-		ctx->setFillColor(sf::Color::White);
-		for (size_t i = 0, max = sizeof control_keys / sizeof(sf::Text) - 1; i < max; i++)
+		for (size_t i = 0, max = sizeof control_keys / sizeof(ControlKey); i < max; i++)
 		{
+			control_keys[i].text.setFillColor(sf::Color::White);
 			if (control_keys[i].text.getGlobalBounds().contains(sf::Vector2f(vi)))
 			{
-				ctx = &control_keys[i].text;
-				ctx->setFillColor(sf::Color::Magenta);
-				key_chosen = i+1; 
+				control_keys[i].text.setFillColor(sf::Color::Magenta);
+				key_chosen = i; 
 				AM->sound[AM_::E_SOUND::S_CLICK_2].play();
-				break;
+				// return has to be here
+				return state;
 			}
 		}
 
-		if (key_chosen)
+		if (key_chosen != -1)
 		{
 			for (auto& i : k)
 			{
 				if (i.rec.getGlobalBounds().contains(sf::Vector2f(vi)))
 				{
+
 					sf::RectangleShape b;
-					b.setPosition(ctx->getPosition());
-					b.setSize(sf::Vector2f(ctx->getGlobalBounds().width, ctx->getGlobalBounds().height));
+					b.setPosition(control_keys[key_chosen].text.getPosition());
+					b.setSize(sf::Vector2f(control_keys[key_chosen].text.getGlobalBounds().width, control_keys[key_chosen ].text.getGlobalBounds().height));
 
 					for (size_t k = 0, max = sizeof control_keys / sizeof(ControlKey); k < max; k++)
 					{
@@ -95,34 +96,36 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 						}
 					}
 
-					switch (key_chosen - 1)
+					switch (key_chosen)
 					{
 					case 0:
-						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 1, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 1, 3.0f);
 						break;														
 					case 1:															
-						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color(0,255,0), 4, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color(0,255,0), 4, 3.0f);
 						break;														
 					case 2:															
-						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 3, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 3, 3.0f);
 						break;														
 					case 3:															
-						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 2, 3.0f);
 						break;														
 					case 4:		
-						draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 2, 3.0f);
 
 						break;
 					default:
 						break;
 					}
 
-					control_keys[key_chosen - 1].ptr = &i;
+					control_keys[key_chosen].ptr = &i;
+					ms.control_keys[key_chosen] = i.code;
+					key_chosen = -1;
 					AM->sound[AM_::E_SOUND::S_CLICK_1].play();
-					key_chosen = false;
 					break;
 				}
 			}
+			key_chosen = -1;
 		}
 	}
 
@@ -143,7 +146,7 @@ void OPTIONS::render() const
 
 	window->draw(lines, sizeof lines / sizeof(sf::Vertex), sf::Quads);
 	
-	for (size_t i = 0, max = sizeof control_keys / sizeof(sf::Text); i < max; i++)
+	for (size_t i = 0, max = sizeof control_keys / sizeof(ControlKey); i < max; i++)
 		window->draw(control_keys[i].text);
 	
 }
@@ -158,9 +161,10 @@ void OPTIONS::show()
 void OPTIONS::hide() 
 {
 	show_gui(false);
-	ctx->setFillColor(sf::Color::White);
-	ctx = &control_keys[5].text;
-	key_chosen = false;
+	for (size_t i = 0, max = sizeof control_keys / sizeof(ControlKey); i < max; i++)
+		control_keys[i].text.setFillColor(sf::Color::White);
+	
+	key_chosen = -1;
 }
 
 void OPTIONS::onCreate()
@@ -174,30 +178,7 @@ void OPTIONS::onCreate()
 	k.clear();
 	fill_key_triggers();
 	set_text();
-
-	sf::RectangleShape b;
-	b.setPosition(ctx->getPosition());
-	b.setSize(sf::Vector2f(ctx->getGlobalBounds().width, ctx->getGlobalBounds().height));
-
-		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 1, 3.0f);
-		break;
-	case 1:
-		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color(0, 255, 0), 4, 3.0f);
-		break;
-	case 2:
-		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 3, 3.0f);
-		break;
-	case 3:
-		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
-		break;
-	case 4:
-		draw_lines(b, i.rec, lines + (key_chosen - 1) * 8, sf::Color::Red, 2, 3.0f);
-
-		break;
-	default:
-		break;
-	}
-	
+	linkControlKeys();
 }
 
 
@@ -205,67 +186,67 @@ void OPTIONS::fill_key_triggers()
 {
 
 	
-#define OutlineThickness -4
+#define OutlineThickness 0
 	short tab[] = {
-		sf::Keyboard::Num1,
-		sf::Keyboard::Num2,
-		sf::Keyboard::Num3,
-		sf::Keyboard::Num4,
-		sf::Keyboard::Num5,
-		sf::Keyboard::Num6,
-		sf::Keyboard::Num7,
-		sf::Keyboard::Num8,
-		sf::Keyboard::Num9,
-		sf::Keyboard::Num0,
-		sf::Keyboard::Hyphen,
-		sf::Keyboard::Equal,
-		sf::Keyboard::Backspace,
-		sf::Keyboard::Q,
-		sf::Keyboard::W,
-		sf::Keyboard::E,
-		sf::Keyboard::R,
-		sf::Keyboard::T,
-		sf::Keyboard::Y,
-		sf::Keyboard::U,
-		sf::Keyboard::I,
-		sf::Keyboard::O,
-		sf::Keyboard::P,
-		sf::Keyboard::LBracket,
-		sf::Keyboard::RBracket,
-		sf::Keyboard::Backslash,
-		sf::Keyboard::A,
-		sf::Keyboard::S,
-		sf::Keyboard::D,
-		sf::Keyboard::F,
-		sf::Keyboard::G,
-		sf::Keyboard::H,
-		sf::Keyboard::J,
-		sf::Keyboard::K,
-		sf::Keyboard::L,
-		sf::Keyboard::Semicolon,
-		sf::Keyboard::Quote,
-		sf::Keyboard::Z,
-		sf::Keyboard::X,
-		sf::Keyboard::C,
-		sf::Keyboard::V,
-		sf::Keyboard::B,
-		sf::Keyboard::N,
-		sf::Keyboard::M,
-		sf::Keyboard::Z,
-		sf::Keyboard::Comma,
-		sf::Keyboard::Period,
-		sf::Keyboard::Slash,
-		sf::Keyboard::RShift,
-		sf::Keyboard::LControl,
-		sf::Keyboard::LAlt,
-		sf::Keyboard::Space,
-		sf::Keyboard::RAlt,
-		sf::Keyboard::RControl,
-		sf::Keyboard::Left,
-		sf::Keyboard::Down,
-		sf::Keyboard::Up,
-		sf::Keyboard::Right,
-		sf::Keyboard::RShift
+		sf::Keyboard::Num1, //0
+		sf::Keyboard::Num2, //1
+		sf::Keyboard::Num3, //2
+		sf::Keyboard::Num4,	//3
+		sf::Keyboard::Num5, //4
+		sf::Keyboard::Num6,	//5
+		sf::Keyboard::Num7,	//6
+		sf::Keyboard::Num8,	//7
+		sf::Keyboard::Num9,	//8
+		sf::Keyboard::Num0,	//9
+		sf::Keyboard::Hyphen,	//10
+		sf::Keyboard::Equal,	//11
+		sf::Keyboard::Backspace,//12
+		sf::Keyboard::Q,	//13
+		sf::Keyboard::W,	//14
+		sf::Keyboard::E,	//15
+		sf::Keyboard::R,	//16
+		sf::Keyboard::T,	//17
+		sf::Keyboard::Y,	//18
+		sf::Keyboard::U,	//19
+		sf::Keyboard::I,	//20
+		sf::Keyboard::O,	//21
+		sf::Keyboard::P,	//22
+		sf::Keyboard::LBracket,	//23
+		sf::Keyboard::RBracket,	//24
+		sf::Keyboard::Backslash,//25
+		sf::Keyboard::A,	//26
+		sf::Keyboard::S,	//27
+		sf::Keyboard::D,	//28
+		sf::Keyboard::F,	//29
+		sf::Keyboard::G,	//30
+		sf::Keyboard::H,	//31
+		sf::Keyboard::J,	//32
+		sf::Keyboard::K,	//33
+		sf::Keyboard::L,	//34
+		sf::Keyboard::Semicolon,//35
+		sf::Keyboard::Quote,	//36
+		sf::Keyboard::Enter,	//37
+		sf::Keyboard::Z,	//38
+		sf::Keyboard::X,	//39
+		sf::Keyboard::C,	//40
+		sf::Keyboard::V,	//41
+		sf::Keyboard::B,	//42
+		sf::Keyboard::N,	//43
+		sf::Keyboard::M,	//44
+		sf::Keyboard::Comma,	//45
+		sf::Keyboard::Period,	//46
+		sf::Keyboard::Slash,	//47
+		sf::Keyboard::RShift,	//48
+		sf::Keyboard::LControl,	//49
+		sf::Keyboard::LAlt,		//50
+		sf::Keyboard::Space,	//51
+		sf::Keyboard::RAlt,		//52
+		sf::Keyboard::RControl,	//53
+		sf::Keyboard::Left,		//54
+		sf::Keyboard::Down,		//55
+		sf::Keyboard::Up,		//56
+		sf::Keyboard::Right,	//57
+		sf::Keyboard::RShift	//58
 	};
 
 	for (std::size_t i = 0; i < 13; i++)
@@ -377,42 +358,72 @@ void OPTIONS::set_text()
 	control_keys[0].text.setString("flush");
 	control_keys[0].text.setCharacterSize(yy(30));
 	control_keys[0].text.setPosition(keyboard.getPosition().x - 2 * control_keys[0].text.getGlobalBounds().width, keyboard.getPosition().y);
-	control_keys[0].ptr = nullptr;
 
 	control_keys[1].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	control_keys[1].text.setString("rotate");
 	control_keys[1].text.setCharacterSize(yy(30));
 	control_keys[1].text.setPosition(keyboard.getPosition().x + 1.1f * control_keys[1].text.getGlobalBounds().width, keyboard.getPosition().y + 1.2f * keyboard.getGlobalBounds().height);
-	control_keys[1].ptr = nullptr;
 
 	control_keys[2].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	control_keys[2].text.setString("fast drop");
 	control_keys[2].text.setCharacterSize(yy(30));
 	control_keys[2].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width + xx(100), keyboard.getPosition().y + 0.5f * keyboard.getGlobalBounds().height);
-	control_keys[2].ptr = nullptr;
 
 	control_keys[3].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	control_keys[3].text.setString("move left");
 	control_keys[3].text.setCharacterSize(yy(30));
 	control_keys[3].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 2.0f * control_keys[3].text.getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
-	control_keys[3].ptr = nullptr;
 
 	control_keys[4].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	control_keys[4].text.setString("move right");
 	control_keys[4].text.setCharacterSize(yy(30));
 	control_keys[4].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 0.2f * control_keys[4].text.getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
-	control_keys[4].ptr = nullptr;
-
-	control_keys[5].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
-	control_keys[5].text.setString(" ");
-	control_keys[5].text.setCharacterSize(yy(30));
-	control_keys[5].text.setFillColor(sf::Color::Transparent);
-	control_keys[5].text.setPosition(0,0);
-	control_keys[5].ptr = nullptr;
 }
 
-void OPTIONS::draw_lines(const sf::RectangleShape& start, const sf::RectangleShape& end, sf::Vertex* vertex, const sf::Color& color, int type, float thickness)
+void OPTIONS::linkControlKeys()
 {
+	for (size_t i = 0, max = sizeof control_keys / sizeof(ControlKey); i < max; i++)
+	{
+		sf::RectangleShape b;
+		b.setPosition(control_keys[i].text.getPosition());
+		b.setSize(sf::Vector2f(control_keys[i].text.getGlobalBounds().width, control_keys[i].text.getGlobalBounds().height));
+
+		switch (MovementSettings::KEY_ACTION(i))
+		{
+		case MovementSettings::KEY_ACTION::FLUSH:
+			if(control_keys[i].ptr != nullptr)
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 1, 3.0f);
+			break;
+
+		case MovementSettings::KEY_ACTION::ROTATE:
+			if (control_keys[i].ptr != nullptr)
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color(0, 255, 0), 4, 3.0f);
+			break;
+
+		case MovementSettings::KEY_ACTION::FAST_DROP:
+			if (control_keys[i].ptr != nullptr)
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 3, 3.0f);
+			break;
+
+		case MovementSettings::KEY_ACTION::MOVE_LEFT:
+			if (control_keys[i].ptr != nullptr)
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			break;
+
+		case MovementSettings::KEY_ACTION::MOVE_RIGHT:
+			if (control_keys[i].ptr != nullptr)
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void OPTIONS::linkABusing2lines(const sf::RectangleShape& A, const sf::RectangleShape& B, sf::Vertex* vertex, const sf::Color& color, int type, float thickness)
+{
+#define start A
+#define end B
 	sf::Vertex v[4];
 
 	int x = 0;
@@ -642,7 +653,6 @@ void OPTIONS::startUp()
 		sl_music->add(std::move(std::to_string(i)));
 	
 	
-
 	ddl_vm = window->GUI_.CreateDropDownList(0, 0, 300, 25, 1, "Resolution");
 	ddl_vm->setRelativePosition(gui::E_ANCHOR::A_CENTER_TOP, -150, 25);
 	ddl_vm->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
@@ -665,9 +675,8 @@ void OPTIONS::startUp()
 	}
 
 	for (int i = 0, max = vm.size(); i < max; i++)
-	{
 		ddl_vm->add((std::to_string(vm[i].width) + "x" + std::to_string(vm[i].height) + "x" + std::to_string(vm[i].bitsPerPixel)).c_str(), i);
-	}
+	
 
 	show_gui(false);
 	window->GUI_.clear();
@@ -677,11 +686,30 @@ void OPTIONS::startUp()
 	keyboard.setPosition(window->getSize().x / 2 - keyboard.getGlobalBounds().width / 2, window->getSize().y / 2);
 	fill_key_triggers();
 	set_text();
+	key_chosen = -1;
 
-	ctx = &control_keys[5].text;
+	// AVE TODO Load control keys
+	if (0)
+	{
 
-	for (size_t i = 0; i < 5; i++)
-		ms.control_keys[i] = -1;
+	}
+	// if loading have failed
+	else
+	{
+		ms.control_keys[MovementSettings::FLUSH] = sf::Keyboard::Z;
+		ms.control_keys[MovementSettings::ROTATE] = sf::Keyboard::Space;
+		ms.control_keys[MovementSettings::FAST_DROP] = sf::Keyboard::Down;
+		ms.control_keys[MovementSettings::MOVE_LEFT] = sf::Keyboard::Left;
+		ms.control_keys[MovementSettings::MOVE_RIGHT] = sf::Keyboard::Right;
+
+		control_keys[MovementSettings::FLUSH].ptr		= &k[38]; //38z
+		control_keys[MovementSettings::ROTATE].ptr		= &k[51]; //space
+		control_keys[MovementSettings::FAST_DROP].ptr	= &k[55]; //down
+		control_keys[MovementSettings::MOVE_LEFT].ptr	= &k[54]; //left;
+		control_keys[MovementSettings::MOVE_RIGHT].ptr  = &k[57]; //right;
+	}
+
+	linkControlKeys();
 }
 
 
