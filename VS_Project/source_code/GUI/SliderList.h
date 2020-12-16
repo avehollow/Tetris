@@ -17,7 +17,7 @@ namespace gui
 		// Inherited via Drawable
 		inline virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-		inline int getCurrentIndex()const;
+		const char* getCurrentValue() const;
 
 		void add(const char* text);	
 		void add(std::string&& text);
@@ -34,9 +34,13 @@ namespace gui
 		void setTexture(const sf::Texture&);
 		void setOutlineColor(const sf::Color&);
 		void setOutlineThickness(float thickness);
-		
+		void setCurrentValue(std::size_t idx);
+		const sf::Vector2f& getGlobalPosition() const;
+		const sf::Vector2f& getSize() const;
+
 	private:
 		sf::RectangleShape slider;
+		sf::RectangleShape collision;
 		sf::CircleShape button;
 
 		sf::Text text;
@@ -51,24 +55,32 @@ namespace gui
 		float psY;
 
 		float psR;
-
 		float psF;
-
-		int idx;
 		
-
+		int idx;
+		bool bHoveover;
 	};
 	
 	inline void gui::SliderList::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(slider);
+		target.draw(collision);
 		target.draw(button);
 		target.draw(text);
 	}
 
-	inline int SliderList::getCurrentIndex() const
+	inline const sf::Vector2f& SliderList::getGlobalPosition() const
 	{
-		return idx;
+		return slider.getPosition();
+	}
+	inline const sf::Vector2f& SliderList::getSize() const
+	{
+		return slider.getSize();
+	}
+	
+	inline const char* SliderList::getCurrentValue() const
+	{
+		return strings[idx].c_str();
 	}
 
 }

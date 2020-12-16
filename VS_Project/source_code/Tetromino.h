@@ -1,7 +1,7 @@
 #pragma once
 #include "Figure.h"
 #include "WORLD.h"
-#include "ScreenFlipbookManager.h"
+#include "Flipbook/ScreenFlipbookManager.h"
 #include "Settings.h"
 
 class Tetromino: public WORLD

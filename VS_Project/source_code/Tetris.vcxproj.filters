@@ -49,21 +49,6 @@
     <ClCompile Include="assetmanager.cpp">
       <Filter>AM</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="DropDownList.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.CPP">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="SliderList.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="TextBox.cpp">
-      <Filter>GUI</Filter>
-    </ClCompile>
     <ClCompile Include="GameWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
@@ -85,11 +70,26 @@
     <ClCompile Include="Figure.cpp" />
     <ClCompile Include="Tetromino.cpp" />
     <ClCompile Include="WORLD.cpp" />
-    <ClCompile Include="ScreenFlipbookManager.cpp">
-      <Filter>Flipbook</Filter>
-    </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Flipbook\ScreenFlipbookManager.cpp">
+      <Filter>Flipbook</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Button.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\DropDownList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUI.CPP">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\SliderList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\TextBox.cpp">
+      <Filter>GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,29 +102,11 @@
     <ClInclude Include="assetmanager.h">
       <Filter>AM</Filter>
     </ClInclude>
-    <ClInclude Include="TextBox.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="DropDownList.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="SliderList.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
     <ClInclude Include="GameWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="STATE.h">
       <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="SYMBOLS.H">
-      <Filter>Other</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>State</Filter>
@@ -141,14 +123,29 @@
     <ClInclude Include="Figure.h" />
     <ClInclude Include="Tetromino.h" />
     <ClInclude Include="WORLD.h" />
-    <ClInclude Include="ScreenFlipbookManager.h">
-      <Filter>Flipbook</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Flipbook\ScreenFlipbookManager.h">
+      <Filter>Flipbook</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Button.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\DropDownList.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUI.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\SliderList.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\TextBox.h">
+      <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

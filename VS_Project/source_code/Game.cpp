@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Game.h"
-#include "Button.h"
-#include "TextBox.h"
+#include "GUI/Button.h"
+#include "GUI/TextBox.h"
 #include "Options.h"
 
 GAME game;

@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "Options.h"
-#include "DropDownList.h"
-#include "SliderList.h"
+#include "GUI/DropDownList.h"
+#include "GUI/SliderList.h"
 #include "Resource.h"
 
+// AVE LOOK a better approach is the inline function
 #define xx(p) ((p) * ppX)
 #define yy(p) ((p) * ppY)
 
@@ -159,6 +160,8 @@ void OPTIONS::render() const
 	for (size_t i = 0, max = sizeof control_keys / sizeof(ControlKey); i < max; i++)
 		window->draw(control_keys[i].text);
 	
+	window->draw(tx_mv);
+	window->draw(tx_sv);
 }
 
 
@@ -388,6 +391,18 @@ void OPTIONS::set_text()
 	control_keys[4].text.setString("move right");
 	control_keys[4].text.setCharacterSize(yy(30));
 	control_keys[4].text.setPosition(keyboard.getPosition().x + keyboard.getGlobalBounds().width - 0.2f * control_keys[4].text.getGlobalBounds().width, keyboard.getPosition().y - 0.3f * keyboard.getGlobalBounds().height);
+
+	tx_sv.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	tx_sv.setString("Sound Volume");
+	tx_sv.setCharacterSize(yy(30));
+	tx_sv.setPosition(sl_sound->getGlobalPosition().x + sl_sound->getSize().x / 2.0f - tx_sv.getGlobalBounds().width / 2.0f,
+		sl_sound->getGlobalPosition().y - yy(60));
+
+	tx_mv.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
+	tx_mv.setString("Music Volume");
+	tx_mv.setCharacterSize(yy(30));
+	tx_mv.setPosition(sl_music->getGlobalPosition().x + sl_music->getSize().x / 2.0f - tx_mv.getGlobalBounds().width / 2.0f,
+		sl_music->getGlobalPosition().y - yy(60));
 }
 
 void OPTIONS::linkControlKeys()
@@ -654,13 +669,23 @@ void OPTIONS::startUp()
 	b_Applay->setFillColor(sf::Color(180, 180, 180));
 
 	sl_music = window->GUI_.CreateSliderList(0,0, 400);
-	sl_music->setRelativePosition(gui::E_ANCHOR::A_TOP_LEFT, 100, 300);
+	sl_music->setRelativePosition(gui::E_ANCHOR::A_TOP_LEFT, 100, 200);
 	sl_music->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
-	sl_music->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);
+	sl_music->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);	
 
+	sl_sound = window->GUI_.CreateSliderList(0,0, 400);
+	sl_sound->setRelativePosition(gui::E_ANCHOR::A_TOP_LEFT, 100, 100);
+	sl_sound->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
+	sl_sound->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);
 
-	for (int i = 1; i <= 100; i++)
+	for (int i = 0; i <= 100; i++)
+	{
 		sl_music->add(std::move(std::to_string(i)));
+		sl_sound->add(std::move(std::to_string(i)));
+	}
+	sl_music->setCurrentValue(100);
+	sl_sound->setCurrentValue(100);
+	
 	
 	
 	ddl_vm = window->GUI_.CreateDropDownList(0, 0, 300, 25, 1, "Resolution");
@@ -744,6 +769,7 @@ void OPTIONS::show_gui(bool show)
 		window->GUI_.add(b_Applay);
 		window->GUI_.add(ddl_vm);
 		window->GUI_.add(sl_music);
+		window->GUI_.add(sl_sound);
 	}
 	else
 	{
@@ -752,6 +778,7 @@ void OPTIONS::show_gui(bool show)
 		window->GUI_.erase(b_Applay);
 		window->GUI_.erase(ddl_vm);
 		window->GUI_.erase(sl_music);
+		window->GUI_.erase(sl_sound);
 	}
 }
 
@@ -759,6 +786,14 @@ std::byte OPTIONS::saveSettings() const
 {
 	std::byte result{0b0000'0000};
 	std::ofstream output_data("movement.java", std::ios::binary | std::ios::out);
+
+	if (output_data.is_open())
+		output_data.write((const char*)&ms, sizeof(Settings::Movement));
+	else
+		result |= std::byte{ 0b1 };
+
+	output_data.close();
+	output_data.open("settings.java", std::ios::binary | std::ios::out);
 
 	if (output_data.is_open())
 		output_data.write((const char*)&ms, sizeof(Settings::Movement));

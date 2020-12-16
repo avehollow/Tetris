@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../pch.h"
 #include "SliderList.h"
 
 namespace gui
@@ -16,7 +16,14 @@ namespace gui
 	{
 		slider.setPosition(posX, posY);
 		slider.setSize(sf::Vector2f(sizeX, sizeY));
-		slider.setFillColor(sf::Color(44, 44, 44));
+		slider.setFillColor(sf::Color(44, 44, 44));	
+		
+		collision.setPosition(posX, posY - radius);
+		collision.setSize(sf::Vector2f(sizeX, radius * 2.0f));
+		collision.setFillColor(sf::Color::Transparent);
+		collision.setOutlineColor(sf::Color::Red);
+		collision.setOutlineThickness(-2);
+		
 		
 		button.setRadius(radius);
 		button.setOrigin(radius, radius);
@@ -29,6 +36,7 @@ namespace gui
 		text.setPosition(posX + sizeX + radius + 1, button.getPosition().y - text.getGlobalBounds().height / 2);
 		
 		this->depth = depth;
+		bHoveover = false;
 	}
 
 	SliderList::~SliderList()
@@ -37,98 +45,34 @@ namespace gui
 
 	bool SliderList::handleEvent(const sf::Event& event)
 	{
-		
-		static bool hove_over = false;
-		static bool pressed   = false;
-	
-		static bool ki = false;	
+		bHoveover = false;
 
+		sf::Vector2i vi = window->mapCoordsToPixel(sf::Vector2f(sf::Mouse::getPosition(*window)));
 		if (handled_event)
 		{
 			button.setFillColor(idle_color);
-			return hove_over = pressed = ki = false;
+			// return  bHoveover = false;
 		}
-		
-		int dt_x = 0;
-		int dt_y = 0;
-
-		sf::Vector2f pos;
-
-		float length = 0.0f;
-
-		const size_t SIZE = strings.size();
-		const float pos_x = slider.getPosition().x;
-		switch (event.type)
+		else if (collision.getGlobalBounds().contains(sf::Vector2f(vi)))
 		{
-		case sf::Event::MouseButtonPressed:
-			pressed = true;
-			break;
-		case sf::Event::MouseMoved:
-			pos.x = fabs(sf::Mouse::getPosition(*window).x - button.getPosition().x);
-			pos.y = fabs(sf::Mouse::getPosition(*window).y - button.getPosition().y);
-			length = sqrtf((pos.x * pos.x) + (pos.y * pos.y)); // length of vector
-
-			if (length <= button.getRadius())
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 			{
+				button.setPosition(vi.x, button.getPosition().y);
 				button.setFillColor(hoveover_color);
-				hove_over = true;
-			}
-			else
-			{
-				button.setFillColor(idle_color);
-				hove_over = false;
-			}
+				bHoveover = true;
 
-			getDeltaMouse(&dt_x, &dt_y);
-			if (ki)
-			{
-				if (dt_x > 50)
-				{
-					button.setPosition(pos_x + slider.getSize().x, button.getPosition().y);
-					ki = false;
-					idx = SIZE - 1;
-					text.setString(strings[idx]);
-					break;
-				}
-				if (dt_x < -50)
-				{
-					button.setPosition(pos_x, button.getPosition().y);	
-					idx = 0;
-					text.setString(strings[idx]);
-					ki = false;
-					break;
-				}
-				
-			}
-
-			if (pressed && hove_over)
-			{
-				ki = true;
-
-				float p = slider.getSize().x / ((float)SIZE - 1);
-				
-				button.setPosition(sf::Mouse::getPosition(*window).x, button.getPosition().y);
-			
-				
-				if (button.getPosition().x > pos_x + slider.getSize().x)
-					button.setPosition(pos_x + slider.getSize().x, button.getPosition().y);
-	
-				else if (button.getPosition().x < pos_x )
-					button.setPosition(pos_x, button.getPosition().y);
-				
-				idx = (button.getPosition().x - pos_x + (p / 2)) / p;
+				float p = slider.getSize().x / ((float)strings.size() - 1);
+				idx = (button.getPosition().x - slider.getPosition().x + (p / 2)) / p;
 				text.setString(strings[idx]);
 			}
-
-			break;
-		default:
-			pressed = false;
-			ki = false;
-			
-			break;
+		}
+		else
+		{
+			button.setFillColor(idle_color);
+			//bHoveover = false;
 		}
 
-		return hove_over;
+		return bHoveover;
 	}
 
 	void SliderList::add(const char* text)
@@ -187,6 +131,8 @@ namespace gui
 		slider.setPosition(x, y);
 		button.setPosition(x, y + ((int)slider.getSize().y / 2));
 		this->text.setPosition(x + slider.getSize().x + button.getRadius() + 1, slider.getPosition().y - (this->text.getGlobalBounds().height / 2) - 1);
+
+		collision.setPosition(x, y - button.getRadius());
 	}
 
 	void SliderList::setRelativePosition(E_ANCHOR anchor, float x, float y)
@@ -217,13 +163,23 @@ namespace gui
 		button.setOutlineThickness(thickness);
 	}
 
+	void SliderList::setCurrentValue(std::size_t idx)
+	{
+		if (idx < strings.size())
+		{
+			this->idx = idx;
+			text.setString(strings[idx]);
+			button.setPosition(slider.getPosition().x + slider.getSize().x * idx / (float)strings.size(), button.getPosition().y);
+		}
+	}
+
 	void SliderList::onRecreateWindow()
 	{
 		slider.setSize(sf::Vector2f(window->getSize().x * psX, window->getSize().y * psY));
 		button.setRadius(window->getSize().y * psR);
 		button.setOrigin(button.getRadius(), button.getRadius());
 		text.setCharacterSize(window->getSize().y * psF);
-		
+		collision.setSize(sf::Vector2f(slider.getSize().x, button.getRadius() * 2.0f ));
 		setPosition(window->getSize().x * ppX, window->getSize().y * ppY);
 	}
 

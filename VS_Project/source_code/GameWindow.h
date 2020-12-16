@@ -1,5 +1,5 @@
 #pragma once
-#include "GUI.h"
+#include "GUI/GUI.h"
 
 class GameWindow final: public sf::RenderWindow
 {

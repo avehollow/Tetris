@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "MainMenu.h"
-#include "Button.h"
+#include "GUI/Button.h"
 #include "Options.h"
 #include "Game.h"
 

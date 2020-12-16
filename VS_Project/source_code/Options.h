@@ -64,10 +64,14 @@ private:
 
 private:
 	std::vector<sf::VideoMode> vm;
-	
+
+	sf::Text tx_mv;
+	sf::Text tx_sv;
+
 	sf::Vertex lines[40];
 	std::vector<KeyTrigger> k;
 	ControlKey control_keys[5];
+
 
 	Settings::Graphics gs;
 	Settings::Movement ms;
@@ -76,6 +80,7 @@ private:
 	gui::Button* b_Back;
 	gui::DropDownList* ddl_vm;
 	gui::SliderList* sl_music;
+	gui::SliderList* sl_sound;
 
 	sf::Sprite keyboard;
 

@@ -116,6 +116,12 @@ void System::Render()
 	wnd->clear();
 }
 
+void System::AdjustText()
+{
+	r_fps.setPosition(wnd->getSize().x * 0.90f, wnd->getSize().y * 0.0f);
+	u_fps.setPosition(wnd->getSize().x * 0.90f, wnd->getSize().y * 0.025f);
+}
+
 
 
 void System::Run()
@@ -156,7 +162,7 @@ void System::Run()
 		u_fps.setString(sf::String("UFPS: " + std::to_string((int)uFps)));
 		r_fps.setString(sf::String("RFPS: " + std::to_string((int)rFps)));
 
-
+		AdjustText();
 		this->HandleInput();
 		while (TSLU >= TIME_PER_FRAME)
 		{

@@ -285,12 +285,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="assetmanager.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="DropDownList.cpp" />
     <ClCompile Include="Figure.cpp" />
+    <ClCompile Include="Flipbook\ScreenFlipbookManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameWindow.cpp" />
-    <ClCompile Include="GUI.CPP" />
+    <ClCompile Include="GUI\Button.cpp" />
+    <ClCompile Include="GUI\DropDownList.cpp" />
+    <ClCompile Include="GUI\GUI.CPP" />
+    <ClCompile Include="GUI\SliderList.cpp" />
+    <ClCompile Include="GUI\TextBox.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
@@ -307,36 +310,32 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='xp|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PDA.cpp" />
-    <ClCompile Include="ScreenFlipbookManager.cpp" />
     <ClCompile Include="Settings.cpp" />
-    <ClCompile Include="SliderList.cpp" />
     <ClCompile Include="STATE.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Tetromino.cpp" />
-    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="WORLD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assetmanager.h" />
-    <ClInclude Include="Button.h" />
-    <ClInclude Include="DropDownList.h" />
     <ClInclude Include="Figure.h" />
+    <ClInclude Include="Flipbook\ScreenFlipbookManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameWindow.h" />
-    <ClInclude Include="GUI.h" />
+    <ClInclude Include="GUI\Button.h" />
+    <ClInclude Include="GUI\DropDownList.h" />
+    <ClInclude Include="GUI\GUI.h" />
+    <ClInclude Include="GUI\SliderList.h" />
+    <ClInclude Include="GUI\TextBox.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PDA.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="ScreenFlipbookManager.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="SliderList.h" />
     <ClInclude Include="STATE.h" />
-    <ClInclude Include="SYMBOLS.H" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Tetromino.h" />
-    <ClInclude Include="TextBox.h" />
     <ClInclude Include="WORLD.h" />
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,7 @@ private:
 	void HandleInput();
 	void Update(const long long& teta_time);
 	void Render();
-
+	void AdjustText();
 private:
 	sf::Text r_fps;
 	sf::Text u_fps;
