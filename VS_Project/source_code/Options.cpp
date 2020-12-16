@@ -30,35 +30,44 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 	}
 	else if (b_Applay->Pressed())
 	{
+		if ( ddl_vm->curr_value			   != -1				  &&
+			 vm[ddl_vm->curr_value].width  != window->getSize().x &&
+			 vm[ddl_vm->curr_value].height != window->getSize().y)
+		{
 #ifdef FS
-		window->create(vm[ddl_vm->curr_value], "Tetris", sf::Style::Fullscreen);
+			window->create(vm[ddl_vm->curr_value], "Tetris", sf::Style::Fullscreen);
 #else
-		window->create(vm[ddl_vm->curr_value], "Tetris");
+			window->create(vm[ddl_vm->curr_value], "Tetris");
 #endif // FS
 
-		
-		HCURSOR hCursor = LoadCursor(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_CURSOR));
-		if (hCursor != NULL)
-		{
-			SetClassLong(
-				window->getSystemHandle(),							
-				GCL_HCURSOR,									   
-				(LONG)hCursor										
-			);
-		}
-		
-		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_ICON));
-		if (hIcon != NULL)
-		{
-			SetClassLong(
-				window->getSystemHandle(),						
-				GCL_HICON,										
-				(LONG)hIcon										
-			);
-		}
 
+			HCURSOR hCursor = LoadCursor(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_CURSOR));
+			if (hCursor != NULL)
+			{
+				SetClassLong(
+					window->getSystemHandle(),
+					GCL_HCURSOR,
+					(LONG)hCursor
+				);
+			}
+
+			HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ID_ICON));
+			if (hIcon != NULL)
+			{
+				SetClassLong(
+					window->getSystemHandle(),
+					GCL_HICON,
+					(LONG)hIcon
+				);
+			}
+
+		} // if
+
+		saveSettings();
 	}
-
+	
+	/// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// ///
+	
 	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	{
 		sf::Vector2i vi = window->mapCoordsToPixel(sf::Vector2f(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y));
@@ -91,6 +100,7 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 						if (control_keys[k].ptr == &i)
 						{
 							control_keys[k].ptr = nullptr;
+							ms.control_keys[k] = sf::Keyboard::Unknown;
 							erase_lines(lines + k * 8, 8);
 
 						}
@@ -362,7 +372,7 @@ void OPTIONS::set_text()
 	control_keys[1].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	control_keys[1].text.setString("rotate");
 	control_keys[1].text.setCharacterSize(yy(30));
-	control_keys[1].text.setPosition(keyboard.getPosition().x + 1.1f * control_keys[1].text.getGlobalBounds().width, keyboard.getPosition().y + 1.2f * keyboard.getGlobalBounds().height);
+	control_keys[1].text.setPosition(keyboard.getPosition().x + 1.15f * control_keys[1].text.getGlobalBounds().width, keyboard.getPosition().y + 1.2f * keyboard.getGlobalBounds().height);
 
 	control_keys[2].text.setFont(AM->font[AM_::E_FONT::F_NINEPIN]);
 	control_keys[2].text.setString("fast drop");
@@ -388,29 +398,29 @@ void OPTIONS::linkControlKeys()
 		b.setPosition(control_keys[i].text.getPosition());
 		b.setSize(sf::Vector2f(control_keys[i].text.getGlobalBounds().width, control_keys[i].text.getGlobalBounds().height));
 
-		switch (MovementSettings::KEY_ACTION(i))
+		switch (Settings::KEY_ACTION(i))
 		{
-		case MovementSettings::KEY_ACTION::FLUSH:
+		case Settings::KEY_ACTION::FLUSH:
 			if(control_keys[i].ptr != nullptr)
 				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 1, 3.0f);
 			break;
 
-		case MovementSettings::KEY_ACTION::ROTATE:
+		case Settings::KEY_ACTION::ROTATE:
 			if (control_keys[i].ptr != nullptr)
 				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color(0, 255, 0), 4, 3.0f);
 			break;
 
-		case MovementSettings::KEY_ACTION::FAST_DROP:
+		case Settings::KEY_ACTION::FAST_DROP:
 			if (control_keys[i].ptr != nullptr)
 				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 3, 3.0f);
 			break;
 
-		case MovementSettings::KEY_ACTION::MOVE_LEFT:
+		case Settings::KEY_ACTION::MOVE_LEFT:
 			if (control_keys[i].ptr != nullptr)
 				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
 			break;
 
-		case MovementSettings::KEY_ACTION::MOVE_RIGHT:
+		case Settings::KEY_ACTION::MOVE_RIGHT:
 			if (control_keys[i].ptr != nullptr)
 				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
 			break;
@@ -677,6 +687,7 @@ void OPTIONS::startUp()
 	for (int i = 0, max = vm.size(); i < max; i++)
 		ddl_vm->add((std::to_string(vm[i].width) + "x" + std::to_string(vm[i].height) + "x" + std::to_string(vm[i].bitsPerPixel)).c_str(), i);
 	
+	ddl_vm->curr_value = -1;
 
 	show_gui(false);
 	window->GUI_.clear();
@@ -689,24 +700,35 @@ void OPTIONS::startUp()
 	key_chosen = -1;
 
 	// AVE TODO Load control keys
-	if (0)
+	
+	if (std::to_integer<int>(loadSettings() & std::byte{0b01}) )
 	{
+		ms.control_keys[Settings::FLUSH] = sf::Keyboard::Z;
+		ms.control_keys[Settings::ROTATE] = sf::Keyboard::Space;
+		ms.control_keys[Settings::FAST_DROP] = sf::Keyboard::Down;
+		ms.control_keys[Settings::MOVE_LEFT] = sf::Keyboard::Left;
+		ms.control_keys[Settings::MOVE_RIGHT] = sf::Keyboard::Right;
 
+		control_keys[Settings::FLUSH].ptr = &k[38]; //38z
+		control_keys[Settings::ROTATE].ptr = &k[51]; //space
+		control_keys[Settings::FAST_DROP].ptr = &k[55]; //down
+		control_keys[Settings::MOVE_LEFT].ptr = &k[54]; //left;
+		control_keys[Settings::MOVE_RIGHT].ptr = &k[57]; //right;
 	}
-	// if loading have failed
 	else
 	{
-		ms.control_keys[MovementSettings::FLUSH] = sf::Keyboard::Z;
-		ms.control_keys[MovementSettings::ROTATE] = sf::Keyboard::Space;
-		ms.control_keys[MovementSettings::FAST_DROP] = sf::Keyboard::Down;
-		ms.control_keys[MovementSettings::MOVE_LEFT] = sf::Keyboard::Left;
-		ms.control_keys[MovementSettings::MOVE_RIGHT] = sf::Keyboard::Right;
-
-		control_keys[MovementSettings::FLUSH].ptr		= &k[38]; //38z
-		control_keys[MovementSettings::ROTATE].ptr		= &k[51]; //space
-		control_keys[MovementSettings::FAST_DROP].ptr	= &k[55]; //down
-		control_keys[MovementSettings::MOVE_LEFT].ptr	= &k[54]; //left;
-		control_keys[MovementSettings::MOVE_RIGHT].ptr  = &k[57]; //right;
+		
+		for (auto& key : k)
+		{
+			for (size_t k = 0, max = sizeof control_keys / sizeof(ControlKey); k < max; k++)
+			{
+				if (key.code == ms.control_keys[k])
+				{
+					control_keys[k].ptr = &key;
+				}
+			}
+		}
+	
 	}
 
 	linkControlKeys();
@@ -731,6 +753,35 @@ void OPTIONS::show_gui(bool show)
 		window->GUI_.erase(ddl_vm);
 		window->GUI_.erase(sl_music);
 	}
+}
+
+std::byte OPTIONS::saveSettings() const
+{
+	std::byte result{0b0000'0000};
+	std::ofstream output_data("movement.java", std::ios::binary | std::ios::out);
+
+	if (output_data.is_open())
+		output_data.write((const char*)&ms, sizeof(Settings::Movement));
+	else
+		result |= std::byte{ 0b1 };
+
+	
+	return result;
+}
+
+std::byte OPTIONS::loadSettings()
+{
+
+	std::byte result{ 0b0000'0000 };
+	std::ifstream input_data("movement.java", std::ios::binary | std::ios::in);
+
+	if (input_data.is_open())
+		input_data.read((char*)&ms, sizeof(Settings::Movement));
+	else
+		result |= std::byte{ 0b1 };
+
+
+	return result;
 }
 
 

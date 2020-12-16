@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Tetromino.h"
 
-
 // > 100
 #define SCORE_FACTOR 300
 
@@ -185,6 +184,11 @@ void Tetromino::onCreate()
 	update_placeholder();
 
 	SAM.OnCreate();
+}
+
+void Tetromino::setMovement(const Settings::Movement* ms)
+{
+	memcpy(movement.control_keys, ms->control_keys, sizeof(Settings::Movement));
 }
 
 void Tetromino::update_score(size_t pointsToAdd)
@@ -431,33 +435,47 @@ void Tetromino::standard_input(const sf::Event& event)
 {
 	//AVE LOOK Do not work for different fps
 
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left && !collision_with_edges(-1, 0, &figure) && !collision_with_cubes(-1, 0, &figure))
+		if (event.type == sf::Event::KeyPressed && 
+			event.key.code == movement.control_keys[Settings::MOVE_LEFT] && 
+			!collision_with_edges(-1, 0, &figure) && 
+			!collision_with_cubes(-1, 0, &figure))
 		{
 			figure.move(-1, 0);
 		}
-		else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Right && !collision_with_edges(1, 0, &figure) && !collision_with_cubes(1, 0, &figure))
+		else if (event.type == sf::Event::KeyPressed && 
+			event.key.code == movement.control_keys[Settings::MOVE_RIGHT] &&
+			!collision_with_edges(1, 0, &figure) &&
+			!collision_with_cubes(1, 0, &figure))
 		{
 			figure.move(1, 0);
 		}
 
-		else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up && !collision_with_edges(0, -1, &figure) && !collision_with_cubes(0, -1, &figure))
+		else if (event.type == sf::Event::KeyPressed &&
+			event.key.code == sf::Keyboard::Up && 
+			!collision_with_edges(0, -1, &figure) &&
+			!collision_with_cubes(0, -1, &figure))
 		{
 			figure.move(0, -1);
 		}
-		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Z)
+		else if (event.type == sf::Event::KeyReleased && 
+			event.key.code == movement.control_keys[Settings::FLUSH])
 		{
 			figure.setPosition(place_holder);
 
 			tick(0.0f);
-			update_score(500);
+			update_score(300);
 		}
-		else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down && !collision_with_edges(0, 1, &figure) && !collision_with_cubes(0, 1, &figure))
+		else if (event.type == sf::Event::KeyPressed && 
+			event.key.code == movement.control_keys[Settings::FAST_DROP] &&
+			!collision_with_edges(0, 1, &figure) &&
+			!collision_with_cubes(0, 1, &figure))
 		{
 			figure.move(0, 1);
 			update_score(SCORE_FACTOR * 0.01);
 			shift_time = 0;
 		}
-		else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space)
+		else if (event.type == sf::Event::KeyReleased && 
+			event.key.code == movement.control_keys[Settings::ROTATE])
 		{
 			////
 			//   When function WallKick() return false

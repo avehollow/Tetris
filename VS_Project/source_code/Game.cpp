@@ -243,6 +243,7 @@ void GAME::onCreate()
 void GAME::startUp()
 {
 	tetromino.startUp();
+	tetromino.setMovement(options.getMovementSettings());
 	bPause = false;
 	bGameOver = false;
 	window->addOnCreate(this);
@@ -362,9 +363,8 @@ ISTATE* GAME::pause_input(const sf::Event& event)
 		bPause = false;
 		show_pause_menu(false);
 		tetromino.pause();
-		// settings movement and graphics as separate headers.
 
-		options.getMovementSettings();
+		tetromino.setMovement(options.getMovementSettings());
 	}
 	else if (b_Options->Pressed())
 	{

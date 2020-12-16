@@ -2,6 +2,7 @@
 #include "Figure.h"
 #include "WORLD.h"
 #include "ScreenFlipbookManager.h"
+#include "Settings.h"
 
 class Tetromino: public WORLD
 {
@@ -16,6 +17,7 @@ public:
 	int update(const float& tt);
 	void pause();
 	void onCreate();
+	void setMovement(const Settings::Movement* ms);
 private:
 	void play_anim_tetris(const float& tt);
 	void shift_tetris(const float& tt);
@@ -59,6 +61,8 @@ private:
 	std::mt19937 rand_gen;
 
 	std::vector<int> tetris_row;
+
+	Settings::Movement movement;
 
 	std::size_t score;
 	int LEFT_WALL;

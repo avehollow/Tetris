@@ -32,6 +32,9 @@
     <Filter Include="Flipbook">
       <UniqueIdentifier>{7a33c658-82aa-4feb-9c57-f0e21358cb6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{de95de6d-5c2e-4cd1-8559-4a5bed78828b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="System.cpp">
@@ -84,6 +87,9 @@
     <ClCompile Include="WORLD.cpp" />
     <ClCompile Include="ScreenFlipbookManager.cpp">
       <Filter>Flipbook</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

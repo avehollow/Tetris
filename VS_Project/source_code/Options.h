@@ -1,6 +1,7 @@
 #pragma once
 #include "STATE.h"
 #include "WORLD.h"
+#include "Settings.h"
 
 namespace gui
 {
@@ -9,23 +10,6 @@ namespace gui
 	class SliderList;
 }
 
-struct GraphicsSettings
-{
-
-};
-struct MovementSettings
-{
-	enum KEY_ACTION
-	{
-		FLUSH = 0,
-		ROTATE,
-		FAST_DROP,
-		MOVE_LEFT,
-		MOVE_RIGHT
-	};
-	int control_keys[5];
-
-};
 
 class OPTIONS: public ISTATE, public WORLD
 {
@@ -42,11 +26,13 @@ public:
 	virtual void hide() override;
 	virtual void startUp() override;
 
-	const MovementSettings* getMovementSettings() const;
-
+	const Settings::Movement* getMovementSettings() const;
 private:
 	virtual void onCreate() override;
 	void show_gui(bool show);
+
+	std::byte saveSettings() const;
+	std::byte loadSettings();
 
 	void fill_key_triggers();
 	void set_text();
@@ -83,8 +69,8 @@ private:
 	std::vector<KeyTrigger> k;
 	ControlKey control_keys[5];
 
-	GraphicsSettings gs;
-	MovementSettings ms;
+	Settings::Graphics gs;
+	Settings::Movement ms;
 
 	gui::Button* b_Applay;
 	gui::Button* b_Back;
@@ -103,7 +89,7 @@ private:
 };
 
 
-inline const MovementSettings* OPTIONS::getMovementSettings()const
+inline const Settings::Movement* OPTIONS::getMovementSettings()const
 {
 	return &ms;
 }

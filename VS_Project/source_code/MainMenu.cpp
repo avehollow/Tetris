@@ -104,6 +104,7 @@ void MAINMENU::onCreate()
 void MAINMENU::startUp()
 {
 	window->addOnCreate(this);
+	// AVE LOOK options must be before game.startUp(); because options must load graphics and motion settings first
 	options.startUp();
 
 	game.startUp();

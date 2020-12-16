@@ -308,6 +308,7 @@
     </ClCompile>
     <ClCompile Include="PDA.cpp" />
     <ClCompile Include="ScreenFlipbookManager.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="SliderList.cpp" />
     <ClCompile Include="STATE.cpp" />
     <ClCompile Include="System.cpp" />
@@ -329,6 +330,7 @@
     <ClInclude Include="PDA.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenFlipbookManager.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="SliderList.h" />
     <ClInclude Include="STATE.h" />
     <ClInclude Include="SYMBOLS.H" />
