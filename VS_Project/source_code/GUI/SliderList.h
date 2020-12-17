@@ -18,6 +18,7 @@ namespace gui
 		inline virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		const char* getCurrentValue() const;
+		int getCurrentIdx() const;
 
 		void add(const char* text);	
 		void add(std::string&& text);
@@ -44,6 +45,8 @@ namespace gui
 		sf::CircleShape button;
 
 		sf::Text text;
+		// AVE TODO consider implementation of slider list in this way:
+		// each item in the list is a pair (text, certain value)
 		std::vector<std::string> strings;
 		sf::Color idle_color;
 		sf::Color hoveover_color;
@@ -82,6 +85,9 @@ namespace gui
 	{
 		return strings[idx].c_str();
 	}
-
+	inline int SliderList::getCurrentIdx() const
+	{
+		return idx;
+	}
 }
 

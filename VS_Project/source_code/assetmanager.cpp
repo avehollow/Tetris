@@ -109,3 +109,19 @@ AM_::AM_()
 AM_::~AM_()
 {
 }
+
+void AM_::setMusicVolume(std::size_t volume)
+{
+	for (auto& i : music)
+	{
+		i.setVolume(volume);
+	}
+}
+
+void AM_::setSoundVolume(std::size_t volume)
+{
+	for (auto& i : sound)
+	{
+		i.setVolume(volume);
+	}
+}

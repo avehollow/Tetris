@@ -51,7 +51,6 @@ namespace gui
 		if (handled_event)
 		{
 			button.setFillColor(idle_color);
-			// return  bHoveover = false;
 		}
 		else if (collision.getGlobalBounds().contains(sf::Vector2f(vi)))
 		{
@@ -69,7 +68,6 @@ namespace gui
 		else
 		{
 			button.setFillColor(idle_color);
-			//bHoveover = false;
 		}
 
 		return bHoveover;
@@ -129,9 +127,9 @@ namespace gui
 		ppY = y / window->getSize().y;
 
 		slider.setPosition(x, y);
-		button.setPosition(x, y + ((int)slider.getSize().y / 2));
+		button.setPosition(slider.getPosition().x + slider.getSize().x * idx / (float)strings.size(), y + slider.getSize().y / 2.0f);
+		//button.setPosition(x, y + ((int)slider.getSize().y / 2));
 		this->text.setPosition(x + slider.getSize().x + button.getRadius() + 1, slider.getPosition().y - (this->text.getGlobalBounds().height / 2) - 1);
-
 		collision.setPosition(x, y - button.getRadius());
 	}
 

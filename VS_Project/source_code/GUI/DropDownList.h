@@ -25,12 +25,16 @@ namespace gui
 		inline virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 
-		sf::Vector2f	   getGlobalPosition()	 const { return label.getPosition(); }
-		std::string		   getCurrentString()    const { return curr_text.getString(); }
+		sf::Vector2f		getGlobalPosition()	 const { return label.getPosition(); }
+		const std::string&	getCurrentString()   const { return curr_text.getString(); }
+		int					getListSize()		 const { return list.size(); }
 
 		void add(const char* text, int value_ = 0);
 		void add(const std::initializer_list<const char*>& strings, const std::initializer_list<int>& values_ = {0});
+		
 		bool erase(const char* text);
+
+		void setLabelString(const char* string);
 		void setFillColorList(const sf::Color&);
 		void setFillColorBt(const sf::Color&);
 		void setHoveOverColorList(const sf::Color&);
@@ -46,14 +50,13 @@ namespace gui
 		void setStyle(sf::Uint32 style);
 		void setPosition(float x, float y);
 		void setRelativePosition(E_ANCHOR anchor, float x, float y);
-		bool setStringList(const char* oldt, const char* newt);
 		void setOutlineColor(const sf::Color&);
 		void setOutlineThickness(float  thickness);
 		void setTextureList(const sf::Texture&);
 		void setTextureMain(const sf::Texture&);
 		void setTextureBt(const sf::Texture&);
-
-
+		bool setStringList(const char* oldt, const char* newt);
+		// set stringlistvalue ?
 
 		int curr_value;
 	private:

@@ -6,10 +6,14 @@ public:
 	AM_();
 	~AM_();
 
+	void setMusicVolume(std::size_t volume);
+	void setSoundVolume(std::size_t volume);
+public:
 	std::vector<sf::Font>    font;
 	std::vector<sf::Texture> texture;
 	std::vector<sf::Sound>   sound;
 	std::vector<sf::Music>   music;
+
 
 private:
 	std::vector<sf::SoundBuffer> sound_buffer;

@@ -220,6 +220,11 @@ namespace gui
 		return res;
 	}
 
+	void DropDownList::setLabelString(const char* string)
+	{
+		curr_text.setString(string);
+	}
+
 	void DropDownList::setFillColorList(const sf::Color& color)
 	{
 		label.setFillColor(color);

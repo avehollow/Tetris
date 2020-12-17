@@ -146,7 +146,8 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 
 void OPTIONS::update(const float& d)
 {
-
+	AM->setMusicVolume(sl_music->getCurrentIdx());
+	AM->setSoundVolume(sl_sound->getCurrentIdx());
 }
 
 void OPTIONS::render() const
@@ -432,12 +433,20 @@ void OPTIONS::linkControlKeys()
 
 		case Settings::KEY_ACTION::MOVE_LEFT:
 			if (control_keys[i].ptr != nullptr)
-				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			{
+				sf::RectangleShape rec = control_keys[i].ptr->rec;
+				rec.setPosition(rec.getPosition().x, rec.getPosition().y);
+				linkABusing2lines(b, rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			}
 			break;
 
 		case Settings::KEY_ACTION::MOVE_RIGHT:
 			if (control_keys[i].ptr != nullptr)
-				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			{
+				sf::RectangleShape rec = control_keys[i].ptr->rec;
+				rec.setPosition(rec.getPosition().x, rec.getPosition().y);
+				linkABusing2lines(b, rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			}
 			break;
 		default:
 			break;
@@ -650,11 +659,11 @@ void OPTIONS::startUp()
 		lines[i].position = sf::Vector2f(0, 0);
 		lines[i].color = sf::Color::White;
 	}
-	
+
 
 	ppX = window->getSize().x / 1920.0f;
 	ppY = window->getSize().y / 1080.0f;
-	
+
 	b_Back = window->GUI_.CreateButton(0, 0, 247, 86);
 	b_Back->setRelativePosition(gui::E_ANCHOR::A_BOTTOM_RIGHT, 250, 106);
 	b_Back->setTexture(AM->texture[AM_::E_TEXTURE::T_BBACK]);
@@ -668,12 +677,12 @@ void OPTIONS::startUp()
 	b_Applay->setHoveOverColor(sf::Color::White);
 	b_Applay->setFillColor(sf::Color(180, 180, 180));
 
-	sl_music = window->GUI_.CreateSliderList(0,0, 400);
+	sl_music = window->GUI_.CreateSliderList(0, 0, 400);
 	sl_music->setRelativePosition(gui::E_ANCHOR::A_TOP_LEFT, 100, 200);
 	sl_music->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
-	sl_music->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);	
+	sl_music->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);
 
-	sl_sound = window->GUI_.CreateSliderList(0,0, 400);
+	sl_sound = window->GUI_.CreateSliderList(0, 0, 400);
 	sl_sound->setRelativePosition(gui::E_ANCHOR::A_TOP_LEFT, 100, 100);
 	sl_sound->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
 	sl_sound->setTexture(AM->texture[AM_::E_TEXTURE::T_BSPHERE]);
@@ -683,11 +692,12 @@ void OPTIONS::startUp()
 		sl_music->add(std::move(std::to_string(i)));
 		sl_sound->add(std::move(std::to_string(i)));
 	}
-	sl_music->setCurrentValue(100);
-	sl_sound->setCurrentValue(100);
-	
-	
-	
+	sl_music->setCurrentValue(40);
+	sl_sound->setCurrentValue(30);
+
+	AM->setMusicVolume(40);
+	AM->setSoundVolume(30);
+
 	ddl_vm = window->GUI_.CreateDropDownList(0, 0, 300, 25, 1, "Resolution");
 	ddl_vm->setRelativePosition(gui::E_ANCHOR::A_CENTER_TOP, -150, 25);
 	ddl_vm->setFont(AM->font[AM_::E_FONT::F_LARABIEFONTRG]);
@@ -711,7 +721,7 @@ void OPTIONS::startUp()
 
 	for (int i = 0, max = vm.size(); i < max; i++)
 		ddl_vm->add((std::to_string(vm[i].width) + "x" + std::to_string(vm[i].height) + "x" + std::to_string(vm[i].bitsPerPixel)).c_str(), i);
-	
+
 	ddl_vm->curr_value = -1;
 
 	show_gui(false);
@@ -724,36 +734,39 @@ void OPTIONS::startUp()
 	set_text();
 	key_chosen = -1;
 
-	// AVE TODO Load control keys
-	
-	if (std::to_integer<int>(loadSettings() & std::byte{0b01}) )
-	{
-		ms.control_keys[Settings::FLUSH] = sf::Keyboard::Z;
-		ms.control_keys[Settings::ROTATE] = sf::Keyboard::Space;
-		ms.control_keys[Settings::FAST_DROP] = sf::Keyboard::Down;
-		ms.control_keys[Settings::MOVE_LEFT] = sf::Keyboard::Left;
-		ms.control_keys[Settings::MOVE_RIGHT] = sf::Keyboard::Right;
 
-		control_keys[Settings::FLUSH].ptr = &k[38]; //38z
-		control_keys[Settings::ROTATE].ptr = &k[51]; //space
-		control_keys[Settings::FAST_DROP].ptr = &k[55]; //down
-		control_keys[Settings::MOVE_LEFT].ptr = &k[54]; //left;
-		control_keys[Settings::MOVE_RIGHT].ptr = &k[57]; //right;
-	}
-	else
+	ms.control_keys[Settings::FLUSH] = sf::Keyboard::Z;
+	ms.control_keys[Settings::ROTATE] = sf::Keyboard::Space;
+	ms.control_keys[Settings::FAST_DROP] = sf::Keyboard::Down;
+	ms.control_keys[Settings::MOVE_LEFT] = sf::Keyboard::Left;
+	ms.control_keys[Settings::MOVE_RIGHT] = sf::Keyboard::Right;
+
+	control_keys[Settings::FLUSH].ptr = &k[38]; //z
+	control_keys[Settings::ROTATE].ptr = &k[51]; //space
+	control_keys[Settings::FAST_DROP].ptr = &k[55]; //down
+	control_keys[Settings::MOVE_LEFT].ptr = &k[54]; //left;
+	control_keys[Settings::MOVE_RIGHT].ptr = &k[57]; //right;
+
+
+	// 1b = 1 error with open
+	// 2b = 1 error with movement
+	// 3b = 1 error with audio
+	// 4b = 1 error with graphics
+	std::byte result = loadSettings();
+	if (std::to_integer<int>(~result & std::byte{ 0b1 }))
 	{
-		
-		for (auto& key : k)
+		if (std::to_integer<int>(~result & std::byte{ 0b10 }))
 		{
-			for (size_t k = 0, max = sizeof control_keys / sizeof(ControlKey); k < max; k++)
+			// AVE LOOK bad loop ! this loop runs/perform 300 times
+			for (auto& key : k)
 			{
-				if (key.code == ms.control_keys[k])
+				for (size_t k = 0, max = sizeof control_keys / sizeof(ControlKey); k < max; k++)
 				{
-					control_keys[k].ptr = &key;
+					if (key.code == ms.control_keys[k])
+						control_keys[k].ptr = &key;
 				}
 			}
 		}
-	
 	}
 
 	linkControlKeys();
@@ -784,21 +797,48 @@ void OPTIONS::show_gui(bool show)
 
 std::byte OPTIONS::saveSettings() const
 {
-	std::byte result{0b0000'0000};
-	std::ofstream output_data("movement.java", std::ios::binary | std::ios::out);
 
+	std::byte result{0b0000'0000};
+	std::ofstream output_data("settings.java", std::ios::binary | std::ios::out);
+
+
+	// 1b = 1 error with open
+	// 2b = 1 error with movement
+	// 3b = 1 error with audio
+	// 4b = 1 error with graphics
 	if (output_data.is_open())
+	{
 		output_data.write((const char*)&ms, sizeof(Settings::Movement));
+		if (!output_data.good())
+			result |= std::byte{ 0b0010 };
+		
+		int idx = sl_music->getCurrentIdx();
+		output_data.write((const char*)&idx, sizeof(int));
+		if (!output_data.good())
+			result |= std::byte{ 0b0100 };
+		
+		idx = sl_sound->getCurrentIdx();
+		output_data.write((const char*)&idx, sizeof(int));
+		if (!output_data.good())
+			result |= std::byte{ 0b0100 };
+		
+
+		output_data.write((const char*)&ddl_vm->curr_value, sizeof(int));
+		if (!output_data.good())
+			result |= std::byte{ 0b1000 };
+	}
 	else
-		result |= std::byte{ 0b1 };
+	{
+		result |= std::byte{ 0b0001 };
+	}
 
 	output_data.close();
-	output_data.open("settings.java", std::ios::binary | std::ios::out);
 
-	if (output_data.is_open())
-		output_data.write((const char*)&ms, sizeof(Settings::Movement));
-	else
-		result |= std::byte{ 0b1 };
+
+	//if (output_data.is_open())
+	//	output_data.write((const char*)&ms, sizeof(Settings::Movement));
+	//else
+	//	result |= std::byte{ 0b1 };
 
 	
 	return result;
@@ -808,12 +848,53 @@ std::byte OPTIONS::loadSettings()
 {
 
 	std::byte result{ 0b0000'0000 };
-	std::ifstream input_data("movement.java", std::ios::binary | std::ios::in);
+	std::ifstream input_data("settings.java", std::ios::binary | std::ios::in);
 
+	// 1b = 1 error with open
+	// 2b = 1 error with movement
+	// 3b = 1 error with audio
+	// 4b = 1 error with graphics
 	if (input_data.is_open())
+	{
 		input_data.read((char*)&ms, sizeof(Settings::Movement));
+		if (!input_data.good())
+			result |= std::byte{ 0b0010 };
+
+		std::size_t idx;
+		input_data.read((char*)&idx, sizeof(int));
+		if (!input_data.good())
+			result |= std::byte{ 0b0100 };
+		sl_music->setCurrentValue(idx);
+
+		idx = 0;
+		input_data.read((char*)&idx, sizeof(int));
+		if (!input_data.good())
+			result |= std::byte{ 0b0100 };
+		sl_sound->setCurrentValue(idx);
+			
+		idx = 0;
+		input_data.read((char*)&idx, sizeof(idx));
+		if (!input_data.good())
+			result |= std::byte{ 0b1000 };
+
+		if (idx < 0 || idx >= ddl_vm->getListSize() )
+			idx = 0;
+		
+		ddl_vm->curr_value = idx;
+		ddl_vm->setLabelString((std::to_string(vm[idx].width) + "x" + std::to_string(vm[idx].height) + "x" + std::to_string(vm[idx].bitsPerPixel)).c_str());
+		// AVE TODO create proper window
+	}
 	else
-		result |= std::byte{ 0b1 };
+	{
+		result |= std::byte{ 0b0001 };
+	}
+
+	input_data.close();
+
+	//if (input_data.is_open())
+	//	input_data.read((char*)&ms, sizeof(Settings::Movement));
+	//else
+	//	result |= std::byte{ 0b1 };
 
 
 	return result;
