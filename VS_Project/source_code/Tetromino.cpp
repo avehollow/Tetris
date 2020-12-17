@@ -388,7 +388,7 @@ void Tetromino::tick(const float& tt)
 			std::cout << "200!!!\n";
 		}
 
-		if (!bFireFlipbook && shift_interval > 0.40f)
+		if (!bFireFlipbook && shift_interval < 0.40f)
 		{
 			play_anim_fire();
 			bFireFlipbook = true;

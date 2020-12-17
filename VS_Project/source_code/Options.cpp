@@ -107,23 +107,26 @@ ISTATE* OPTIONS::handleInput(const sf::Event& event)
 						}
 					}
 
+					sf::RectangleShape end;
+					end.setSize(i.rec.getSize());
 					switch (key_chosen)
 					{
 					case 0:
-						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 1, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color(255,0,0,200), 1, 3.0f);
 						break;														
 					case 1:															
-						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color(0,255,0), 4, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color(0,255,0,200), 4, 3.0f);
 						break;														
 					case 2:															
-						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 3, 3.0f);
+						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Blue, 3, 3.0f);
 						break;														
 					case 3:															
-						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 2, 3.0f);
+						end.setPosition(sf::Vector2f(i.rec.getPosition().x, i.rec.getPosition().y + yy(4)));
+						linkABusing2lines(b, end, lines + key_chosen * 8, sf::Color(0,255,0,200), 2, 3.0f);
 						break;														
 					case 4:		
-						linkABusing2lines(b, i.rec, lines + key_chosen * 8, sf::Color::Red, 2, 3.0f);
-
+						end.setPosition(sf::Vector2f(i.rec.getPosition().x, i.rec.getPosition().y - yy(4)));
+						linkABusing2lines(b, end, lines + key_chosen * 8, sf::Color(255,0,0,200), 2, 3.0f);
 						break;
 					default:
 						break;
@@ -170,6 +173,7 @@ void OPTIONS::render() const
 void OPTIONS::show() 
 {
 	show_gui(true);
+	window->GUI_.setIdle();
 }
 
 void OPTIONS::hide() 
@@ -179,6 +183,7 @@ void OPTIONS::hide()
 		control_keys[i].text.setFillColor(sf::Color::White);
 	
 	key_chosen = -1;
+
 }
 
 void OPTIONS::onCreate()
@@ -414,38 +419,41 @@ void OPTIONS::linkControlKeys()
 		b.setPosition(control_keys[i].text.getPosition());
 		b.setSize(sf::Vector2f(control_keys[i].text.getGlobalBounds().width, control_keys[i].text.getGlobalBounds().height));
 
+		sf::RectangleShape end;
 		switch (Settings::KEY_ACTION(i))
 		{
 		case Settings::KEY_ACTION::FLUSH:
 			if(control_keys[i].ptr != nullptr)
-				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 1, 3.0f);
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color(255,0,0,200), 1, 3.0f);
 			break;
 
 		case Settings::KEY_ACTION::ROTATE:
 			if (control_keys[i].ptr != nullptr)
-				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color(0, 255, 0), 4, 3.0f);
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color(0, 255, 0, 200), 4, 3.0f);
 			break;
 
 		case Settings::KEY_ACTION::FAST_DROP:
 			if (control_keys[i].ptr != nullptr)
-				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 3, 3.0f);
+				linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Blue, 3, 3.0f);
 			break;
 
 		case Settings::KEY_ACTION::MOVE_LEFT:
 			if (control_keys[i].ptr != nullptr)
 			{
-				sf::RectangleShape rec = control_keys[i].ptr->rec;
-				rec.setPosition(rec.getPosition().x, rec.getPosition().y);
-				linkABusing2lines(b, rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			    end.setSize(control_keys[i].ptr->rec.getSize());
+				end.setPosition(control_keys[i].ptr->rec.getPosition().x, control_keys[i].ptr->rec.getPosition().y + yy(4));
+				linkABusing2lines(b, end, lines + i * 8, sf::Color(0,255,0,200), 2, 3.0f);
+				//linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Green, 2, 3.0f);
 			}
 			break;
 
 		case Settings::KEY_ACTION::MOVE_RIGHT:
 			if (control_keys[i].ptr != nullptr)
 			{
-				sf::RectangleShape rec = control_keys[i].ptr->rec;
-				rec.setPosition(rec.getPosition().x, rec.getPosition().y);
-				linkABusing2lines(b, rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
+			    end.setSize(control_keys[i].ptr->rec.getSize());
+				end.setPosition(control_keys[i].ptr->rec.getPosition().x, control_keys[i].ptr->rec.getPosition().y - yy(4));
+				linkABusing2lines(b, end, lines + i * 8, sf::Color(255,0,0,200), 2, 3.0f);
+				//linkABusing2lines(b, control_keys[i].ptr->rec, lines + i * 8, sf::Color::Red, 2, 3.0f);
 			}
 			break;
 		default:
@@ -757,6 +765,11 @@ void OPTIONS::startUp()
 	{
 		if (std::to_integer<int>(~result & std::byte{ 0b10 }))
 		{
+			for (size_t k = 0, max = sizeof control_keys / sizeof(ControlKey); k < max; k++)
+			{
+				if (ms.control_keys[k] == sf::Keyboard::Unknown)
+					control_keys[k].ptr = nullptr;
+			}
 			// AVE LOOK bad loop ! this loop runs/perform 300 times
 			for (auto& key : k)
 			{
@@ -764,10 +777,12 @@ void OPTIONS::startUp()
 				{
 					if (key.code == ms.control_keys[k])
 						control_keys[k].ptr = &key;
+
 				}
 			}
 		}
 	}
+
 
 	linkControlKeys();
 }
@@ -883,6 +898,10 @@ std::byte OPTIONS::loadSettings()
 		ddl_vm->curr_value = idx;
 		ddl_vm->setLabelString((std::to_string(vm[idx].width) + "x" + std::to_string(vm[idx].height) + "x" + std::to_string(vm[idx].bitsPerPixel)).c_str());
 		// AVE TODO create proper window
+		// Incorrect GUI implementation does not allow window resizing in this function
+		// because the loadSettings is called from startUp, the GUI is not set correctly when re-creating the window.
+		// window->create(vm[idx], "Tetris", sf::Style::Fullscreen);
+		// look at WORLD.cpp ini function
 	}
 	else
 	{

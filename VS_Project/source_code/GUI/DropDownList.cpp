@@ -45,15 +45,18 @@ namespace gui
 	{
 		const size_t SIZE = list.size();
 
+		bool hove_over = false;
 		if (handled_event)
 		{
 			for (int i = beg; (i <= end) && (i < SIZE); i++)
 				list[i].handleEvent(event);
 			
+			show_list = false;
+			hove_over = false;
+
 			return false;
 		}
 
-		bool hove_over = false;
 		if (show_list)
 			hove_over = collision.getGlobalBounds().contains(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y);
 

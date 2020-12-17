@@ -67,7 +67,6 @@ namespace gui
 	inline void gui::SliderList::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(slider);
-		target.draw(collision);
 		target.draw(button);
 		target.draw(text);
 	}

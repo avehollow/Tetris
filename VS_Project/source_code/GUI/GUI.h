@@ -28,8 +28,9 @@ namespace gui
 		GUI& operator=(GUI&) = delete;
 		GUI& operator=(GUI&&) = delete;
 
+		void setIdle();
 		void onRecreateWindow();
-		inline void handleEvent(const sf::Event& event)const;
+		void handleEvent(const sf::Event& event)const;
 
 		void erase(void* const elem_of_gui);
 		void add(void* const elem_of_gui);
@@ -66,6 +67,7 @@ namespace gui
 		virtual ~gui__() = default;
 
 	protected:
+		// AVE LOOK function idle? -> set idle state
 		virtual void onRecreateWindow() = 0;
 		virtual bool handleEvent(const sf::Event& event) = 0;
 
@@ -139,4 +141,13 @@ inline void gui::GUI::handleEvent(const sf::Event& event) const
 		if (g->handleEvent(event))
 			gui__::handled_event = true;
 	}
+}
+inline void gui::GUI::setIdle()
+{
+	gui__::handled_event = true;
+	sf::Event blank;
+	blank.type = sf::Event::EventType(24);
+	for (auto& g : gui)
+		g->handleEvent(blank);
+	
 }

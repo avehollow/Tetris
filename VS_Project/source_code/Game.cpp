@@ -418,6 +418,7 @@ void GAME::setToPlay()
 	show_gameover_menu(false);
 	tetromino.ini();
 	set_standardmode();
+	tetromino.setMovement(options.getMovementSettings());
 }
 
 

@@ -69,6 +69,8 @@ namespace gui
 		{
 			button.setFillColor(idle_color);
 		}
+		if(event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+			button.setFillColor(idle_color);
 
 		return bHoveover;
 	}
