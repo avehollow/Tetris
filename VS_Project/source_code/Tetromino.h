@@ -13,7 +13,7 @@ public:
 	void startUp();
 	void handleInput(const sf::Event& event);
 	void ini(int width = 10, int height = 20);
-	void draw(GameWindow* __restrict const window) const ;
+	void draw(GameWindow* __restrict const window);
 	int update(const float& tt);
 	void pause();
 	void onCreate();
@@ -93,7 +93,7 @@ private:
 
 
 
-inline void Tetromino::draw(GameWindow* __restrict const window) const
+inline void Tetromino::draw(GameWindow* __restrict const window)
 {
 	window->draw(background_tetromino);
 	for (size_t y = 0; y < HEIGHT; y++)

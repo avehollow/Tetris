@@ -22,7 +22,7 @@ public:
 
 	void ini(float cube_size, const sf::Vector2f& tetromino_pos);
 	void spawnFigure(float posX, float posY, const sf::Texture* texture, E_FIGURE type, size_t rotation);
-	void draw(GameWindow* __restrict const window) const;
+	void draw(GameWindow* __restrict const window);
 	
 	void move(int dirx, int diry);
 	void rotate();
@@ -32,6 +32,8 @@ public:
 	
 	void setTexture(const sf::Texture* texture);
 	const sf::Texture* getTexture() const;
+
+	void setGlowTexture(const sf::Texture* texture);
 	
 private:
 	void be_Z_(float pos_x, float pos_y, const sf::Texture* texture);
@@ -53,20 +55,33 @@ private:
 	E_FIGURE type;
 	short rotation;
 
+
+	sf::RectangleShape glowSpr;
 };
 
-inline void Figure::draw(GameWindow* __restrict const window) const
+inline void Figure::draw(GameWindow* __restrict const window) 
 {
+	glowSpr.setFillColor(squares[0].getTexture()->copyToImage().getPixel(squares[0].getSize().x / 2.0f, squares[0].getSize().x / 2.0f));
+	glowSpr.setSize(sf::Vector2f(squares[0].getSize().x + (25.f * window->getSize().x / 1920.0f), squares[0].getSize().y + (25.f * window->getSize().y / 1080.0f)));
 	for (auto& sq : squares)
+	{
+		glowSpr.setPosition(sq.getPosition().x - (12.5f * (window->getSize().x / 1920.0f)), sq.getPosition().y - (12.5f * (window->getSize().y / 1080.0f)));
 		window->draw(sq);
+		window->draw(glowSpr, sf::BlendAdd);
+	}
 
-	window->draw(center_sprite);
+	//window->draw(center_sprite);
 }
 
 inline void Figure::setTexture(const sf::Texture* texture)
 {
 	for (auto& sq : squares)
 		sq.setTexture(texture);
+}
+
+inline void Figure::setGlowTexture(const sf::Texture* texture)
+{
+	glowSpr.setTexture(texture);
 }
 
 inline const sf::Texture* Figure::getTexture() const

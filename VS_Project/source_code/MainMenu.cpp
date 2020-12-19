@@ -51,7 +51,7 @@ void MAINMENU::update(const float& d)
 
 }
 
-void MAINMENU::render()const
+void MAINMENU::render()
 {
 	if (bHighScore)
 	{
@@ -63,6 +63,7 @@ void MAINMENU::render()const
 		window->draw(pos);
 	}
 	
+	//window->draw(sf::RenderStates::blendMode)
 }
 
 void MAINMENU::show()

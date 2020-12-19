@@ -153,7 +153,7 @@ void OPTIONS::update(const float& d)
 	AM->setSoundVolume(sl_sound->getCurrentIdx());
 }
 
-void OPTIONS::render() const
+void OPTIONS::render()
 {
 	window->draw(keyboard);
 	for (auto& i : k)

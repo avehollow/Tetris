@@ -168,6 +168,7 @@ void Tetromino::onCreate()
 	update_score(0);
 
 	figure.onCreate(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
+	figure.setGlowTexture(&AM->texture[AM_::E_TEXTURE::T_GLOW]);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -179,6 +180,8 @@ void Tetromino::onCreate()
 			nextFigures[i].getTexture(),
 			nextFigures[i].type,
 			nextFigures[i].rotation);
+
+		nextFigures[i].setGlowTexture(&AM->texture[AM_::E_TEXTURE::T_GLOW]);
 	}
 	place_holder.ini(cube_size, sf::Vector2f(LEFT_WALL, CEIL_EDGE - 4 * cube_size));
 	update_placeholder();

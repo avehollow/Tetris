@@ -104,6 +104,9 @@ AM_::AM_()
 
 	texture.emplace_back(sf::Texture());
 	texture.back().loadFromFile("data/texture/keyboard.png");
+
+	texture.emplace_back(sf::Texture());
+	texture.back().loadFromFile("data/texture/glow.png");
 }
 
 AM_::~AM_()

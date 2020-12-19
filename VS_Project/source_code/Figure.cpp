@@ -12,7 +12,7 @@ Figure::Figure()
 	{
 		idx.x = 0;
 		idx.y = 0;
-	}
+	}	
 }
 
 

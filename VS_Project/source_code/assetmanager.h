@@ -55,7 +55,8 @@ public:
 		T_CONFFETI,
 		T_FIREWORKS,
 		T_ERROR,
-		T_KEYBOARD
+		T_KEYBOARD,
+		T_GLOW
 	};
 };
 

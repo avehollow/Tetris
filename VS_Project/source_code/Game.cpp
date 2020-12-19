@@ -32,7 +32,7 @@ void GAME::update(const float& tt)
 
 }
 
-void GAME::render()const
+void GAME::render()
 {
 	window->draw(background_game);
 

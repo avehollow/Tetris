@@ -18,7 +18,7 @@ public:
 
     virtual ISTATE* handleInput(const sf::Event&) override;
     virtual void update(const float&) override;
-    virtual void render() const override;
+    virtual void render() override;
 
     virtual void show() override;
     virtual void hide() override;
